@@ -28,15 +28,23 @@ def load_spec_file(file_path):
                 sys.exit()
 
 
-def main():
-    spec = load_spec_file(cfg.SPEC_FILES[0])
+def validate_specification(spec):
     errors_iterator = openapi_v3_spec_validator.iter_errors(spec)
     l = list(errors_iterator)
     if (len(l) > 0):
-        print(l[0])
+        print(len(l), 'errors')
         sys.exit()
 
-    print('spec is good')
+
+def main():
+    spec = load_spec_file(cfg.SPEC_FILES[0])
+    validate_specification(spec)
+
+
+class Wrapper:
+    def __init__(self, data):
+        self.data = data
+
 
 if __name__ == '__main__':
     main()
