@@ -1,11 +1,9 @@
-import sys
-import os.path
 import json
+import os.path
+import sys
+
 import yaml
-
-from openapi_spec_validator import validate_spec
 from openapi_spec_validator import openapi_v3_spec_validator
-
 
 import app_config as cfg
 
