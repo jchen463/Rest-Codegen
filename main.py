@@ -7,6 +7,9 @@ from openapi_spec_validator import openapi_v3_spec_validator
 
 import app_config as cfg
 
+PYTHON_FLASK_NAME = 'python-flask'
+NODEJS_NAME = 'nodejs'
+
 
 def load_spec_file(file_path):
     extension = os.path.splitext(file_path)[1][1:]
@@ -34,15 +37,27 @@ def validate_specification(spec):
         sys.exit()
 
 
-def main():
-    spec = load_spec_file(cfg.SPEC_FILES[0])
-    validate_specification(spec)
+def generate_flask_server_code(spec):
+    pass
+
+
+def process_tree(spec):
+    pass
+
+
+def generate_server_code(spec):
+    if cfg.SERVER_TARGET == PYTHON_FLASK_NAME:
+        return generate_flask_server_code(spec)
 
 
 class Wrapper:
     def __init__(self, data):
         self.data = data
 
+
+def main():
+    spec = load_spec_file(cfg.SPEC_FILES[0])
+    validate_specification(spec)
 
 
 if __name__ == '__main__':
