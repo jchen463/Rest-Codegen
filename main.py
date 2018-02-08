@@ -8,11 +8,6 @@ from openapi_spec_validator import openapi_v3_spec_validator
 import app_config as cfg
 
 
-class Wrapper:
-    def __init__(self, data):
-        self.data = data
-
-
 def load_spec_file(file_path):
     extension = os.path.splitext(file_path)[1][1:]
     if extension == 'yaml' or 'yml':
@@ -38,7 +33,7 @@ def validate_specification(spec):
         print(len(l), 'errors')
         sys.exit()
 
-
+    print('specification is valid')
 
 
 def process_tree(spec):
