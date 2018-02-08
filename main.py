@@ -7,8 +7,10 @@ from openapi_spec_validator import openapi_v3_spec_validator
 
 import app_config as cfg
 
-PYTHON_FLASK_NAME = 'python-flask'
-NODEJS_NAME = 'nodejs'
+
+class Wrapper:
+    def __init__(self, data):
+        self.data = data
 
 
 def load_spec_file(file_path):
@@ -37,27 +39,29 @@ def validate_specification(spec):
         sys.exit()
 
 
-def generate_flask_server_code(spec):
-    pass
 
 
 def process_tree(spec):
+    """
+    Modify tree here. Parse through and fill out the components section accordingly?
+    How to resolve of dependencies between components???
+    Ex. An attribute of Pet is a Category
+        What if we're constructing a Schema instance for Pet. 
+        We want to first have the Schema instance for category made, etc.
+    How to parse through the dictionary tree such that we can link all references
+    """
     pass
 
 
-def generate_server_code(spec):
-    if cfg.SERVER_TARGET == PYTHON_FLASK_NAME:
-        return generate_flask_server_code(spec)
-
-
-class Wrapper:
-    def __init__(self, data):
-        self.data = data
+def generate_flask_server_code(spec):
+    pass
 
 
 def main():
     spec = load_spec_file(cfg.SPEC_FILES[0])
     validate_specification(spec)
+    process_tree(spec)
+    generate_flask_server_code(spec)
 
 
 if __name__ == '__main__':
