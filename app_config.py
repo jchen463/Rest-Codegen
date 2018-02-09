@@ -8,8 +8,6 @@
 # valid_client_targets = ['python', 'javascript']
 
 # PARTS OF CODEGEN ABLE TO BE SUPPRESSED
-# valid_suppress_targets = []
-
 # don't let user choose for certain files
 SUPPRESSIBLE = ['Schemas', 'Responses', 'Examples',
                 'RequestBodies', 'Headers', 'SecuritySchemes']

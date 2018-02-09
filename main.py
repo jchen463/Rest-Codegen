@@ -41,7 +41,7 @@ def process_tree(spec):
     Modify tree here. Parse through and fill out the components section accordingly?
     How to resolve of dependencies between components???
     Ex. An attribute of Pet is a Category
-        What if we're constructing a Schema instance for Pet. 
+        What if we're constructing a Schema instance for Pet.
         We want to first have the Schema instance for category made, etc.
     How to parse through the dictionary tree such that we can link all references
     """
