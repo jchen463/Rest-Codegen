@@ -3,10 +3,6 @@
 # will client side code generation have to be separate modules as well?
 # unrelated code (ex. flask and nodejs) will be stored together, which doesn't seem efficient
 
-# LANGUAGES AND FRAMEWORKS CURRENTLY SUPPORTED
-# valid_server_targets = ['python-flask', 'nodejs']
-# valid_client_targets = ['python', 'javascript']
-
 # PARTS OF CODEGEN ABLE TO BE SUPPRESSED
 # don't let user choose for certain files
 SUPPRESSIBLE = ['Schemas', 'Responses', 'Examples',
@@ -59,11 +55,6 @@ SUPPRESS = []
 # SERVER_TARGET = 'python-flask' # unneeded if we do separate modules for different languages
 CLIENT_TARGET = 'python'
 
-# we can either have these in the config file or hide this in the main code
-# FLASK_TEMPLATES_DIR = 'templates/server/flask/'
-# FLASK_MODEL_TEMPLATE_PATH = FLASK_TEMPLATES_DIR + 'model.template'
-# FLASK_X_TEMPLATE_PATH = FLASK_TEMPLATES_DIR + 'x.template'
-
-# NODEJS_TEMPLATES_DIR = 'templates/server/nodejs/'
-# NODEJS_MODEL_TEMPLATE_PATH = NODEJS_TEMPLATES_DIR + 'model.template'
-# NODEJS_X_TEMPLATE_PATH = NODEJS_TEMPLATES_DIR + 'x.template'
+TEMPLATES_DIR = 'templates/server/flask'
+MODEL_TEMPLATE_PATH = FLASK_TEMPLATES_DIR + 'model.template'
+X_TEMPLATE_PATH = TEMPLATES_DIR + 'x.template'

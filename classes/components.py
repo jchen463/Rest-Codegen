@@ -69,6 +69,30 @@ class Callback:
         self.dikt = dikt
 
 
+class ServerVariable:
+    def __init__(self, name, dikt):
+        self.name = name
+        self.dikt = dikt
+
+
+class MediaType:
+    def __init__(self, name, dikt):
+        self.name = name
+        self.dikt = dikt
+
+
+class Encoding:
+    def __init__(self, name, dikt):
+        self.name = name
+        self.dikt = dikt
+
+
+class Callback:
+    def __init__(self, name, dikt):
+        self.name = name
+        self.dikt = dikt
+
+
 class Wrapper:
     def __init__(self, data):
         self.data = data

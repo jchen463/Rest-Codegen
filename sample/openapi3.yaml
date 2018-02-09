@@ -37,6 +37,7 @@ paths: <Paths Object> REQUIRED
             operationId: <string>
             parameters: [<Parameter Object | Reference Object>]
             requestBody: <Request Body Object | Reference Object>
+                
             responses: <Responses Object> REQUIRED
                 default: <Response Object | Reference Object>
                 {HTTP Status Code}: <Response Object | Reference Object>
@@ -59,6 +60,9 @@ paths: <Paths Object> REQUIRED
 components: <Components Object>
     schemas: <Map[<string>, <Schema Object | Reference Object>]>
         <string>:
+            # REFERENCE OBJECT
+            $ref: <string> REQUIRED
+
             # SCHEMA OBJECT
             title: <>
             multipleOf: <>
@@ -196,13 +200,14 @@ components: <Components Object>
             openIdConnectUrl: <string> REQUIRED
             ^x-: <any>
     links: <Map[<string>, <Link Object | Reference Object>]>
-        operationRef: <string>
-        operationId: <string>
-        parameters: <Map[<string>, <any | {expression}>]>
-        requestBody: <any | {expression}> # expression = https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#runtimeExpression
-        description: <string>
-        server: <Server Object>
-        ^x-: <any>
+        <string>:
+            operationRef: <string>
+            operationId: <string>
+            parameters: <Map[<string>, <any | {expression}>]>
+            requestBody: <any | {expression}> # expression = https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#runtimeExpression
+            description: <string>
+            server: <Server Object>
+            ^x-: <any>
     callbacks: <Map[<string>, <Callback Object | Reference Object>]>
         <string>:
             {expression}: <Path Item Object>
