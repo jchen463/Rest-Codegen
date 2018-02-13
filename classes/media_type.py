@@ -5,12 +5,11 @@ class MediaType:
     def __init__(self, dikt):
         allowed = ['schema', 'example', 'examples',
                    'encoding', 'extensions']
-        required = ['content']
         objects = ['schema']
         mappings = ['examples', 'encoding']
 
-        d = parse_dict(dikt=dikt, allowed=allowed, required=required,
-                       objects=objects, mappings=mappings)
+        d = parse_dict(dikt=dikt, allowed=allowed, objects=objects,
+                       mappings=mappings)
 
         self.schema = d['schema']
         self.example = d['example']

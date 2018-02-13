@@ -56,7 +56,6 @@ def generate_flask_server_code(spec):
 def main():
     spec = load_spec_file(cfg.SPEC_FILES[0])
     validate_specification(spec)
-    # print(type(spec['servers']))
     spec2 = parse_dict(dikt=spec,
                        allowed=['openapi', 'info', 'server', 'paths',
                                 'components', 'security', 'tags', 'externalDocs'],

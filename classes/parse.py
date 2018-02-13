@@ -5,9 +5,9 @@ ext_regex = re.compile('x-.*')
 
 def parse_dict(dikt, allowed, required=[], objects=[], mappings=[], booleans=[], arrays=[], anys=[]):
     d = {}
-    # for attr in required:
-    #     if attr not in dikt:
-    #         raise ValueError('required field ' + attr + ' is missing')
+    for attr in required:
+        if attr not in dikt:
+            raise ValueError('required field ' + attr + ' is missing')
     for attr in allowed:
         d[attr] = None
 
