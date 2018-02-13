@@ -5,9 +5,9 @@ ext_regex = re.compile('x-.*')
 
 def parse_dict(dikt, allowed, required=[], objects=[], mappings=[], booleans=[], arrays=[], anys=[]):
     d = {}
-    for attr in required:
-        if attr not in dikt:
-            raise ValueError('required field ' + attr + ' is missing')
+    # for attr in required:
+    #     if attr not in dikt:
+    #         raise ValueError('required field ' + attr + ' is missing')
     for attr in allowed:
         d[attr] = None
 
@@ -27,9 +27,10 @@ def parse_dict(dikt, allowed, required=[], objects=[], mappings=[], booleans=[],
         else:  # string
             d[key] = value
 
-    for key, value in d.items():
+    for key, value in list(d.items()):
         if key not in allowed:
             del d[key]
+
     return d
 
 
@@ -41,7 +42,7 @@ def get_mapping(keyword, dikt):
             mapping[key] = value
     else:  # Object or ref string
         for key, value in dikt.items():
-            mapping[key] = get_object(keyword_to_type[keyword], value)
+            mapping[key] = get_object(keyword, value)
 
     return mapping
 
@@ -56,7 +57,9 @@ def get_array(keyword, arr):
 
 
 def get_boolean(value):
-    if value.lower() == 'true':
+    if type(value) == bool:
+        return value
+    if type(value) == str and value.lower() == 'true':
         return True
     return False
 
