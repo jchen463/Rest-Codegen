@@ -1,11 +1,18 @@
-from parse import parse_dict
+from .parse import parse_dict
 
 
 class Encoding:
     def __init__(self, dikt):
-        allowed = ['contentType', 'headers', 'style', 'explode', 'allowReserved']  # fields that are allowed
-        mappings = ['mapping']  # fields that are mappings
-        booleans = ['explode', 'allowReserved']  # fields that are booleans
-        d = parse_dict(dikt=dikt, allowed=allowed, mappings=mappings, booleans=booleans)
-        for key, value in d.items():
-            self.key = value
+        allowed = ['contentType', 'headers', 'style',
+                   'explode', 'allowReserved', 'extensions']
+        mappings = ['headers']
+        booleans = ['explode', 'allowReserved']
+
+        d = parse_dict(dikt=dikt, allowed=allowed)
+
+        self.contentType = d['contentType']
+        self.headers = d['headers']
+        self.style = d['style']
+        self.explode = d['explode']
+        self.allowReserved = d['allowReserved']
+        self.extensions = d['extensions']

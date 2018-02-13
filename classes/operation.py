@@ -1,16 +1,41 @@
-from parse import parse_dict
+from .parse import parse_dict
+from .parse import get_array
+from .parse import get_object
 
 
 class Operation:
     def __init__(self, dikt):
-        # !!! tags is [<string>], other attributes are also arrays
-        allowed = ['tags', 'summary', 'description',
-                   'externalDocs', 'operationId', 'parameters', 'requestBody', 'responses', 'callbacks', 'deprecated', 'security', 'servers']
+        allowed = ['summary', 'description', 'externalDocs',
+                   'operationId', 'parameters', 'requestBody',
+                   'responses', 'callbacks', 'deprecated',
+                   'security', 'servers', 'extensions']
         required = ['responses']
-        objects = ['externalDocs', 'parameters', 'requestBody',
-                   'responses', 'security', 'servers']
+        objects = ['externalDocs', 'requestBody']
         mappings = ['callbacks']
+        arrays = ['parameters', 'security', 'servers']
         booleans = ['deprecated']
-        d = parse_dict(dikt=dikt, allowed=allowed, objects=objects)
-        for key, value in d.items():
-            self.key = value
+
+        d = parse_dict(dikt=dikt, allowed=allowed, required=required,
+                       objects=objects, mappings=mappings, booleans=booleans,
+                       arrays=arrays)
+
+        if 'tags' in dikt:
+            self.tags = get_array('op_tags', dikt['tags'])
+        else:
+            self.tags = None
+
+        self.responses = {}
+        for key, value in dikt['responses']:
+            self.responses[key] = get_object('responses', value)
+
+        self.summary = d['summary']
+        self.description = d['description']
+        self.externalDocs = d['externalDocs']
+        self.operationId = d['operationId']
+        self.parameters = d['parameters']
+        self.requestBody = d['requestBody']
+        self.callbacks = d['callbacks']
+        self.deprecated = d['deprecated']
+        self.security = d['security']
+        self.servers = d['servers']
+        self.extensions = d['extensions']

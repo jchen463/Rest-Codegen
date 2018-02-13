@@ -1,14 +1,19 @@
-from parse import parse_dict
+from .parse import parse_dict
 
 
 class MediaType:
     def __init__(self, dikt):
-        # !!! example is <any>
         allowed = ['schema', 'example', 'examples',
-                   'encoding']  # fields that are allowed
-        mappings = ['examples', 'encoding']
+                   'encoding', 'extensions']
+        required = ['content']
         objects = ['schema']
-        d = parse_dict(dikt=dikt, allowed=allowed,
-                       mappings=mappings, objects=objects)
-        for key, value in d.items():
-            self.key = value
+        mappings = ['examples', 'encoding']
+
+        d = parse_dict(dikt=dikt, allowed=allowed, required=required,
+                       objects=objects, mappings=mappings)
+
+        self.schema = d['schema']
+        self.example = d['example']
+        self.examples = d['examples']
+        self.encoding = d['encoding']
+        self.extensions = d['extensions']

@@ -1,6 +1,5 @@
-from parse import parse_dict
-
-
 class SecurityRequirement:
     def __init__(self, dikt):
-        pass
+        for key, value in dikt.items():
+            self.name = key
+            self.array = value

@@ -46,7 +46,7 @@ OUTPUT_DIR_STRUCTURE = [
 ]
 
 # DEFAULT VALUES THAT CAN BE CHANGED BY USER
-SPEC_FILES = ['sample/petstore.yaml']
+SPEC_FILES = ['sample/sample.yaml']
 CAMEL_CASE = True
 SNAKE_CASE = False
 SUPPRESS = []

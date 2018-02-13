@@ -1,12 +1,16 @@
-from parse import parse_dict
+from .parse import parse_dict
 
 
 class Tag:
     def __init__(self, dikt):
-        allowed = ['name', 'description', 'externalDocs']
+        allowed = ['name', 'description', 'externalDocs', 'extensions']
         required = ['name']
         objects = ['externalDocs']
-        d = parse_dict(dikt=dikt, allowed=allowed,
-                       required=required, objects=objects)
-        for key, value in d.items():
-            self.key = value
+
+        d = parse_dict(dikt=dikt, allowed=allowed, required=required,
+                       objects=objects)
+
+        self.name = d['name']
+        self.description = d['description']
+        self.externalDocs = d['externalDocs']
+        self.extensions = d['extensions']

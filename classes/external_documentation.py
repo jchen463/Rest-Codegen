@@ -1,10 +1,13 @@
-from parse import parse_dict
+from .parse import parse_dict
 
 
 class ExternalDocumentation:
     def __init__(self, dikt):
-        allowed = ['description', 'url']  # fields that are allowed
-        required = ['url']  # fields that are required
+        allowed = ['description', 'url', 'extensions']
+        required = ['url']
+
         d = parse_dict(dikt=dikt, allowed=allowed, required=required)
-        for key, value in d.items():
-            self.key = value
+
+        self.description = d['description']
+        self.url = d['url']
+        self.extensions = d['extensions']

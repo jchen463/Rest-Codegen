@@ -1,4 +1,4 @@
-from parse import parse_dict
+from .parse import parse_dict
 
 
 class Schema:
