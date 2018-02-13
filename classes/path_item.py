@@ -1,7 +1,7 @@
-import parse
+from .parse import parse_dict
 
 
-class ServerVariable:
+class PathItem:
     def __init__(self, dikt):
         allowed = ['$ref', 'summary', 'description',
                    'get', 'put', 'post',

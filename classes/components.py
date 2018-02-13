@@ -1,4 +1,4 @@
-import parse
+from .parse import parse_dict
 
 
 class Components:
@@ -11,7 +11,9 @@ class Components:
                     'examples', 'requestBodies', 'headers',
                     'securitySchemes', 'links', 'callbacks']
 
+        print(dikt)
         d = parse_dict(dikt=dikt, allowed=allowed, mappings=mappings)
+        print('after parse')
 
         self.schemas = d['schemas']
         self.responses = d['responses']

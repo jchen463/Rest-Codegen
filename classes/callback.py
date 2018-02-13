@@ -1,4 +1,4 @@
-import parse
+from .parse import ext_regex
 
 
 class Callback:
@@ -6,7 +6,7 @@ class Callback:
         self.dikt = {}
         self.extensions = []
         for key, value in dikt.items():
-            if parse.ext_regex.match(key):
+            if ext_regex.match(key):
                 self.extensions.append({key, value})
             else:
                 self.dikt[key] = value

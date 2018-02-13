@@ -1,4 +1,4 @@
-import parse
+from .parse import parse_dict
 
 
 class License:

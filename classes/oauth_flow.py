@@ -1,4 +1,4 @@
-import parse
+from .parse import parse_dict
 
 
 class OAuthFlow:
@@ -8,7 +8,7 @@ class OAuthFlow:
         required = ['authorizationUrl', 'tokenUrl', 'scopes']
         mappings = ['scopes']
 
-        d = parse_dict(dikt=dikt, allowed=allowed, required=required
+        d = parse_dict(dikt=dikt, allowed=allowed, required=required,
                        mappings=mappings)
 
         self.authorizationUrl = d['authorizationUrl']
