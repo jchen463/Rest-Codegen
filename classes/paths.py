@@ -1,5 +1,4 @@
-from .parse import get_object
-from .parse import ext_regex
+import parse
 
 
 class Paths:
@@ -7,7 +6,7 @@ class Paths:
         self.dikt = {}
         self.extensions = []
         for key, value in dikt.items():
-            if ext_regex.match(key):
+            if parse.ext_regex.match(key):
                 self.extensions.append({key: value})
             else:
-                self.dikt[key] = get_object('/', value)
+                self.dikt[key] = parse.get_object('/', value)

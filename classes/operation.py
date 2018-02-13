@@ -1,6 +1,4 @@
-from .parse import parse_dict
-from .parse import get_array
-from .parse import get_object
+import parse
 
 
 class Operation:
@@ -20,13 +18,13 @@ class Operation:
                        arrays=arrays)
 
         if 'tags' in dikt:
-            self.tags = get_array('op_tags', dikt['tags'])
+            self.tags = parse.get_array('op_tags', dikt['tags'])
         else:
             self.tags = None
 
         self.responses = {}
         for key, value in dikt['responses']:
-            self.responses[key] = get_object('responses', value)
+            self.responses[key] = parse.get_object('responses', value)
 
         self.summary = d['summary']
         self.description = d['description']

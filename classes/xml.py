@@ -1,4 +1,4 @@
-from .parse import parse_dict
+import parse
 
 
 class XML:
