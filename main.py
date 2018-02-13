@@ -6,6 +6,7 @@ import yaml
 from openapi_spec_validator import openapi_v3_spec_validator
 
 import app_config as cfg
+from classes.parse import parse_dict
 
 
 def load_spec_file(file_path):
@@ -55,8 +56,13 @@ def generate_flask_server_code(spec):
 def main():
     spec = load_spec_file(cfg.SPEC_FILES[0])
     validate_specification(spec)
-    process_tree(spec)
-    generate_flask_server_code(spec)
+    print(type(spec['servers']))
+    # spec2 = parse_dict(spec,
+    #                    allowed=['openapi', 'info', 'server', 'paths',
+    #                             'components', 'security', 'tags', 'externalDocs'],
+    #                    required=['openapi', 'info', 'paths'],
+    #                    objects=['info', 'paths', 'components', 'externalDocs'],
+    #                    arrays=['server', 'security', 'tags'])
 
 
 if __name__ == '__main__':

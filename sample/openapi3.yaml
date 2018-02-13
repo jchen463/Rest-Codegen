@@ -14,7 +14,7 @@ info: <Info Object> REQUIRED
         ^x-: <any>
     version: <string> REQUIRED
     ^x-: <any>
-server: [<Server Object>]
+servers: [<Server Object>]
     url: <string> REQUIRED
     description: <string>
     variables: <Map[<string>, <Server Variable Object>]>
@@ -37,7 +37,7 @@ paths: <Paths Object> REQUIRED
             operationId: <string>
             parameters: [<Parameter Object | Reference Object>]
             requestBody: <Request Body Object | Reference Object>
-                
+                $ref: 'asdfasdf'
             responses: <Responses Object> REQUIRED
                 default: <Response Object | Reference Object>
                 {HTTP Status Code}: <Response Object | Reference Object>
@@ -106,7 +106,7 @@ components: <Components Object>
                 attribute: <boolean>
                 wrapped: <boolean>
                 ^x-: <any>
-            externalDocs: <External Documentation>
+            externalDocs: <External Documentation Object>
             example: <any>
             deprecated: <boolean>
             ^x-: <any>

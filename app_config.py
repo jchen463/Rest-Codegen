@@ -46,7 +46,7 @@ OUTPUT_DIR_STRUCTURE = [
 ]
 
 # DEFAULT VALUES THAT CAN BE CHANGED BY USER
-SPEC_FILES = ['sample/sample.yaml']
+SPEC_FILES = ['sample/petstore.yaml']
 CAMEL_CASE = True
 SNAKE_CASE = False
 SUPPRESS = []
@@ -55,6 +55,6 @@ SUPPRESS = []
 # SERVER_TARGET = 'python-flask' # unneeded if we do separate modules for different languages
 CLIENT_TARGET = 'python'
 
-TEMPLATES_DIR = 'templates/server/flask'
-MODEL_TEMPLATE_PATH = FLASK_TEMPLATES_DIR + 'model.template'
-X_TEMPLATE_PATH = TEMPLATES_DIR + 'x.template'
+# TEMPLATES_DIR = 'templates/server/flask'
+# MODEL_TEMPLATE_PATH = FLASK_TEMPLATES_DIR + 'model.template'
+# X_TEMPLATE_PATH = TEMPLATES_DIR + 'x.template'
