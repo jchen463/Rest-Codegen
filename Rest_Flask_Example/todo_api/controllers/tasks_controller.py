@@ -43,8 +43,18 @@ def get_task(task_id):
         abort(404)
     return jsonify({'task': task[0].serialize()})
 
+# Might have to declare a the query parameters like this instead
+'''
+from flask import request
+
+@app.route('/api/v1/getQ/', methods=['GET'])
+def getQ():
+    print request.args.get('a')
+    print request.args.get('b')
+    return "lalala"
 
 
+'''
 # we need to improve our 404 error handler:
 # 404 will now return it as a json object
 @tasks_api.errorhandler(404)
