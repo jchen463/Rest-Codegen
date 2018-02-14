@@ -1,0 +1,12 @@
+{% include "lib.tmpl" %}
+
+{% include "dep.tmpl" %}
+
+{# classes template #}
+{% for class in classes %}
+class {{class.name}}({% for argument in class.arguments %} argument {%if not loop.last %},{% endif %}):
+	{% include "func.tmpl" %}
+{% endfor %}
+
+
+
