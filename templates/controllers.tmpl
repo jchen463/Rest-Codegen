@@ -1,3 +1,7 @@
+{% include "lib.tmpl" %}
+
+{% include "dep.tmpl" %}
+
 {# controller function template #}
 {% for api_call in api_calls %}
 @{{tag}}.route('{{api_call.path}}', methods['{{api_call.method}}'])

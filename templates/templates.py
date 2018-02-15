@@ -47,21 +47,43 @@ model_dep = {
             }
 
 model_class = { 
-                 'classes': [
-                    {'name': 'Task',
-                    'arguments': ['JsonSerializable'], 
-                    'api_calls': [
-                        {'name': 'get_tasks',
-                        'path': '/todo/api/v1.0/tasks', 'method': 'GET',
-                        'arguments': ['task_id'], 'json_object': '{\'task\': task[0].serialize()}'
-                        },
-                        {'name': 'create_task', 
-                        'path': '/todo/api/v1.0/tasks', 'method': 'POST',
-                        'arguments': [], 'json_object': '{\'task\': task}'
-                        }
-                    ]
+                'classes': [
+                    {
+                        'name': 'Task',
+                        'arguments': ['JsonSerializable'], 
+                        'init_args': [ 
+                            {'name': 'id', 'type': 'int'}, 
+                            {'name': 'title', 'type': 'str'},
+                            {'name': 'description', 'type': 'str'},
+                            {'name': 'done', 'type': 'str'}
+                        ],
+                        'class_methods': [
+                            {
+                                'name': 'from_dict',
+                                'class_method_args': ['cls', 'dikt'],
+                                'ret_type': 'Category'
+                            }
+                        ],
+                        'functions': [
+                            {
+                                'name': 'id',
+                                'args': [
+                                    {'name': 'id', 'type': 'int'}
+                                ],
+                                'ret_type': 'int',
+                                'ret_val': 'id'
+                            },
+                            {
+                                'name': 'name',
+                                'args': [
+                                    {'name': 'name', 'type': 'str'}
+                                ],
+                                'ret_type': 'str',
+                                'ret_val': 'name'
+                            }
+                        ]
                     }
-                ] 
+                ]
             }
 
 def do_renders(renders, template_dir, output_dir):
@@ -90,7 +112,7 @@ def do_renders(renders, template_dir, output_dir):
 
 # Few builtin function are present by default in the templates, add some.
 
-renders = [FileRender('controllers.tmpl', 'tasks_controller.py', [controller_lib, controller_lib, controller_func])]
+renders = [FileRender('controllers.tmpl', 'tasks_controller.py', [controller_lib, controller_dep, controller_func])]
 do_renders(renders, 'templates/', 'controllers')
 
 renders = [FileRender('models.tmpl', 'tasks.py', [model_lib, model_dep, model_class])]
