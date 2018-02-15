@@ -2,6 +2,9 @@ import jinja2
 from collections import namedtuple
 import os
 
+# sources used: https://blog.kangz.net/posts/2016/08/31/code-generation-the-easier-way/
+# all credits belong to rightful developer
+
 FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
 
 controller_lib = {
@@ -86,6 +89,13 @@ model_class = {
                 ]
             }
 
+reqs = {
+            'reqs': [
+                {'name': 'click', 'version': '6.7'},
+                {'name': 'Flask', 'version': '0.12.2'}
+            ]
+}
+
 def do_renders(renders, template_dir, output_dir):
 
     # Create the Jinja2 environment using custom options and loader, see sections below.
@@ -117,3 +127,6 @@ do_renders(renders, 'templates/', 'controllers')
 
 renders = [FileRender('models.tmpl', 'tasks.py', [model_lib, model_dep, model_class])]
 do_renders(renders, 'templates/', 'models')
+
+renders = [FileRender('reqs.tmpl', 'requirements.txt', [reqs])]
+do_renders(renders, 'templates/', 'requirements')
