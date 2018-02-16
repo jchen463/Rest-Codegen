@@ -7,6 +7,7 @@ from openapi_spec_validator import openapi_v3_spec_validator
 
 import app_config as cfg
 from classes.parse import parse_dict
+from classes.parse import get_object
 
 import jinja2
 from collections import namedtuple
@@ -103,12 +104,16 @@ def output_model_class(spec):
             print(prop_name)
             print(attributes)
             print(attributes.__dict__)
-            model_class['classes'][0]['init_args'].append(
-                {
-                    'name': prop_name,
-                    'type': attributes.type
-                }
-            )
+            if 'ref' in attributes.__dict__:
+                print('ye')
+                print(get_object('schemas',attributes.__dict__))
+            else:
+                model_class['classes'][0]['init_args'].append(
+                    {
+                        'name': prop_name,
+                        'type': attributes.type
+                    }
+                )
 
 
 
@@ -129,7 +134,7 @@ def output_model_class(spec):
     }
 
     for model_class in models:
-        file_name = model_class['classes']['name'] + ".py"
+        file_name = model_class['classes'][0]['name'] + ".py"
         renders = [FileRender('templates/models.tmpl', file_name, [
             model_lib, model_dep, model_class])]
         do_renders(renders, 'templates/', 'models')
