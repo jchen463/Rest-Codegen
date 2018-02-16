@@ -6,7 +6,7 @@ class Header:
         if 'content' in dikt != 'schema' in dikt:
             raise ValueError('REQUIRED: one of \'content\' or \'schema\' only')
         if 'example' in dikt != 'examples' in dikt:
-            raise ValueError('REQUIRED: one of \'example\' or \'examples\' only)
+            raise ValueError('REQUIRED: one of \'example\' or \'examples\' only')
 
         # All traits that are affected by the location MUST be applicable to a location of header (for ex. style)
         allowed = ['description',

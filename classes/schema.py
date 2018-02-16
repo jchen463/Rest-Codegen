@@ -8,7 +8,7 @@ class Schema:
                    'maxLength', 'minLength', 'pattern',
                    'maxItems', 'minItems', 'uniqueItems',
                    'maxProperties', 'minProperties', 'required',
-                   'enum', 'type', 'allOf',
+                   'type', 'allOf',
                    'oneOf', 'anyOf', 'not',
                    'items', 'properties', 'additionalProperties',
                    'description', 'format',
@@ -17,13 +17,15 @@ class Schema:
         required = []
         mappings = ['properties']
         objects = ['items', 'xml', 'externalDocs', 'discriminator']
-        arrays = ['allOf', 'oneOf', 'anyOf', 'not', 'enum', 'required']
+        arrays = ['allOf', 'oneOf', 'anyOf', 'not', 'required']
         booleans = ['nullable', 'readOnly,', 'writeOnly', 'deprecated',
                     'exclusiveMaximum', 'exclusiveMinimum', 'uniqueItems', ]
 
         d = parse_dict(dikt=dikt, allowed=allowed, required=required,
                        objects=objects, mappings=mappings, booleans=booleans, arrays=arrays)
+
         # any: default, example
+        # array of any: enum
         # additionalProperties can be boolean or object
         # numbers: multipleOf, maximum, minimum, maxLength, minLength
         # allOf, oneOf, anyOf, not may be a mapping rather than an array

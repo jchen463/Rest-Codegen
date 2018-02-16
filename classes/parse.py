@@ -198,6 +198,7 @@ keyword_to_type = {
     'requestBodies': 'RequestBody',
     'securitySchemes': 'SecuritySchemes',
     'scopes': 'string',
+    'properties': 'Schema',  # todo: schemas
 
     # object keywords
     'info': 'Info',
@@ -216,8 +217,6 @@ keyword_to_type = {
     'externalDocs': 'ExternalDocumentation',
     'requestBody': 'RequestBody',
     'components': 'Components',
-    'properties': 'Schema',  # todo: schemas
-    'description': 'Schema',  # inside schemas
     'discriminator': 'Discriminator',
     'xml': 'XML',
     'schema': 'Schema',
@@ -226,6 +225,7 @@ keyword_to_type = {
     'password': 'OAuthFlow',
     'clientCredentials': 'OAuthFlow',
     'authorizationCode': 'OAuthFlow',
+    'items': 'Schema',
 
     # array keywords
     'servers': 'Server',
@@ -233,5 +233,10 @@ keyword_to_type = {
     'tags': 'Tag',
     'parameters': 'Parameter',
     'op_tags': 'string',  # Operation Object tags
-    'enum': 'string',
+    'allOf': 'Schema',
+    'oneOf': 'Schema',
+    'anyOf': 'Schema',
+    'not': 'Schema',
+    'required': 'string',
+    
 }

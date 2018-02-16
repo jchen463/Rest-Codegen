@@ -6,7 +6,7 @@ class Parameter:
         if 'content' in dikt != 'schema' in dikt:
             raise ValueError('REQUIRED: one of \'content\' or \'schema\' only')
         if 'example' in dikt != 'examples' in dikt:
-            raise ValueError('REQUIRED: one of \'example\' or \'examples\' only)
+            raise ValueError('REQUIRED: one of \'example\' or \'examples\' only')
 
         allowed = ['name', 'in', 'description',
                    'required', 'deprecated', 'allowEmptyValue',
