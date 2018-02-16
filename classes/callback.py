@@ -1,8 +1,7 @@
-from .parse import ext_regex
-
-
 class Callback:
     def __init__(self, dikt):
+        from .parse import ext_regex
+
         self.dikt = {}
         self.extensions = []
         for key, value in dikt.items():

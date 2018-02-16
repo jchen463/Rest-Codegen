@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class PathItem:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['$ref', 'summary', 'description',
                    'get', 'put', 'post',
                    'delete', 'options', 'head',

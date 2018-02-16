@@ -81,11 +81,11 @@ components: <Components Object>
             required: [<string>]
             enum: [<any>]
             type: <string>
-            allOf: [<Schema Object | Reference Object>] or mapping
-            oneOf: [<Schema Object | Reference Object>] or mapping
-            anyOf: [<Schema Object | Reference Object>] or mapping
-            not: [<Schema Object | Reference Object>] or mapping
-            items: [<Schema Object | Reference Object>]
+            allOf: [<Schema Object | Reference Object>]
+            oneOf: [<Schema Object | Reference Object>]
+            anyOf: [<Schema Object | Reference Object>]
+            not: [<Schema Object | Reference Object>]
+            items: <Schema Object | Reference Object>
             properties: <Map[<string>, <Schema Object | Reference Object>]>
             additionalProperties: <boolean> or <Schema Object | Reference Object>
             description: <string>

@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class RequestBody:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['description', 'content', 'required',
                    'extensions']
         required = ['content']

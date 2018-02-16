@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class Link:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         # !!! parameters and requestBody can be <any | {expression}>
         # probably will have to manually input parameters and requestBody
         allowed = ['operationRef', 'operationId', 'parameters',

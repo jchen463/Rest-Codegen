@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class Operation:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['summary', 'description', 'externalDocs',
                    'operationId', 'parameters', 'requestBody',
                    'responses', 'callbacks', 'deprecated',

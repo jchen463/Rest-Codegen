@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class Components:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['schemas', 'responses', 'parameters',
                    'examples', 'requestBodies', 'headers',
                    'securitySchemes', 'links', 'callbacks',

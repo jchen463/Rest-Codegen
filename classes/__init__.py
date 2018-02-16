@@ -1,29 +1,29 @@
-from . import parse
-from . import callback
-from . import components
-from . import contact
-from . import discriminator
-from . import encoding
-from . import example
-from . import external_documentation
-from . import header
-from . import info
-from . import license_spec
-from . import link
-from . import media_type
-from . import oauth_flow
-from . import oauth_flows
-from . import operation
-from . import parameter
-from . import path_item
-from . import paths
-from . import reference
-from . import request_body
-from . import response
-from . import schema
-from . import security_requirement
-from . import security_scheme
-from . import server_variable
-from . import server
-from . import tag
-from . import xml
+# from . import parse
+# from . import callback
+# from . import components
+# from . import contact
+# from . import discriminator
+# from . import encoding
+# from . import example
+# from . import external_documentation
+# from . import header
+# from . import info
+# from . import license_spec
+# from . import link
+# from . import media_type
+# from . import oauth_flow
+# from . import oauth_flows
+# from . import operation
+# from . import parameter
+# from . import path_item
+# from . import paths
+# from . import reference
+# from . import request_body
+# from . import response
+# from . import schema
+# from . import security_requirement
+# from . import security_scheme
+# from . import server_variable
+# from . import server
+# from . import tag
+# from . import xml

@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class Server:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['url', 'description', 'variables', 'extensions']
         required = ['url']
         mappings = ['variables']

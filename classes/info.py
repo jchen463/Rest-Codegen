@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class Info:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['title', 'description', 'termsOfService',
                    'contact', 'license', 'version',
                    'extensions']

@@ -1,12 +1,12 @@
-from .parse import parse_dict
-
-
 class Parameter:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         if 'content' in dikt != 'schema' in dikt:
             raise ValueError('REQUIRED: one of \'content\' or \'schema\' only')
         if 'example' in dikt != 'examples' in dikt:
-            raise ValueError('REQUIRED: one of \'example\' or \'examples\' only')
+            raise ValueError(
+                'REQUIRED: one of \'example\' or \'examples\' only')
 
         allowed = ['name', 'in', 'description',
                    'required', 'deprecated', 'allowEmptyValue',
@@ -53,6 +53,6 @@ class Parameter:
     Rules for serialization of parameter:
     For simple scenarios, a 'schema' and 'style' can describe the structure and syntax of the parameter
     For complex scenarios, the content property can define the media type and schema of the parameter
-    A parameter MUST contain either a schema property or a content property, but not both. 
+    A parameter MUST contain either a schema property or a content property, but not both.
     When example or examples is provided along with the schema object, the example MUST follow the prescribed serialization strategy for the parameter
     """

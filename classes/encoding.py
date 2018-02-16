@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class Encoding:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['contentType', 'headers', 'style',
                    'explode', 'allowReserved', 'extensions']
         mappings = ['headers']

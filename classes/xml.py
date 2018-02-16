@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class XML:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['name', 'namespace', 'prefix',
                    'attribute', 'wrapped', 'extensions']
         required = ['name']

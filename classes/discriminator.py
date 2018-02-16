@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class Discriminator:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['propertyName', 'mapping']
         required = ['propertyName']
         mappings = ['mapping']

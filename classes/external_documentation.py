@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class ExternalDocumentation:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['description', 'url', 'extensions']
         required = ['url']
 

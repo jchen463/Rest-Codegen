@@ -1,8 +1,7 @@
-from .parse import parse_dict
-
-
 class Example:
     def __init__(self, dikt):
+        from .parse import parse_dict
+
         allowed = ['summary', 'description', 'value',
                    'externalValue', 'extensions']
 
