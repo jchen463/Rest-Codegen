@@ -5,6 +5,8 @@ from flask import abort
 from flask import make_response
 from flask import request
 
+import json
+
 from models.task import Task
 
 tasks_api = Blueprint('tasks_api', __name__)
@@ -29,8 +31,13 @@ tasks1 = [
 
 # the get response is a 200
 @tasks_api.route('/todo/api/v1.0/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': [task.serialize() for task in tasks]})
+def get_tasks(): 
+    print(tasks[0].__repr__())
+    #print(tasks.__dict__) list object does not have __dict__
+    r = json.dumps([task.serialize() for task in tasks])
+    loaded_r = json.loads(r)
+    print(loaded_r)
+    return jsonify([task.serialize() for task in tasks])
 
 
 # here we get the id of the task and flask translates it into task_id that we receive

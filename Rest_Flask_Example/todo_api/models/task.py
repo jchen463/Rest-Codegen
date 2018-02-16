@@ -1,4 +1,5 @@
 import json
+from models.a import A
 
 class JsonSerializable(object):
     def toJson(self):
@@ -14,18 +15,20 @@ class Task(JsonSerializable):
         self._title = title
         self._description = description
         self._done = done
+        self._randomObject = A()
 
     def serialize(self):
         return {
             'id': self._id,
             'title': self._title,
             'description': self._description,
-            'done': self._done
+            'done': self._done,
+            'randomObject': self._randomObject.serialize()
         }
 
-
-    def __repr__(self):
-        return self.serialize()
+    #
+    # def __repr__(self):
+    #     return self.serialize()
 
     @property
     def id(self) -> int:
