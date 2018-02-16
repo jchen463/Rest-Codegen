@@ -57,12 +57,12 @@ def main():
     spec = load_spec_file(cfg.SPEC_FILES[0])
     validate_specification(spec)
     spec2 = parse_dict(dikt=spec,
-                       allowed=['openapi', 'info', 'server', 'paths',
+                       allowed=['openapi', 'info', 'servers', 'paths',
                                 'components', 'security', 'tags', 'externalDocs'],
                        required=['openapi', 'info', 'paths'],
                        objects=['info', 'paths', 'components', 'externalDocs'],
-                       arrays=['server', 'security', 'tags'])
-
+                       arrays=['servers', 'security', 'tags'])
+    print(spec2)
 
 if __name__ == '__main__':
     main()
