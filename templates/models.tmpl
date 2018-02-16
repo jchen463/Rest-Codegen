@@ -16,14 +16,14 @@ class {{class.name}}({% for argument in class.arguments %}{{argument}}{% if not 
 		return {{class_method.ret_val}}
 	{% endfor %}
 	
-	{% for function in class.functions %}
+	{% for init_arg in class.init_args %}
 	@property
-	def {{function.name}}(self) -> {{function.ret_type}}
-		return self.{{function.ret_val}}
+	def {{init_arg.name}}(self):
+		return self._{{init_arg.name}}
 
-	@{{function.name}}.setter
-	def {{function.name}}(self, {% for arg in function.args %}{{arg.name}}: {{arg.type}}{%if not loop.last %},{% endif %}{% endfor %}):
-
+	@{{init_arg.name}}.setter
+	def {{init_arg.name}}(self, {{init_arg.name}}):
+        self._{{init_arg.name}} = init_arg.name
 	{% endfor %}
 {% endfor %}
 

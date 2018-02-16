@@ -8,6 +8,37 @@ from openapi_spec_validator import openapi_v3_spec_validator
 import app_config as cfg
 from classes.parse import parse_dict
 
+import jinja2
+from collections import namedtuple
+
+
+FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
+
+def do_renders(renders, template_dir, output_dir):
+
+    # Create the Jinja2 environment using custom options and loader, see sections below.
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(
+        ''), trim_blocks=True, lstrip_blocks=True, line_comment_prefix='//*')
+
+    for render in renders:
+
+        # Merge the dictionnaries
+        params = {}
+        for param_dict in render.params_dicts:
+            params.update(param_dict)
+
+        # Render the template
+        output = env.get_template(render.template).render(**params)
+
+        # Output the file, creating directories if needed.
+        output_file = output_dir + os.path.sep + render.output
+        directory = os.path.dirname(output_file)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        with open(output_file, 'w') as outfile:
+            outfile.write(output)
+
 
 def load_spec_file(file_path):
     extension = os.path.splitext(file_path)[1][1:]
@@ -50,27 +81,59 @@ def process_tree(spec):
 
 
 def output_model_class(spec):
+    FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
     models = []
-    for scheme_name, schema_obj in spec.components.schemas:
+    #print(spec['components'].schemas)
+    for scheme_name, schema_obj in spec['components'].schemas.items():
+        print(scheme_name)
+        print(schema_obj)
+        print(schema_obj.__dict__)
         model_class = {
             'classes': [
+                {
                 'name': scheme_name,
-                'arguments':[],
+                'arguments': [],
                 'init_args': [],
-                'class_methods': [],
-                'functions': []
+                'class_methods': []
+                }
             ]
         }
 
-        for prop_name, attributes in schema_obj.properties:
-            model_class['init_args'].append(
+        for prop_name, attributes in schema_obj.properties.items():
+            print(prop_name)
+            print(attributes)
+            print(attributes.__dict__)
+            model_class['classes'][0]['init_args'].append(
                 {
-                    'name': prop,
-                    'type': attributes['type']
+                    'name': prop_name,
+                    'type': attributes.type
                 }
             )
 
+
+
         models.append(model_class)
+
+    model_lib = {
+        'libraries': [
+            {'name': 'json'},
+            {'name': 'jsonify'}
+        ]
+    }
+
+    model_dep = {
+        'dependencies': [
+            {'location': 'flask', 'object': 'Blueprint'},
+            {'location': 'flask', 'object': 'jsonify'}
+        ]
+    }
+
+    for model_class in models:
+        file_name = model_class['classes']['name'] + ".py"
+        renders = [FileRender('templates/models.tmpl', file_name, [
+            model_lib, model_dep, model_class])]
+        do_renders(renders, 'templates/', 'models')
+
 
     # do_render with the model
 
@@ -128,7 +191,8 @@ def main():
                        required=['openapi', 'info', 'paths'],
                        objects=['info', 'paths', 'components', 'externalDocs'],
                        arrays=['servers', 'security', 'tags'])
-    print(spec2)
+    #print(spec2)
+    generate_flask_server_code(spec2)
 
 
 if __name__ == '__main__':
