@@ -49,8 +49,74 @@ def process_tree(spec):
     pass
 
 
+def output_model_class(spec):
+    models = []
+    for scheme_name, schema_obj in spec.components.schemas:
+        model_class = {
+            'classes': [
+                'name': scheme_name,
+                'arguments':[],
+                'init_args': [],
+                'class_methods': [],
+                'functions': []
+            ]
+        }
+
+        for prop_name, attributes in schema_obj.properties:
+            model_class['init_args'].append(
+                {
+                    'name': prop,
+                    'type': attributes['type']
+                }
+            )
+
+        models.append(model_class)
+
+    # do_render with the model
+
+    # model_class = {
+    #     'classes': [
+    #         {
+    #             'name': spec.components.schemas,
+    #             'arguments': [],
+    #             'init_args': [
+    #                 {'name': 'id', 'type': 'int'},
+    #                 {'name': 'title', 'type': 'str'},
+    #                 {'name': 'description', 'type': 'str'},
+    #                 {'name': 'done', 'type': 'str'}
+    #             ],
+    #             'class_methods': [
+    #                 {
+    #                     'name': 'from_dict',
+    #                     'class_method_args': ['cls', 'dikt'],
+    #                     'ret_type': 'Category'
+    #                 }
+    #             ],
+    #             'functions': [
+    #                 {
+    #                     'name': 'id',
+    #                     'args': [
+    #                         {'name': 'id', 'type': 'int'}
+    #                     ],
+    #                     'ret_type': 'int',
+    #                     'ret_val': 'id'
+    #                 },
+    #                 {
+    #                     'name': 'name',
+    #                     'args': [
+    #                         {'name': 'name', 'type': 'str'}
+    #                     ],
+    #                     'ret_type': 'str',
+    #                     'ret_val': 'name'
+    #                 }
+    #             ]
+    #         }
+    #     ]
+    # }
+
+
 def generate_flask_server_code(spec):
-    pass
+    output_model_class(spec)
 
 
 def main():
@@ -63,6 +129,7 @@ def main():
                        objects=['info', 'paths', 'components', 'externalDocs'],
                        arrays=['servers', 'security', 'tags'])
     print(spec2)
+
 
 if __name__ == '__main__':
     main()
