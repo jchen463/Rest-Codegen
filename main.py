@@ -122,7 +122,6 @@ def output_model_class(spec):
     model_lib = {
         'libraries': [
             {'name': 'json'},
-            {'name': 'jsonify'}
         ]
     }
 
@@ -140,47 +139,6 @@ def output_model_class(spec):
         do_renders(renders, 'templates/', 'models')
 
 
-    # do_render with the model
-
-    # model_class = {
-    #     'classes': [
-    #         {
-    #             'name': spec.components.schemas,
-    #             'arguments': [],
-    #             'init_args': [
-    #                 {'name': 'id', 'type': 'int'},
-    #                 {'name': 'title', 'type': 'str'},
-    #                 {'name': 'description', 'type': 'str'},
-    #                 {'name': 'done', 'type': 'str'}
-    #             ],
-    #             'class_methods': [
-    #                 {
-    #                     'name': 'from_dict',
-    #                     'class_method_args': ['cls', 'dikt'],
-    #                     'ret_type': 'Category'
-    #                 }
-    #             ],
-    #             'functions': [
-    #                 {
-    #                     'name': 'id',
-    #                     'args': [
-    #                         {'name': 'id', 'type': 'int'}
-    #                     ],
-    #                     'ret_type': 'int',
-    #                     'ret_val': 'id'
-    #                 },
-    #                 {
-    #                     'name': 'name',
-    #                     'args': [
-    #                         {'name': 'name', 'type': 'str'}
-    #                     ],
-    #                     'ret_type': 'str',
-    #                     'ret_val': 'name'
-    #                 }
-    #             ]
-    #         }
-    #     ]
-    # }
 
 
 def generate_flask_server_code(spec):
