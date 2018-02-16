@@ -88,7 +88,7 @@ components: <Components Object>
             items: [<Schema Object | Reference Object>]
             properties: <Map[<string>, <Schema Object | Reference Object>]>
             additionalProperties: <boolean> or <Schema Object | Reference Object>
-            description: <Schema Object>
+            description: <string>
             format: <string> ?
             default: <any>
 

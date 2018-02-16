@@ -61,7 +61,9 @@ def get_boolean(value):
         return value
     if type(value) == str and value.lower() == 'true':
         return True
-    return False
+    if type(value) == str and value.lower() == 'false':
+        return False
+    return None
 
 
 def get_object(keyword, dikt):
@@ -178,8 +180,8 @@ def get_object(keyword, dikt):
         from .tag import Tag
         return Tag(dikt)
     if keyword_to_type[keyword] == 'string':
-        return dikt  # in this case, dikt is just a string. This should only happen for enum and tags
-    return None  # can probably make this return dikt for the extension cases
+        return dikt  # in this case, dikt is just a string. This should only happen for tags
+    return None
 
 
 keyword_to_type = {
@@ -226,6 +228,7 @@ keyword_to_type = {
     'clientCredentials': 'OAuthFlow',
     'authorizationCode': 'OAuthFlow',
     'items': 'Schema',
+    'additionalProperties': 'Schema',
 
     # array keywords
     'servers': 'Server',
@@ -238,5 +241,6 @@ keyword_to_type = {
     'anyOf': 'Schema',
     'not': 'Schema',
     'required': 'string',
-    
+    'enum': 'string',
+
 }
