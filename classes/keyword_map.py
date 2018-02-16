@@ -20,7 +20,6 @@ from .components import Components
 from .discriminator import Discriminator
 from .xml import XML
 from .oauth_flows import OAuthFlows
-# from .oauth_flow import OAuthFlow
 from .server import Server
 from .security_requirement import SecurityRequirement
 from .tag import Tag
@@ -46,7 +45,7 @@ keyword_to_object = {
     'requestBodies': RequestBody,
     'securitySchemes': SecurityScheme,
     'scopes': return_arg,
-    'properties': Schema,  # todo: schemas
+    'properties': Schema,
 
     # object keywords
     'info': Info,
@@ -68,10 +67,6 @@ keyword_to_object = {
     'xml': XML,
     'schema': Schema,
     'flows': OAuthFlows,
-    # 'implicit': OAuthFlow,
-    # 'password': OAuthFlow,
-    # 'clientCredentials': OAuthFlow,
-    # 'authorizationCode': OAuthFlow,
     'items': Schema,
     'additionalProperties': Schema,
 
