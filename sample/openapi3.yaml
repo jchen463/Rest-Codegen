@@ -64,33 +64,33 @@ components: <Components Object>
             $ref: <string> REQUIRED
 
             # SCHEMA OBJECT
-            title: <>
-            multipleOf: <>
-            maximum: <>
-            exclusiveMaximum: <>
-            minimum: <>
-            exclusiveMinimum: <>
-            maxLength: <>
-            minLength: <>
-            pattern: <>
-            maxItems: <>
-            minItems: <>
-            uniqueItems: <>
-            maxProperties: <>
-            minProperties: <>
-            required: <>
-            enum: <>
+            title: <string>
+            multipleOf: <array> ?
+            maximum: <number> ?
+            exclusiveMaximum: <boolean>
+            minimum: <number>
+            exclusiveMinimum: <boolean>
+            maxLength: <number>
+            minLength: <number>
+            pattern: <string>
+            maxItems: <number>
+            minItems: <number>
+            uniqueItems: <boolean>
+            maxProperties: <number>
+            minProperties: <number>
+            required: [<string>]
+            enum: [<any>]
             type: <string>
-            allOf: <>
-            oneOf: <>
-            anyOf: <>
-            not: <>
-            items: <>
-            properties: <Schema Object>
-            additionalProperties: <>
+            allOf: [<Schema Object | Reference Object>] or mapping
+            oneOf: [<Schema Object | Reference Object>] or mapping
+            anyOf: [<Schema Object | Reference Object>] or mapping
+            not: [<Schema Object | Reference Object>] or mapping
+            items: [<Schema Object | Reference Object>]
+            properties: <Map[<string>, <Schema Object | Reference Object>]>
+            additionalProperties: <boolean> or <Schema Object | Reference Object>
             description: <Schema Object>
-            format: <>
-            default: <>
+            format: <string> ?
+            default: <any>
 
             # Fixed fields
             nullable: <boolean>

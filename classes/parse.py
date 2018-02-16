@@ -3,7 +3,7 @@ import re
 ext_regex = re.compile('x-.*')
 
 
-def parse_dict(dikt, allowed, required=[], objects=[], mappings=[], booleans=[], arrays=[], anys=[]):
+def parse_dict(dikt, allowed, required=[], objects=[], mappings=[], booleans=[], arrays=[]):
     d = {}
     for attr in required:
         if attr not in dikt:
@@ -86,6 +86,7 @@ def get_object(keyword, dikt):
     if keyword_to_type[keyword] == 'PathItem':
         from .path_item import PathItem
         return PathItem(dikt)
+        # return dic[keyword](dikt)
     if keyword_to_type[keyword] == 'Operation':
         from .operation import Operation
         return Operation(dikt)
