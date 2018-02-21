@@ -55,6 +55,6 @@ SUPPRESS = []
 # SERVER_TARGET = 'python-flask' # unneeded if we do separate modules for different languages
 CLIENT_TARGET = 'python'
 
-TEMPLATES_DIR = 'templates/server/flask'
-MODEL_TEMPLATE_PATH = FLASK_TEMPLATES_DIR + 'model.template'
-X_TEMPLATE_PATH = TEMPLATES_DIR + 'x.template'
+# TEMPLATES_DIR = 'templates/server/flask'
+# MODEL_TEMPLATE_PATH = FLASK_TEMPLATES_DIR + 'model.template'
+# X_TEMPLATE_PATH = TEMPLATES_DIR + 'x.template'

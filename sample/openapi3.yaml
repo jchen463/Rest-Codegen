@@ -14,7 +14,7 @@ info: <Info Object> REQUIRED
         ^x-: <any>
     version: <string> REQUIRED
     ^x-: <any>
-server: [<Server Object>]
+servers: [<Server Object>]
     url: <string> REQUIRED
     description: <string>
     variables: <Map[<string>, <Server Variable Object>]>
@@ -37,7 +37,7 @@ paths: <Paths Object> REQUIRED
             operationId: <string>
             parameters: [<Parameter Object | Reference Object>]
             requestBody: <Request Body Object | Reference Object>
-                
+                $ref: 'asdfasdf'
             responses: <Responses Object> REQUIRED
                 default: <Response Object | Reference Object>
                 {HTTP Status Code}: <Response Object | Reference Object>
@@ -64,33 +64,33 @@ components: <Components Object>
             $ref: <string> REQUIRED
 
             # SCHEMA OBJECT
-            title: <>
-            multipleOf: <>
-            maximum: <>
-            exclusiveMaximum: <>
-            minimum: <>
-            exclusiveMinimum: <>
-            maxLength: <>
-            minLength: <>
-            pattern: <>
-            maxItems: <>
-            minItems: <>
-            uniqueItems: <>
-            maxProperties: <>
-            minProperties: <>
-            required: <>
-            enum: <>
+            title: <string>
+            multipleOf: <array> ?
+            maximum: <number> ?
+            exclusiveMaximum: <boolean>
+            minimum: <number>
+            exclusiveMinimum: <boolean>
+            maxLength: <number>
+            minLength: <number>
+            pattern: <string>
+            maxItems: <number>
+            minItems: <number>
+            uniqueItems: <boolean>
+            maxProperties: <number>
+            minProperties: <number>
+            required: [<string>]
+            enum: [<any>]
             type: <string>
-            allOf: <>
-            oneOf: <>
-            anyOf: <>
-            not: <>
-            items: <>
-            properties: <Schema Object>
-            additionalProperties: <>
-            description: <Schema Object>
-            format: <>
-            default: <>
+            allOf: [<Schema Object | Reference Object>]
+            oneOf: [<Schema Object | Reference Object>]
+            anyOf: [<Schema Object | Reference Object>]
+            not: [<Schema Object | Reference Object>]
+            items: <Schema Object | Reference Object>
+            properties: <Map[<string>, <Schema Object | Reference Object>]>
+            additionalProperties: <boolean> or <Schema Object | Reference Object>
+            description: <string>
+            format: <string> ?
+            default: <any>
 
             # Fixed fields
             nullable: <boolean>
@@ -106,7 +106,7 @@ components: <Components Object>
                 attribute: <boolean>
                 wrapped: <boolean>
                 ^x-: <any>
-            externalDocs: <External Documentation>
+            externalDocs: <External Documentation Object>
             example: <any>
             deprecated: <boolean>
             ^x-: <any>

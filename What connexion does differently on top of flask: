@@ -1,0 +1,8 @@
+What connexion does differently on top of flask:
+- Automagically handle HTTP Request
+- Allows you to write swagger specification and maps the endpoints to your python code
+- Uses jinja2 to allow parameterization thru arguments parameter. That is how it dynamically render your specifciation 
+
+1. Figure out how jsonencoder work
+2. Figure out how the util deserialize function works
+3. Change functions so that instead of taking in data a certain way from the url, it does so with the request arguments
