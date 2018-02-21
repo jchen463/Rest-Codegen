@@ -15,6 +15,7 @@ from collections import namedtuple
 
 FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
 
+
 def do_renders(renders, template_dir, output_dir):
 
     # Create the Jinja2 environment using custom options and loader, see sections below.
@@ -82,9 +83,10 @@ def process_tree(spec):
 
 
 def output_model_class(spec):
-    FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
+    FileRender = namedtuple(
+        'FileRender', ['template', 'output', 'params_dicts'])
     models = []
-    #print(spec['components'].schemas)
+    # print(spec['components'].schemas)
     for scheme_name, schema_obj in spec['components'].schemas.items():
         print(scheme_name)
         print(schema_obj)
@@ -92,10 +94,10 @@ def output_model_class(spec):
         model_class = {
             'classes': [
                 {
-                'name': scheme_name,
-                'arguments': [],
-                'init_args': [],
-                'class_methods': []
+                    'name': scheme_name,
+                    'arguments': [],
+                    'init_args': [],
+                    'class_methods': []
                 }
             ]
         }
@@ -106,7 +108,7 @@ def output_model_class(spec):
             print(attributes.__dict__)
             if 'ref' in attributes.__dict__:
                 print('ye')
-                print(get_object('schemas',attributes.__dict__))
+                print(get_object('schemas', attributes.__dict__))
             else:
                 model_class['classes'][0]['init_args'].append(
                     {
@@ -114,8 +116,6 @@ def output_model_class(spec):
                         'type': attributes.type
                     }
                 )
-
-
 
         models.append(model_class)
 
@@ -139,8 +139,6 @@ def output_model_class(spec):
         do_renders(renders, 'templates/', 'models')
 
 
-
-
 def generate_flask_server_code(spec):
     output_model_class(spec)
 
@@ -154,7 +152,7 @@ def main():
                        required=['openapi', 'info', 'paths'],
                        objects=['info', 'paths', 'components', 'externalDocs'],
                        arrays=['servers', 'security', 'tags'])
-    #print(spec2)
+    # print(spec2)
     generate_flask_server_code(spec2)
 
 
