@@ -1,35 +1,49 @@
-import json
+from __future__ import absolute_import
+from datetime import date, datetime  # noqa: F401
+
+from typing import List, Dict  # noqa: F401
+
 from models.a import A
+from models.base_model_ import Model
+import util
 
 
-class JsonSerializable(object):
-    def toJson(self):
-        return json.dumps(self.__dict__)
+class Task(Model):
 
-    def __repr__(self):
-        return self.toJson()
+    def __init__(self, id: int=None, title: str=None, description: str=None, done: bool=None, randomObject: A=None):
 
+        self.swagger_types = {
+            'id': int,
+            'title': str,
+            'description': str,
+            'done': bool,
+            'randomObject': A,
+        }
 
-class Task(JsonSerializable):
-    def __init__(self, id: int, title: str, description: str, done: str):
+        self.attribute_map = {
+            'id': 'id',
+            'title': 'title',
+            'description': 'description',
+            'done': 'done',
+            'random_Object': 'randomObject'
+        }
+
         self._id = id
         self._title = title
         self._description = description
         self._done = done
-        self._randomObject = A()
+        self._randomObject = randomObject
 
-    def serialize(self):
-        return {
-            'id': self._id,
-            'title': self._title,
-            'description': self._description,
-            'done': self._done,
-            'randomObject': self._randomObject.serialize()
-        }
+    @classmethod
+    def from_dict(cls, dikt) -> 'Task':
+        """Returns the dict as a model
 
-    #
-    # def __repr__(self):
-    #     return self.serialize()
+        :param dikt: A dict.
+        :type: dict
+        :return: The Pet of this Pet.  # noqa: E501
+        :rtype: Pet
+        """
+        return util.deserialize_model(dikt, cls)
 
     @property
     def id(self) -> int:
@@ -54,63 +68,84 @@ class Task(JsonSerializable):
 
     @property
     def title(self) -> str:
-        """Gets the id of this Task.
+        """Gets the title of this Task.
 
 
-        :return: The id of this Task.
-        :rtype: int
+        :return: The title of this Task.
+        :rtype: str
         """
         return self._title
 
-    @id.setter
-    def id(self, title: str):
-        """Sets the id of this Task.
+    @title.setter
+    def title(self, title: str):
+        """Sets the title of this Task.
 
 
-        :param id: The id of this Task.
-        :type id: int
+        :param title: The title of this Task.
+        :type title: str
         """
 
         self._title = title
 
     @property
-    def id(self) -> str:
-        """Gets the id of this Task.
+    def description(self) -> str:
+        """Gets the description of this Task.
 
 
-        :return: The id of this Task.
-        :rtype: int
+        :return: The description of this Task.
+        :rtype: str
         """
         return self._description
 
-    @id.setter
-    def id(self, id: str):
-        """Sets the id of this Task.
+    @description.setter
+    def description(self, description: str):
+        """Sets the description of this Task.
 
 
-        :param id: The id of this Task.
-        :type id: int
+        :param description: The description of this Task.
+        :type description: str
         """
 
         self._description = description
 
     @property
-    def id(self) -> str:
-        """Gets the id of this Task.
+    def done(self) -> str:
+        """Gets the done of this Task.
 
 
-        :return: The id of this Task.
+        :return: The done of this Task.
         :rtype: int
         """
         return self._done
 
-    @id.setter
-    def id(self, id: str):
-        """Sets the id of this Task.
+    @done.setter
+    def done(self, done: bool):
+        """Sets the done of this Task.
 
 
-        :param id: The id of this Task.
-        :type id: int
+        :param done: The done of this Task.
+        :type done: int
         """
 
         self._done = done
+
+    @property
+    def randomObject(self) -> str:
+        """Gets the randomObject of this Task.
+
+
+        :return: The randomObject of this Task.
+        :rtype: A
+        """
+        return self._randomObject
+
+    @randomObject.setter
+    def randomObject(self, randomObject: A):
+        """Sets the randomObject of this Task.
+
+
+        :param done: The randomObject of this Task.
+        :type done: A
+        """
+
+        self._randomObject = randomObject
