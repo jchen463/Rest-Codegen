@@ -1,4 +1,7 @@
-class OAuthFlow:
+from .rep import Rep
+
+
+class OAuthFlow(Rep):
     def __init__(self, dikt, flow_name):
         from .parse import parse_dict
 
@@ -29,7 +32,7 @@ class OAuthFlow:
         self.extensions = d['extensions']
 
 
-class OAuthFlows:
+class OAuthFlows(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

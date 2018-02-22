@@ -1,16 +1,18 @@
 import json
 import os.path
 import sys
-
 import yaml
+from collections import namedtuple
+import pprint
+import ast
+
+import jinja2
 from openapi_spec_validator import openapi_v3_spec_validator
 
 import app_config as cfg
-from classes.parse import parse_dict
+# from classes.parse import parse_dict
 from classes.parse import get_object
-
-import jinja2
-from collections import namedtuple
+from classes.specification import Specification
 
 
 FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
@@ -68,18 +70,6 @@ def validate_specification(spec):
         sys.exit()
 
     print('specification is valid')
-
-
-def process_tree(spec):
-    """
-    Modify tree here. Parse through and fill out the components section accordingly?
-    How to resolve of dependencies between components???
-    Ex. An attribute of Pet is a Category
-        What if we're constructing a Schema instance for Pet.
-        We want to first have the Schema instance for category made, etc.
-    How to parse through the dictionary tree such that we can link all references
-    """
-    pass
 
 
 def output_model_class(spec):
@@ -145,16 +135,27 @@ def generate_flask_server_code(spec):
 
 
 def main():
-    spec = load_spec_file(cfg.SPEC_FILES[0])
-    validate_specification(spec)
-    spec2 = parse_dict(dikt=spec,
-                       allowed=['openapi', 'info', 'servers', 'paths',
-                                'components', 'security', 'tags', 'externalDocs'],
-                       required=['openapi', 'info', 'paths'],
-                       objects=['info', 'paths', 'components', 'externalDocs'],
-                       arrays=['servers', 'security', 'tags'])
-    print(spec2)
-    # generate_flask_server_code(spec2)
+    spec_dict = load_spec_file(cfg.SPEC_FILES[0])
+    validate_specification(spec_dict)
+
+    spec = Specification(spec_dict)
+    spec_dict2 = ast.literal_eval(str(vars(spec)))
+
+    # two options to print this. helpful for debugging
+    # pprint.pprint(spec_dict2['info'])
+    # print(json.dumps(spec_dict2['info'], indent=4))
+
+    with open('sample/spec_tree.json', 'wt') as out:
+        json.dump(spec_dict2, out, indent=4)
+
+    # PROBABLY NOT THIS ONE
+    # with open('sample/spec_tree.txt', 'wt') as out:    
+    #     pprint.pprint(spec_dict2, stream=out)
+
+
+
+
+
 
 
 if __name__ == '__main__':

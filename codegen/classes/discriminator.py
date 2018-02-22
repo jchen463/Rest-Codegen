@@ -1,4 +1,7 @@
-class Discriminator:
+from .rep import Rep
+
+
+class Discriminator(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

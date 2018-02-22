@@ -1,4 +1,7 @@
-class XML:
+from .rep import Rep
+
+
+class XML(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

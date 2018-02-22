@@ -1,4 +1,7 @@
-class Tag:
+from .rep import Rep
+
+
+class Tag(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

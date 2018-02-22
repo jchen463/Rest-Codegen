@@ -1,4 +1,7 @@
-class PathItem:
+from .rep import Rep
+
+
+class PathItem(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

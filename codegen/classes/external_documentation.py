@@ -1,4 +1,7 @@
-class ExternalDocumentation:
+from .rep import Rep
+
+
+class ExternalDocumentation(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

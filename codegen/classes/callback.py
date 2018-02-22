@@ -1,4 +1,7 @@
-class Callback:
+from .rep import Rep
+
+
+class Callback(Rep):
     def __init__(self, dikt):
         from .parse import ext_regex
 

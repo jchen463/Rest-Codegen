@@ -1,4 +1,7 @@
-class SecurityScheme:
+from .rep import Rep
+
+
+class SecurityScheme(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 
