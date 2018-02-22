@@ -3,3 +3,4 @@ __pycache__
 codegen-env
 .idea
 models
+spec_tree.json
