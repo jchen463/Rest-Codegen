@@ -10,7 +10,6 @@ import jinja2
 from openapi_spec_validator import openapi_v3_spec_validator
 
 import app_config as cfg
-# from classes.parse import parse_dict
 from classes.parse import get_object
 from classes.specification import Specification
 
@@ -77,7 +76,7 @@ def output_model_class(spec):
         'FileRender', ['template', 'output', 'params_dicts'])
     models = []
     # print(spec['components'].schemas)
-    for scheme_name, schema_obj in spec['components'].schemas.items():
+    for scheme_name, schema_obj in spec.components.schemas.items():
         print(scheme_name)
         print(schema_obj)
         print(schema_obj.__dict__)
@@ -130,8 +129,7 @@ def output_model_class(spec):
 
 
 def generate_flask_server_code(spec):
-    # output_model_class(spec)
-    pass
+    output_model_class(spec)
 
 
 def main():
@@ -143,14 +141,12 @@ def main():
 
     # two options to print this. helpful for debugging
     # pprint.pprint(spec_dict2['info'])
-    print(json.dumps(spec_dict2['paths'], indent=4))
+    # print(json.dumps(spec_dict2['paths'], indent=4))
 
     with open('sample/spec_tree.json', 'wt') as out:
         json.dump(spec_dict2, out, indent=4)
 
-    # PROBABLY NOT THIS ONE
-    # with open('sample/spec_tree.txt', 'wt') as out:
-    #     pprint.pprint(spec_dict2, stream=out)
+    generate_flask_server_code(spec)
 
 
 if __name__ == '__main__':
