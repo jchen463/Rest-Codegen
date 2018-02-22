@@ -32,12 +32,12 @@ tasks1 = [
 # the get response is a 200
 @tasks_api.route('/todo/api/v1.0/tasks', methods=['GET'])
 def get_tasks(): 
-    print(tasks[0].__repr__())
+    #print(tasks[0].__repr__())
     #print(tasks.__dict__) list object does not have __dict__
-    r = json.dumps([task.serialize() for task in tasks])
-    loaded_r = json.loads(r)
-    print(loaded_r)
-    return jsonify([task.serialize() for task in tasks])
+    #r = json.dumps([task.serialize() for task in tasks])
+    #loaded_r = json.loads(r)
+    #print(loaded_r)
+    return jsonify(tasks)
 
 
 # here we get the id of the task and flask translates it into task_id that we receive
@@ -47,8 +47,9 @@ def get_tasks():
 def get_task(task_id):
     task = [task for task in tasks if task._id == task_id]
     if len(task) == 0:
+        print("rip")
         abort(404)
-    return jsonify({'task': task[0].serialize()})
+    return jsonify(task)
 
 # Might have to declare a the query parameters like this instead
 '''
