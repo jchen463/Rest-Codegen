@@ -14,6 +14,7 @@ from .info import Info
 from .contact import Contact
 from .license_spec import License
 from .paths import Paths
+from .path_item import PathItem
 from .operation import Operation
 from .external_documentation import ExternalDocumentation
 from .components import Components
@@ -69,6 +70,7 @@ keyword_to_object = {
     'flows': OAuthFlows,
     'items': Schema,
     'additionalProperties': Schema,
+    '/': PathItem,
 
     # array keywords
     'servers': Server,

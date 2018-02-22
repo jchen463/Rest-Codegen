@@ -5,7 +5,7 @@ class PathItem(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 
-        allowed = ['$ref', 'summary', 'description',
+        allowed = ['summary', 'description',
                    'get', 'put', 'post',
                    'delete', 'options', 'head',
                    'patch', 'trace', 'servers',
@@ -17,7 +17,10 @@ class PathItem(Rep):
 
         d = parse_dict(dikt=dikt, allowed=allowed)
 
-        self.ref = d['$ref']
+        self.ref = None
+        if '$ref' in dikt:
+            self.ref = dikt['$ref']
+
         self.summary = d['summary']
         self.description = d['description']
         self.get = d['get']

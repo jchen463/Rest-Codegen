@@ -1,1230 +1,2220 @@
 {
-    "servers": [
+    "security": null,
+    "openapi": "3.0.0",
+    "tags": [
         {
+            "description": "Everything about your Pets",
+            "name": "pet",
             "extensions": [],
-            "url": "https://virtserver.swaggerhub.com/REST-codegen/asdfasdfaasdf/1.0.0",
-            "variables": null,
-            "description": "SwaggerHub API Auto Mocking"
+            "externalDocs": {
+                "description": "Find out more",
+                "url": "http://swagger.io",
+                "extensions": []
+            }
+        },
+        {
+            "description": "Access to Petstore orders",
+            "name": "store",
+            "extensions": [],
+            "externalDocs": null
+        },
+        {
+            "description": "Operations about user",
+            "name": "user",
+            "extensions": [],
+            "externalDocs": {
+                "description": "Find out more about our store",
+                "url": "http://swagger.io",
+                "extensions": []
+            }
         }
     ],
-    "externalDocs": {
-        "extensions": [],
-        "url": "http://swagger.io",
-        "description": "Find out more about Swagger"
-    },
-    "openapi": "3.0.0",
     "info": {
         "license": {
-            "extensions": [],
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html",
+            "extensions": [],
             "name": "Apache 2.0"
         },
+        "title": "Swagger Petstore",
+        "description": "This is a sample Petstore server.  You can find\nout more about Swagger at\n[http://swagger.io](http://swagger.io) or on\n[irc.freenode.net, #swagger](http://swagger.io/irc/).\n",
+        "version": "1.0.0",
         "contact": {
-            "extensions": [],
             "email": "apiteam@swagger.io",
             "url": null,
+            "extensions": [],
             "name": null
         },
-        "extensions": [],
-        "title": "Swagger Petstore",
         "termsOfService": "http://swagger.io/terms/",
-        "version": "1.0.0",
-        "description": "This is a sample Petstore server.  You can find\nout more about Swagger at\n[http://swagger.io](http://swagger.io) or on\n[irc.freenode.net, #swagger](http://swagger.io/irc/).\n"
+        "extensions": []
     },
-    "components": {
-        "schemas": {
-            "User": {
-                "example": null,
-                "xml": {
-                    "namespace": null,
-                    "attribute": null,
-                    "name": "User",
-                    "extensions": [],
-                    "prefix": null,
-                    "wrapped": null
+    "paths": {
+        "dikt": {
+            "/pet/{petId}": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": {
+                    "security": [
+                        {
+                            "petstore_auth": [
+                                "write:pets",
+                                "read:pets"
+                            ]
+                        }
+                    ],
+                    "tags": [
+                        "pet"
+                    ],
+                    "requestBody": {
+                        "content": {
+                            "application/x-www-form-urlencoded": {
+                                "schema": {
+                                    "properties": {
+                                        "name": {
+                                            "description": "Updated name of the pet",
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "description": "Updated status of the pet",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "operationId": "updatePetWithForm",
+                    "responses": {
+                        "405": {
+                            "description": "Invalid input"
+                        }
+                    },
+                    "summary": "Updates a pet in the store with form data",
+                    "parameters": [
+                        {
+                            "description": "ID of pet that needs to be updated",
+                            "name": "petId",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "format": "int64",
+                                "type": "integer"
+                            }
+                        }
+                    ]
                 },
-                "oneOf": null,
-                "nullable": null,
+                "put": null,
+                "parameters": null,
+                "delete": {
+                    "security": [
+                        {
+                            "petstore_auth": [
+                                "write:pets",
+                                "read:pets"
+                            ]
+                        }
+                    ],
+                    "tags": [
+                        "pet"
+                    ],
+                    "operationId": "deletePet",
+                    "responses": {
+                        "400": {
+                            "description": "Invalid ID supplied"
+                        },
+                        "404": {
+                            "description": "Pet not found"
+                        }
+                    },
+                    "summary": "Deletes a pet",
+                    "parameters": [
+                        {
+                            "name": "api_key",
+                            "in": "header",
+                            "required": false,
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "description": "Pet id to delete",
+                            "name": "petId",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "format": "int64",
+                                "type": "integer"
+                            }
+                        }
+                    ]
+                },
+                "get": {
+                    "security": [
+                        {
+                            "api_key": []
+                        }
+                    ],
+                    "tags": [
+                        "pet"
+                    ],
+                    "description": "Returns a single pet",
+                    "operationId": "getPetById",
+                    "responses": {
+                        "400": {
+                            "description": "Invalid ID supplied"
+                        },
+                        "200": {
+                            "description": "successful operation",
+                            "content": {
+                                "application/xml": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Pet",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                },
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Pet",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "404": {
+                            "description": "Pet not found"
+                        }
+                    },
+                    "summary": "Find pet by ID",
+                    "parameters": [
+                        {
+                            "description": "ID of pet to return",
+                            "name": "petId",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "format": "int64",
+                                "type": "integer"
+                            }
+                        }
+                    ]
+                },
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/user/createWithArray": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": {
+                    "requestBody": {
+                        "$ref": "#/components/requestBodies/UserArray",
+                        "x-scope": [
+                            ""
+                        ]
+                    },
+                    "responses": {
+                        "default": {
+                            "description": "successful operation"
+                        }
+                    },
+                    "tags": [
+                        "user"
+                    ],
+                    "summary": "Creates list of users with given input array",
+                    "operationId": "createUsersWithArrayInput"
+                },
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": null,
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/store/order/{orderId}": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": null,
+                "put": null,
+                "parameters": null,
+                "delete": {
+                    "tags": [
+                        "store"
+                    ],
+                    "description": "For valid response try integer IDs with positive integer value.\\ \\ Negative or non-integer values will generate API errors",
+                    "operationId": "deleteOrder",
+                    "responses": {
+                        "400": {
+                            "description": "Invalid ID supplied"
+                        },
+                        "404": {
+                            "description": "Order not found"
+                        }
+                    },
+                    "summary": "Delete purchase order by ID",
+                    "parameters": [
+                        {
+                            "description": "ID of the order that needs to be deleted",
+                            "name": "orderId",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "minimum": 1,
+                                "format": "int64",
+                                "type": "integer"
+                            }
+                        }
+                    ]
+                },
+                "get": {
+                    "tags": [
+                        "store"
+                    ],
+                    "description": "For valid response try integer IDs with value >= 1 and <= 10.\\ \\ Other values will generated exceptions",
+                    "operationId": "getOrderById",
+                    "responses": {
+                        "400": {
+                            "description": "Invalid ID supplied"
+                        },
+                        "200": {
+                            "description": "successful operation",
+                            "content": {
+                                "application/xml": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Order",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                },
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Order",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "404": {
+                            "description": "Order not found"
+                        }
+                    },
+                    "summary": "Find purchase order by ID",
+                    "parameters": [
+                        {
+                            "description": "ID of pet that needs to be fetched",
+                            "name": "orderId",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "minimum": 1,
+                                "format": "int64",
+                                "type": "integer",
+                                "maximum": 10
+                            }
+                        }
+                    ]
+                },
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/user/createWithList": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": {
+                    "requestBody": {
+                        "$ref": "#/components/requestBodies/UserArray",
+                        "x-scope": [
+                            ""
+                        ]
+                    },
+                    "responses": {
+                        "default": {
+                            "description": "successful operation"
+                        }
+                    },
+                    "tags": [
+                        "user"
+                    ],
+                    "summary": "Creates list of users with given input array",
+                    "operationId": "createUsersWithListInput"
+                },
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": null,
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/user/{username}": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": null,
+                "put": {
+                    "tags": [
+                        "user"
+                    ],
+                    "description": "This can only be done by the logged in user.",
+                    "requestBody": {
+                        "description": "Updated user object",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User",
+                                    "x-scope": [
+                                        ""
+                                    ]
+                                }
+                            }
+                        },
+                        "required": true
+                    },
+                    "operationId": "updateUser",
+                    "responses": {
+                        "400": {
+                            "description": "Invalid user supplied"
+                        },
+                        "404": {
+                            "description": "User not found"
+                        }
+                    },
+                    "summary": "Updated user",
+                    "parameters": [
+                        {
+                            "description": "name that need to be updated",
+                            "name": "username",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                "parameters": null,
+                "delete": {
+                    "tags": [
+                        "user"
+                    ],
+                    "description": "This can only be done by the logged in user.",
+                    "operationId": "deleteUser",
+                    "responses": {
+                        "400": {
+                            "description": "Invalid username supplied"
+                        },
+                        "404": {
+                            "description": "User not found"
+                        }
+                    },
+                    "summary": "Delete user",
+                    "parameters": [
+                        {
+                            "description": "The name that needs to be deleted",
+                            "name": "username",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                "get": {
+                    "parameters": [
+                        {
+                            "description": "The name that needs to be fetched. Use user1 for testing.",
+                            "name": "username",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "400": {
+                            "description": "Invalid username supplied"
+                        },
+                        "200": {
+                            "description": "successful operation",
+                            "content": {
+                                "application/xml": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/User",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                },
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/User",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "404": {
+                            "description": "User not found"
+                        }
+                    },
+                    "tags": [
+                        "user"
+                    ],
+                    "summary": "Get user by user name",
+                    "operationId": "getUserByName"
+                },
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/user/login": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": null,
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": {
+                    "parameters": [
+                        {
+                            "description": "The user name for login",
+                            "name": "username",
+                            "in": "query",
+                            "required": true,
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "description": "The password for login in clear text",
+                            "name": "password",
+                            "in": "query",
+                            "required": true,
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "400": {
+                            "description": "Invalid username/password supplied"
+                        },
+                        "200": {
+                            "description": "successful operation",
+                            "headers": {
+                                "X-Rate-Limit": {
+                                    "description": "calls per hour allowed by the user",
+                                    "schema": {
+                                        "format": "int32",
+                                        "type": "integer"
+                                    }
+                                },
+                                "X-Expires-After": {
+                                    "description": "date in UTC when token expires",
+                                    "schema": {
+                                        "format": "date-time",
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "content": {
+                                "application/xml": {
+                                    "schema": {
+                                        "type": "string"
+                                    }
+                                },
+                                "application/json": {
+                                    "schema": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "tags": [
+                        "user"
+                    ],
+                    "summary": "Logs user into the system",
+                    "operationId": "loginUser"
+                },
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/user/logout": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": null,
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": {
+                    "responses": {
+                        "default": {
+                            "description": "successful operation"
+                        }
+                    },
+                    "tags": [
+                        "user"
+                    ],
+                    "summary": "Logs out current logged in user session",
+                    "operationId": "logoutUser"
+                },
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/pet/findByTags": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": null,
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": {
+                    "security": [
+                        {
+                            "petstore_auth": [
+                                "write:pets",
+                                "read:pets"
+                            ]
+                        }
+                    ],
+                    "tags": [
+                        "pet"
+                    ],
+                    "deprecated": true,
+                    "description": "Muliple tags can be provided with comma separated strings. Use\\ \\ tag1, tag2, tag3 for testing.",
+                    "operationId": "findPetsByTags",
+                    "responses": {
+                        "400": {
+                            "description": "Invalid tag value"
+                        },
+                        "200": {
+                            "description": "successful operation",
+                            "content": {
+                                "application/xml": {
+                                    "schema": {
+                                        "items": {
+                                            "$ref": "#/components/schemas/Pet",
+                                            "x-scope": [
+                                                ""
+                                            ]
+                                        },
+                                        "type": "array"
+                                    }
+                                },
+                                "application/json": {
+                                    "schema": {
+                                        "items": {
+                                            "$ref": "#/components/schemas/Pet",
+                                            "x-scope": [
+                                                ""
+                                            ]
+                                        },
+                                        "type": "array"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Finds Pets by tags",
+                    "parameters": [
+                        {
+                            "in": "query",
+                            "explode": true,
+                            "schema": {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            "description": "Tags to filter by",
+                            "name": "tags",
+                            "required": true
+                        }
+                    ]
+                },
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/store/inventory": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": null,
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": {
+                    "security": [
+                        {
+                            "api_key": []
+                        }
+                    ],
+                    "tags": [
+                        "store"
+                    ],
+                    "description": "Returns a map of status codes to quantities",
+                    "responses": {
+                        "200": {
+                            "description": "successful operation",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "additionalProperties": {
+                                            "format": "int32",
+                                            "type": "integer"
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Returns pet inventories by status",
+                    "operationId": "getInventory"
+                },
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/pet": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": {
+                    "security": [
+                        {
+                            "petstore_auth": [
+                                "write:pets",
+                                "read:pets"
+                            ]
+                        }
+                    ],
+                    "tags": [
+                        "pet"
+                    ],
+                    "requestBody": {
+                        "$ref": "#/components/requestBodies/Pet",
+                        "x-scope": [
+                            ""
+                        ]
+                    },
+                    "responses": {
+                        "405": {
+                            "description": "Invalid input"
+                        }
+                    },
+                    "summary": "Add a new pet to the store",
+                    "operationId": "addPet"
+                },
+                "put": {
+                    "security": [
+                        {
+                            "petstore_auth": [
+                                "write:pets",
+                                "read:pets"
+                            ]
+                        }
+                    ],
+                    "tags": [
+                        "pet"
+                    ],
+                    "requestBody": {
+                        "$ref": "#/components/requestBodies/Pet",
+                        "x-scope": [
+                            ""
+                        ]
+                    },
+                    "responses": {
+                        "400": {
+                            "description": "Invalid ID supplied"
+                        },
+                        "405": {
+                            "description": "Validation exception"
+                        },
+                        "404": {
+                            "description": "Pet not found"
+                        }
+                    },
+                    "summary": "Update an existing pet",
+                    "operationId": "updatePet"
+                },
+                "parameters": null,
+                "delete": null,
+                "get": null,
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/user": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": {
+                    "tags": [
+                        "user"
+                    ],
+                    "description": "This can only be done by the logged in user.",
+                    "requestBody": {
+                        "description": "Created user object",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User",
+                                    "x-scope": [
+                                        ""
+                                    ]
+                                }
+                            }
+                        },
+                        "required": true
+                    },
+                    "responses": {
+                        "default": {
+                            "description": "successful operation"
+                        }
+                    },
+                    "summary": "Create user",
+                    "operationId": "createUser"
+                },
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": null,
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/store/order": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": {
+                    "requestBody": {
+                        "description": "order placed for purchasing the pet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order",
+                                    "x-scope": [
+                                        ""
+                                    ]
+                                }
+                            }
+                        },
+                        "required": true
+                    },
+                    "responses": {
+                        "400": {
+                            "description": "Invalid Order"
+                        },
+                        "200": {
+                            "description": "successful operation",
+                            "content": {
+                                "application/xml": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Order",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                },
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Order",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "tags": [
+                        "store"
+                    ],
+                    "summary": "Place an order for a pet",
+                    "operationId": "placeOrder"
+                },
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": null,
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/pet/{petId}/uploadImage": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": {
+                    "security": [
+                        {
+                            "petstore_auth": [
+                                "write:pets",
+                                "read:pets"
+                            ]
+                        }
+                    ],
+                    "tags": [
+                        "pet"
+                    ],
+                    "requestBody": {
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "format": "binary",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "operationId": "uploadFile",
+                    "responses": {
+                        "200": {
+                            "description": "successful operation",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/ApiResponse",
+                                        "x-scope": [
+                                            ""
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "uploads an image",
+                    "parameters": [
+                        {
+                            "description": "ID of pet to update",
+                            "name": "petId",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                                "format": "int64",
+                                "type": "integer"
+                            }
+                        }
+                    ]
+                },
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": null,
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            },
+            "/pet/findByStatus": {
+                "ref": null,
+                "description": null,
+                "extensions": [],
+                "options": null,
+                "post": null,
+                "put": null,
+                "parameters": null,
+                "delete": null,
+                "get": {
+                    "security": [
+                        {
+                            "petstore_auth": [
+                                "write:pets",
+                                "read:pets"
+                            ]
+                        }
+                    ],
+                    "tags": [
+                        "pet"
+                    ],
+                    "description": "Multiple status values can be provided with comma separated strings",
+                    "operationId": "findPetsByStatus",
+                    "responses": {
+                        "400": {
+                            "description": "Invalid status value"
+                        },
+                        "200": {
+                            "description": "successful operation",
+                            "content": {
+                                "application/xml": {
+                                    "schema": {
+                                        "items": {
+                                            "$ref": "#/components/schemas/Pet",
+                                            "x-scope": [
+                                                ""
+                                            ]
+                                        },
+                                        "type": "array"
+                                    }
+                                },
+                                "application/json": {
+                                    "schema": {
+                                        "items": {
+                                            "$ref": "#/components/schemas/Pet",
+                                            "x-scope": [
+                                                ""
+                                            ]
+                                        },
+                                        "type": "array"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Finds Pets by status",
+                    "parameters": [
+                        {
+                            "in": "query",
+                            "explode": true,
+                            "schema": {
+                                "items": {
+                                    "enum": [
+                                        "available",
+                                        "pending",
+                                        "sold"
+                                    ],
+                                    "type": "string",
+                                    "default": "available"
+                                },
+                                "type": "array"
+                            },
+                            "description": "Status values that need to be considered for filter",
+                            "name": "status",
+                            "required": true
+                        }
+                    ]
+                },
+                "head": null,
+                "patch": null,
+                "servers": null,
+                "summary": null,
+                "trace": null
+            }
+        },
+        "extensions": []
+    },
+    "servers": [
+        {
+            "description": "SwaggerHub API Auto Mocking",
+            "variables": null,
+            "url": "https://virtserver.swaggerhub.com/REST-codegen/asdfasdfaasdf/1.0.0",
+            "extensions": []
+        }
+    ],
+    "components": {
+        "callbacks": null,
+        "schemas": {
+            "Tag": {
+                "readOnly": null,
+                "enum": null,
                 "properties": {
-                    "password": {
+                    "name": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
                         "example": null,
                         "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
                         "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
                         "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
                         "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
                         "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "email": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
                         "format": null,
-                        "title": null,
-                        "default": null,
                         "pattern": null,
-                        "deprecated": null,
                         "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
                         "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "firstName": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
                         "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
+                        "externalDocs": null
                     },
                     "id": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
                         "example": null,
                         "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
                         "format": "int64",
-                        "title": null,
-                        "default": null,
                         "pattern": null,
-                        "deprecated": null,
                         "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
                         "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "phone": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
                         "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "userStatus": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": "int32",
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": "User Status",
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "lastName": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "username": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
+                        "externalDocs": null
                     }
                 },
-                "readOnly": null,
-                "format": null,
-                "title": null,
-                "default": null,
-                "pattern": null,
-                "deprecated": null,
-                "exclusiveMinimum": null,
-                "notOf": null,
-                "type": "object",
                 "required": null,
-                "enum": null,
-                "externalDocs": null,
-                "uniqueItems": null,
-                "description": null,
-                "discriminator": null,
-                "allOf": null,
-                "writeOnly": null,
-                "extensions": [],
-                "anyOf": null,
-                "additionalProperties": null,
+                "nullable": null,
                 "exclusiveMaximum": null,
-                "items": null
-            },
-            "Tag": {
+                "type": "object",
+                "deprecated": null,
+                "oneOf": null,
+                "discriminator": null,
+                "writeOnly": null,
                 "example": null,
                 "xml": {
-                    "namespace": null,
                     "attribute": null,
+                    "namespace": null,
+                    "wrapped": null,
                     "name": "Tag",
                     "extensions": [],
-                    "prefix": null,
-                    "wrapped": null
+                    "prefix": null
                 },
-                "oneOf": null,
-                "nullable": null,
+                "title": null,
+                "description": null,
+                "anyOf": null,
+                "extensions": [],
+                "default": null,
+                "uniqueItems": null,
+                "items": null,
+                "additionalProperties": null,
+                "format": null,
+                "pattern": null,
+                "exclusiveMinimum": null,
+                "allOf": null,
+                "notOf": null,
+                "externalDocs": null
+            },
+            "Category": {
+                "readOnly": null,
+                "enum": null,
                 "properties": {
-                    "id": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": "int64",
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
                     "name": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
                         "example": null,
                         "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
                         "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
                         "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
                         "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
                         "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "id": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
                         "exclusiveMaximum": null,
-                        "items": null
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": "int64",
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
                     }
                 },
-                "readOnly": null,
-                "format": null,
-                "title": null,
-                "default": null,
-                "pattern": null,
-                "deprecated": null,
-                "exclusiveMinimum": null,
-                "notOf": null,
-                "type": "object",
                 "required": null,
-                "enum": null,
-                "externalDocs": null,
-                "uniqueItems": null,
-                "description": null,
-                "discriminator": null,
-                "allOf": null,
-                "writeOnly": null,
-                "extensions": [],
-                "anyOf": null,
-                "additionalProperties": null,
+                "nullable": null,
                 "exclusiveMaximum": null,
-                "items": null
-            },
-            "Order": {
+                "type": "object",
+                "deprecated": null,
+                "oneOf": null,
+                "discriminator": null,
+                "writeOnly": null,
                 "example": null,
                 "xml": {
-                    "namespace": null,
                     "attribute": null,
-                    "name": "Order",
+                    "namespace": null,
+                    "wrapped": null,
+                    "name": "Category",
                     "extensions": [],
-                    "prefix": null,
-                    "wrapped": null
+                    "prefix": null
                 },
-                "oneOf": null,
-                "nullable": null,
+                "title": null,
+                "description": null,
+                "anyOf": null,
+                "extensions": [],
+                "default": null,
+                "uniqueItems": null,
+                "items": null,
+                "additionalProperties": null,
+                "format": null,
+                "pattern": null,
+                "exclusiveMinimum": null,
+                "allOf": null,
+                "notOf": null,
+                "externalDocs": null
+            },
+            "Order": {
+                "readOnly": null,
+                "enum": null,
                 "properties": {
                     "shipDate": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
                         "example": null,
                         "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": "date-time",
                         "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
                         "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
                         "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
                         "additionalProperties": null,
+                        "format": "date-time",
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "petId": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
                         "exclusiveMaximum": null,
-                        "items": null
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": "int64",
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
                     },
                     "quantity": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
                         "example": null,
                         "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
                         "format": "int32",
-                        "title": null,
-                        "default": null,
                         "pattern": null,
-                        "deprecated": null,
                         "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
                         "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "id": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": "int64",
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
                         "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "complete": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": false,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "boolean",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
+                        "externalDocs": null
                     },
                     "status": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
                         "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
                         "enum": [
                             "placed",
                             "approved",
                             "delivered"
                         ],
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": "Order Status",
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
                         "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "petId": {
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
                         "example": null,
                         "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": "int64",
                         "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
+                        "description": "Order Status",
                         "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
                         "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "complete": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
                         "exclusiveMaximum": null,
-                        "items": null
+                        "type": "boolean",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": false,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "id": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": "int64",
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
                     }
                 },
-                "readOnly": null,
-                "format": null,
-                "title": null,
-                "default": null,
-                "pattern": null,
-                "deprecated": null,
-                "exclusiveMinimum": null,
-                "notOf": null,
-                "type": "object",
                 "required": null,
-                "enum": null,
-                "externalDocs": null,
-                "uniqueItems": null,
-                "description": null,
-                "discriminator": null,
-                "allOf": null,
-                "writeOnly": null,
-                "extensions": [],
-                "anyOf": null,
-                "additionalProperties": null,
+                "nullable": null,
                 "exclusiveMaximum": null,
-                "items": null
-            },
-            "Pet": {
+                "type": "object",
+                "deprecated": null,
+                "oneOf": null,
+                "discriminator": null,
+                "writeOnly": null,
                 "example": null,
                 "xml": {
-                    "namespace": null,
                     "attribute": null,
-                    "name": "Pet",
+                    "namespace": null,
+                    "wrapped": null,
+                    "name": "Order",
                     "extensions": [],
-                    "prefix": null,
-                    "wrapped": null
+                    "prefix": null
                 },
-                "oneOf": null,
-                "nullable": null,
+                "title": null,
+                "description": null,
+                "anyOf": null,
+                "extensions": [],
+                "default": null,
+                "uniqueItems": null,
+                "items": null,
+                "additionalProperties": null,
+                "format": null,
+                "pattern": null,
+                "exclusiveMinimum": null,
+                "allOf": null,
+                "notOf": null,
+                "externalDocs": null
+            },
+            "ApiResponse": {
+                "readOnly": null,
+                "enum": null,
                 "properties": {
+                    "code": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": "int32",
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "message": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "type": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    }
+                },
+                "required": null,
+                "nullable": null,
+                "exclusiveMaximum": null,
+                "type": "object",
+                "deprecated": null,
+                "oneOf": null,
+                "discriminator": null,
+                "writeOnly": null,
+                "example": null,
+                "xml": null,
+                "title": null,
+                "description": null,
+                "anyOf": null,
+                "extensions": [],
+                "default": null,
+                "uniqueItems": null,
+                "items": null,
+                "additionalProperties": null,
+                "format": null,
+                "pattern": null,
+                "exclusiveMinimum": null,
+                "allOf": null,
+                "notOf": null,
+                "externalDocs": null
+            },
+            "User": {
+                "readOnly": null,
+                "enum": null,
+                "properties": {
+                    "email": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "firstName": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "password": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "phone": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "userStatus": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": "User Status",
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": "int32",
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "lastName": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "id": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": "int64",
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "username": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    }
+                },
+                "required": null,
+                "nullable": null,
+                "exclusiveMaximum": null,
+                "type": "object",
+                "deprecated": null,
+                "oneOf": null,
+                "discriminator": null,
+                "writeOnly": null,
+                "example": null,
+                "xml": {
+                    "attribute": null,
+                    "namespace": null,
+                    "wrapped": null,
+                    "name": "User",
+                    "extensions": [],
+                    "prefix": null
+                },
+                "title": null,
+                "description": null,
+                "anyOf": null,
+                "extensions": [],
+                "default": null,
+                "uniqueItems": null,
+                "items": null,
+                "additionalProperties": null,
+                "format": null,
+                "pattern": null,
+                "exclusiveMinimum": null,
+                "allOf": null,
+                "notOf": null,
+                "externalDocs": null
+            },
+            "Pet": {
+                "readOnly": null,
+                "enum": null,
+                "properties": {
+                    "photoUrls": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "array",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": {
+                            "attribute": null,
+                            "namespace": null,
+                            "wrapped": true,
+                            "name": "photoUrl",
+                            "extensions": [],
+                            "prefix": null
+                        },
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": {
+                            "readOnly": null,
+                            "enum": null,
+                            "properties": null,
+                            "required": null,
+                            "nullable": null,
+                            "exclusiveMaximum": null,
+                            "type": "string",
+                            "deprecated": null,
+                            "oneOf": null,
+                            "discriminator": null,
+                            "writeOnly": null,
+                            "example": null,
+                            "xml": null,
+                            "title": null,
+                            "description": null,
+                            "anyOf": null,
+                            "extensions": [],
+                            "default": null,
+                            "uniqueItems": null,
+                            "items": null,
+                            "additionalProperties": null,
+                            "format": null,
+                            "pattern": null,
+                            "exclusiveMinimum": null,
+                            "allOf": null,
+                            "notOf": null,
+                            "externalDocs": null
+                        },
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "tags": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "array",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": {
+                            "attribute": null,
+                            "namespace": null,
+                            "wrapped": true,
+                            "name": "tag",
+                            "extensions": [],
+                            "prefix": null
+                        },
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": {
+                            "ref": "#/components/schemas/Tag"
+                        },
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "name": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": "doggie",
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
+                    "id": {
+                        "readOnly": null,
+                        "enum": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
+                        "exclusiveMaximum": null,
+                        "type": "integer",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": null,
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": "int64",
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
+                    },
                     "category": {
                         "ref": "#/components/schemas/Category"
                     },
-                    "id": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": "int64",
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "photoUrls": {
-                        "example": null,
-                        "xml": {
-                            "namespace": null,
-                            "attribute": null,
-                            "name": "photoUrl",
-                            "extensions": [],
-                            "prefix": null,
-                            "wrapped": true
-                        },
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "array",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": {
-                            "example": null,
-                            "xml": null,
-                            "oneOf": null,
-                            "nullable": null,
-                            "properties": null,
-                            "readOnly": null,
-                            "format": null,
-                            "title": null,
-                            "default": null,
-                            "pattern": null,
-                            "deprecated": null,
-                            "exclusiveMinimum": null,
-                            "notOf": null,
-                            "type": "string",
-                            "required": null,
-                            "enum": null,
-                            "externalDocs": null,
-                            "uniqueItems": null,
-                            "description": null,
-                            "discriminator": null,
-                            "allOf": null,
-                            "writeOnly": null,
-                            "extensions": [],
-                            "anyOf": null,
-                            "additionalProperties": null,
-                            "exclusiveMaximum": null,
-                            "items": null
-                        }
-                    },
-                    "name": {
-                        "example": "doggie",
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "tags": {
-                        "example": null,
-                        "xml": {
-                            "namespace": null,
-                            "attribute": null,
-                            "name": "tag",
-                            "extensions": [],
-                            "prefix": null,
-                            "wrapped": true
-                        },
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "array",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": {
-                            "ref": "#/components/schemas/Tag"
-                        }
-                    },
                     "status": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
                         "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
                         "enum": [
                             "available",
                             "pending",
                             "sold"
                         ],
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": "pet status in the store",
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
+                        "properties": null,
+                        "required": null,
+                        "nullable": null,
                         "exclusiveMaximum": null,
-                        "items": null
+                        "type": "string",
+                        "deprecated": null,
+                        "oneOf": null,
+                        "discriminator": null,
+                        "writeOnly": null,
+                        "example": null,
+                        "xml": null,
+                        "title": null,
+                        "description": "pet status in the store",
+                        "anyOf": null,
+                        "extensions": [],
+                        "default": null,
+                        "uniqueItems": null,
+                        "items": null,
+                        "additionalProperties": null,
+                        "format": null,
+                        "pattern": null,
+                        "exclusiveMinimum": null,
+                        "allOf": null,
+                        "notOf": null,
+                        "externalDocs": null
                     }
                 },
-                "readOnly": null,
-                "format": null,
-                "title": null,
-                "default": null,
-                "pattern": null,
-                "deprecated": null,
-                "exclusiveMinimum": null,
-                "notOf": null,
-                "type": "object",
                 "required": [
                     "name",
                     "photoUrls"
                 ],
-                "enum": null,
-                "externalDocs": null,
-                "uniqueItems": null,
-                "description": null,
-                "discriminator": null,
-                "allOf": null,
-                "writeOnly": null,
-                "extensions": [],
-                "anyOf": null,
-                "additionalProperties": null,
-                "exclusiveMaximum": null,
-                "items": null
-            },
-            "ApiResponse": {
-                "example": null,
-                "xml": null,
-                "oneOf": null,
                 "nullable": null,
-                "properties": {
-                    "type": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "code": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": "int32",
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "message": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    }
-                },
-                "readOnly": null,
-                "format": null,
-                "title": null,
-                "default": null,
-                "pattern": null,
-                "deprecated": null,
-                "exclusiveMinimum": null,
-                "notOf": null,
-                "type": "object",
-                "required": null,
-                "enum": null,
-                "externalDocs": null,
-                "uniqueItems": null,
-                "description": null,
-                "discriminator": null,
-                "allOf": null,
-                "writeOnly": null,
-                "extensions": [],
-                "anyOf": null,
-                "additionalProperties": null,
                 "exclusiveMaximum": null,
-                "items": null
-            },
-            "Category": {
+                "type": "object",
+                "deprecated": null,
+                "oneOf": null,
+                "discriminator": null,
+                "writeOnly": null,
                 "example": null,
                 "xml": {
-                    "namespace": null,
                     "attribute": null,
-                    "name": "Category",
+                    "namespace": null,
+                    "wrapped": null,
+                    "name": "Pet",
                     "extensions": [],
-                    "prefix": null,
-                    "wrapped": null
+                    "prefix": null
                 },
-                "oneOf": null,
-                "nullable": null,
-                "properties": {
-                    "id": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": "int64",
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "integer",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    },
-                    "name": {
-                        "example": null,
-                        "xml": null,
-                        "oneOf": null,
-                        "nullable": null,
-                        "properties": null,
-                        "readOnly": null,
-                        "format": null,
-                        "title": null,
-                        "default": null,
-                        "pattern": null,
-                        "deprecated": null,
-                        "exclusiveMinimum": null,
-                        "notOf": null,
-                        "type": "string",
-                        "required": null,
-                        "enum": null,
-                        "externalDocs": null,
-                        "uniqueItems": null,
-                        "description": null,
-                        "discriminator": null,
-                        "allOf": null,
-                        "writeOnly": null,
-                        "extensions": [],
-                        "anyOf": null,
-                        "additionalProperties": null,
-                        "exclusiveMaximum": null,
-                        "items": null
-                    }
-                },
-                "readOnly": null,
-                "format": null,
                 "title": null,
-                "default": null,
-                "pattern": null,
-                "deprecated": null,
-                "exclusiveMinimum": null,
-                "notOf": null,
-                "type": "object",
-                "required": null,
-                "enum": null,
-                "externalDocs": null,
-                "uniqueItems": null,
                 "description": null,
-                "discriminator": null,
-                "allOf": null,
-                "writeOnly": null,
-                "extensions": [],
                 "anyOf": null,
+                "extensions": [],
+                "default": null,
+                "uniqueItems": null,
+                "items": null,
                 "additionalProperties": null,
-                "exclusiveMaximum": null,
-                "items": null
+                "format": null,
+                "pattern": null,
+                "exclusiveMinimum": null,
+                "allOf": null,
+                "notOf": null,
+                "externalDocs": null
             }
         },
-        "responses": null,
-        "links": null,
-        "headers": null,
-        "extensions": [],
-        "parameters": null,
-        "requestBodies": {
-            "Pet": {
-                "extensions": [],
-                "content": {
-                    "application/json": {
-                        "encoding": null,
-                        "extensions": [],
-                        "example": null,
-                        "examples": null,
-                        "schema": {
-                            "ref": "#/components/schemas/Pet"
-                        }
-                    },
-                    "application/xml": {
-                        "encoding": null,
-                        "extensions": [],
-                        "example": null,
-                        "examples": null,
-                        "schema": {
-                            "ref": "#/components/schemas/Pet"
-                        }
-                    }
-                },
-                "required": true,
-                "description": "Pet object that needs to be added to the store"
-            },
-            "UserArray": {
-                "extensions": [],
-                "content": {
-                    "application/json": {
-                        "encoding": null,
-                        "extensions": [],
-                        "example": null,
-                        "examples": null,
-                        "schema": {
-                            "example": null,
-                            "xml": null,
-                            "oneOf": null,
-                            "nullable": null,
-                            "properties": null,
-                            "readOnly": null,
-                            "format": null,
-                            "title": null,
-                            "default": null,
-                            "pattern": null,
-                            "deprecated": null,
-                            "exclusiveMinimum": null,
-                            "notOf": null,
-                            "type": "array",
-                            "required": null,
-                            "enum": null,
-                            "externalDocs": null,
-                            "uniqueItems": null,
-                            "description": null,
-                            "discriminator": null,
-                            "allOf": null,
-                            "writeOnly": null,
-                            "extensions": [],
-                            "anyOf": null,
-                            "additionalProperties": null,
-                            "exclusiveMaximum": null,
-                            "items": {
-                                "ref": "#/components/schemas/User"
-                            }
-                        }
-                    }
-                },
-                "required": true,
-                "description": "List of user object"
-            }
-        },
-        "examples": null,
-        "callbacks": null,
         "securitySchemes": {
-            "petstore_auth": {
-                "type": "oauth2",
-                "openIdConnectUrl": null,
-                "bearerFormat": null,
-                "name": null,
-                "flows": {
-                    "password": null,
-                    "clientCredentials": null,
-                    "implicit": {
-                        "extensions": [],
-                        "scopes": {
-                            "write:pets": "modify pets in your account",
-                            "read:pets": "read your pets"
-                        },
-                        "tokenUrl": null,
-                        "authorizationCode": null,
-                        "refreshUrl": null
-                    },
-                    "authorizationCode": null,
-                    "extensions": []
-                },
-                "extensions": [],
-                "scheme": null,
-                "_in": null,
-                "description": null
-            },
             "api_key": {
+                "scheme": null,
+                "description": null,
                 "type": "apiKey",
                 "openIdConnectUrl": null,
                 "bearerFormat": null,
                 "name": "api_key",
+                "extensions": [],
                 "flows": null,
-                "extensions": [],
+                "_in": "header"
+            },
+            "petstore_auth": {
                 "scheme": null,
-                "_in": "header",
-                "description": null
+                "description": null,
+                "type": "oauth2",
+                "openIdConnectUrl": null,
+                "bearerFormat": null,
+                "name": null,
+                "extensions": [],
+                "flows": {
+                    "implicit": {
+                        "scopes": {
+                            "read:pets": "read your pets",
+                            "write:pets": "modify pets in your account"
+                        },
+                        "tokenUrl": null,
+                        "extensions": [],
+                        "refreshUrl": null,
+                        "authorizationCode": null
+                    },
+                    "authorizationCode": null,
+                    "password": null,
+                    "extensions": [],
+                    "clientCredentials": null
+                },
+                "_in": null
             }
-        }
-    },
-    "tags": [
-        {
-            "extensions": [],
-            "externalDocs": {
-                "extensions": [],
-                "url": "http://swagger.io",
-                "description": "Find out more"
-            },
-            "name": "pet",
-            "description": "Everything about your Pets"
         },
-        {
-            "extensions": [],
-            "externalDocs": null,
-            "name": "store",
-            "description": "Access to Petstore orders"
-        },
-        {
-            "extensions": [],
-            "externalDocs": {
+        "requestBodies": {
+            "UserArray": {
+                "description": "List of user object",
+                "content": {
+                    "application/json": {
+                        "example": null,
+                        "examples": null,
+                        "encoding": null,
+                        "extensions": [],
+                        "schema": {
+                            "readOnly": null,
+                            "enum": null,
+                            "properties": null,
+                            "required": null,
+                            "nullable": null,
+                            "exclusiveMaximum": null,
+                            "type": "array",
+                            "deprecated": null,
+                            "oneOf": null,
+                            "discriminator": null,
+                            "writeOnly": null,
+                            "example": null,
+                            "xml": null,
+                            "title": null,
+                            "description": null,
+                            "anyOf": null,
+                            "extensions": [],
+                            "default": null,
+                            "uniqueItems": null,
+                            "items": {
+                                "ref": "#/components/schemas/User"
+                            },
+                            "additionalProperties": null,
+                            "format": null,
+                            "pattern": null,
+                            "exclusiveMinimum": null,
+                            "allOf": null,
+                            "notOf": null,
+                            "externalDocs": null
+                        }
+                    }
+                },
                 "extensions": [],
-                "url": "http://swagger.io",
-                "description": "Find out more about our store"
+                "required": true
             },
-            "name": "user",
-            "description": "Operations about user"
-        }
-    ],
-    "paths": {
+            "Pet": {
+                "description": "Pet object that needs to be added to the store",
+                "content": {
+                    "application/xml": {
+                        "example": null,
+                        "examples": null,
+                        "encoding": null,
+                        "extensions": [],
+                        "schema": {
+                            "ref": "#/components/schemas/Pet"
+                        }
+                    },
+                    "application/json": {
+                        "example": null,
+                        "examples": null,
+                        "encoding": null,
+                        "extensions": [],
+                        "schema": {
+                            "ref": "#/components/schemas/Pet"
+                        }
+                    }
+                },
+                "extensions": [],
+                "required": true
+            }
+        },
+        "links": null,
+        "examples": null,
+        "headers": null,
         "extensions": [],
-        "dikt": {
-            "/user/createWithArray": null,
-            "/store/order/{orderId}": null,
-            "/store/inventory": null,
-            "/pet": null,
-            "/user": null,
-            "/pet/{petId}/uploadImage": null,
-            "/user/{username}": null,
-            "/pet/{petId}": null,
-            "/pet/findByTags": null,
-            "/user/login": null,
-            "/pet/findByStatus": null,
-            "/store/order": null,
-            "/user/createWithList": null,
-            "/user/logout": null
-        }
+        "responses": null,
+        "parameters": null
     },
-    "security": null
+    "externalDocs": {
+        "description": "Find out more about Swagger",
+        "url": "http://swagger.io",
+        "extensions": []
+    }
 }

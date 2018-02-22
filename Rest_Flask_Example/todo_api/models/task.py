@@ -1,6 +1,7 @@
 import json
 from models.a import A
 
+
 class JsonSerializable(object):
     def toJson(self):
         return json.dumps(self.__dict__)
@@ -8,8 +9,8 @@ class JsonSerializable(object):
     def __repr__(self):
         return self.toJson()
 
-class Task(JsonSerializable):
 
+class Task(JsonSerializable):
     def __init__(self, id: int, title: str, description: str, done: str):
         self._id = id
         self._title = title

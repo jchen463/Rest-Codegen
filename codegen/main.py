@@ -143,19 +143,14 @@ def main():
 
     # two options to print this. helpful for debugging
     # pprint.pprint(spec_dict2['info'])
-    print(json.dumps(spec_dict2['info'], indent=4))
+    print(json.dumps(spec_dict2['paths'], indent=4))
 
-    # with open('sample/spec_tree.json', 'wt') as out:
-    #     json.dump(spec_dict2, out, indent=4)
+    with open('sample/spec_tree.json', 'wt') as out:
+        json.dump(spec_dict2, out, indent=4)
 
     # PROBABLY NOT THIS ONE
-    # with open('sample/spec_tree.txt', 'wt') as out:    
+    # with open('sample/spec_tree.txt', 'wt') as out:
     #     pprint.pprint(spec_dict2, stream=out)
-
-
-
-
-
 
 
 if __name__ == '__main__':

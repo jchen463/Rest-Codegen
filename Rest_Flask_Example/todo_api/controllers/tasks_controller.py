@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from flask import jsonify # puts our data into a json object when we reply back
+from flask import jsonify  # puts our data into a json object when we reply back
 from flask import abort
 from flask import make_response
 from flask import request
@@ -11,19 +11,20 @@ from models.task import Task
 
 tasks_api = Blueprint('tasks_api', __name__)
 
-tasks = [Task(1,u'Buy groceries', u'Milk, Cheese, Pizza, Fruit, Tylenol', False), Task(2,u'Learn Python', u'Need to find a good Python tutorial on the web', False)]
+tasks = [Task(1, u'Buy groceries', u'Milk, Cheese, Pizza, Fruit, Tylenol', False), Task(
+    2, u'Learn Python', u'Need to find a good Python tutorial on the web', False)]
 
 tasks1 = [
     {
         'id': 1,
         'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol', 
+        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol',
         'done': False
     },
     {
         'id': 2,
         'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web', 
+        'description': u'Need to find a good Python tutorial on the web',
         'done': False
     }
 ]
@@ -31,9 +32,9 @@ tasks1 = [
 
 # the get response is a 200
 @tasks_api.route('/todo/api/v1.0/tasks', methods=['GET'])
-def get_tasks(): 
+def get_tasks():
     print(tasks[0].__repr__())
-    #print(tasks.__dict__) list object does not have __dict__
+    # print(tasks.__dict__) list object does not have __dict__
     r = json.dumps([task.serialize() for task in tasks])
     loaded_r = json.loads(r)
     print(loaded_r)
@@ -50,6 +51,7 @@ def get_task(task_id):
         abort(404)
     return jsonify({'task': task[0].serialize()})
 
+
 # Might have to declare a the query parameters like this instead
 '''
 from flask import request
@@ -64,15 +66,16 @@ def getQ():
 '''
 # we need to improve our 404 error handler:
 # 404 will now return it as a json object
+
+
 @tasks_api.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
-
 @tasks_api.route('/todo/api/v1.0/tasks', methods=['POST'])
 def create_task():
-    if not request.json or not 'title' in request.json:
+    if not request.json or 'title' not in request.json:
         abort(400)
     task = {
         'id': tasks[-1]['id'] + 1,
@@ -82,6 +85,7 @@ def create_task():
     }
     tasks.append(task)
     return jsonify({'task': task}), 201
+
 
 @tasks_api.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
@@ -97,9 +101,11 @@ def update_task(task_id):
     if 'done' in request.json and type(request.json['done']) is not bool:
         abort(400)
     task[0]['title'] = request.json.get('title', task[0]['title'])
-    task[0]['description'] = request.json.get('description', task[0]['description'])
+    task[0]['description'] = request.json.get(
+        'description', task[0]['description'])
     task[0]['done'] = request.json.get('done', task[0]['done'])
     return jsonify({'task': task[0]})
+
 
 @tasks_api.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
