@@ -140,7 +140,8 @@ def output_model_class(spec):
 
 
 def generate_flask_server_code(spec):
-    output_model_class(spec)
+    # output_model_class(spec)
+    pass
 
 
 def main():
@@ -152,8 +153,8 @@ def main():
                        required=['openapi', 'info', 'paths'],
                        objects=['info', 'paths', 'components', 'externalDocs'],
                        arrays=['servers', 'security', 'tags'])
-    # print(spec2)
-    generate_flask_server_code(spec2)
+    print(spec2)
+    # generate_flask_server_code(spec2)
 
 
 if __name__ == '__main__':
