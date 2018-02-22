@@ -1,4 +1,7 @@
-class MediaType:
+from .rep import Rep
+
+
+class MediaType(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

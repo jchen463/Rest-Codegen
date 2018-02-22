@@ -1,4 +1,7 @@
-class Schema:
+from .rep import Rep
+
+
+class Schema(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
         from .parse import get_boolean

@@ -1,4 +1,7 @@
-class Reference:
+from .rep import Rep
+
+
+class Reference(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

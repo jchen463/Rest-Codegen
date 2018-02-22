@@ -19,7 +19,7 @@ def parse_dict(dikt, allowed, required=[], objects=[], mappings=[], booleans=[],
             d[key] = get_object(key, value)
         elif key in mappings:
             d[key] = get_mapping(key, value)
-        elif key in arrays:  # server: [<Server Object>]
+        elif key in arrays:
             d[key] = get_array(key, value)
         elif key in booleans:
             d[key] = get_boolean(value)

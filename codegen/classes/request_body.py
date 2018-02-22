@@ -1,4 +1,7 @@
-class RequestBody:
+from .rep import Rep
+
+
+class RequestBody(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

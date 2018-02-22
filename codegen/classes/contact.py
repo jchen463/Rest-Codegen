@@ -1,4 +1,7 @@
-class Contact:
+from .rep import Rep
+
+
+class Contact(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
 

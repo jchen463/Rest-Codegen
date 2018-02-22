@@ -1,4 +1,7 @@
-class Paths:
+from .rep import Rep
+
+
+class Paths(Rep):
     def __init__(self, dikt):
         from .parse import ext_regex
         from .parse import get_object
