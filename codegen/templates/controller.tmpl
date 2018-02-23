@@ -1,0 +1,17 @@
+{% include "templates/lib.tmpl" %}
+
+{% include "templates/dep.tmpl" %}
+
+default_api = Blueprint('default', __name__)
+
+{% for path_name, path_info in dikt.items() %}
+{% for key, value in path_info.items() %}
+{% if key in methods and value is not none%}
+
+@default_api.route('{{path_name}}', methods=['{{key.upper()}}'])
+def {{value['operationId']}}({% if value['parameters'] is not none %}{% for arg in value['parameters'] %}{{arg.name}}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}):
+    return 'do something!'
+
+{% endif %}
+{% endfor %}
+{% endfor %}

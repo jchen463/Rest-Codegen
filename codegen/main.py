@@ -23,8 +23,14 @@ def main():
     # print(json.dumps(spec_dict2['paths'], indent=4))
     with open('spec_tree.json', 'wt') as out:
         json.dump(spec_dict2, out, indent=4)
+    # paths = [{key: value} for key, value in spec.paths.dikt.items()]
+    # print(paths)
+    # path_urls = [key for key, value in spec.paths.dikt.items()]
+    # path_urls.sort()
+    # print(path_urls)
+    # print(path_names)
 
-    generate_flask_server_code(spec)
+    generate_flask_server_code(spec, spec_dict2)
 
 
 def load_spec_file(file_path):
