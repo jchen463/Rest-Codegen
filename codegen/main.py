@@ -17,13 +17,10 @@ def main():
     validate_specification(spec_dict)
 
     spec = Specification(spec_dict)
-    # for debugging, can use json.dumps()
     spec_dict2 = ast.literal_eval(str(vars(spec)))
 
-    # two options to print this. helpful for debugging
     # pprint.pprint(spec_dict2['info'])
     # print(json.dumps(spec_dict2['paths'], indent=4))
-
     with open('spec_tree.json', 'wt') as out:
         json.dump(spec_dict2, out, indent=4)
 

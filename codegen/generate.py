@@ -32,7 +32,7 @@ def output_model_class(spec):
             # print(attributes.__dict__)
             if 'ref' in attributes.__dict__:
                 print('ye')
-                print(get_object('schemas', attributes.__dict__))
+                # print(get_object('schemas', attributes.__dict__))
             else:
                 model_class['classes'][0]['init_args'].append(
                     {
