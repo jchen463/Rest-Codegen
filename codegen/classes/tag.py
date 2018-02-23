@@ -16,3 +16,11 @@ class Tag(Rep):
         self.description = d['description']
         self.externalDocs = d['externalDocs']
         self.extensions = d['extensions']
+
+    def __eq__(self, other):
+        return self.name == other.name and self.description == other.description \
+           and self.externalDocs == other.externalDocs and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.name != other.name and self.description != other.description \
+           and self.externalDocs != other.externalDocs and self.extensions != other.extensions

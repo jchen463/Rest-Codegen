@@ -22,3 +22,15 @@ class Specification(Rep):
         self.security = d['security']
         self.tags = d['tags']
         self.externalDocs = d['externalDocs']
+        
+    def __eq__(self, other):
+        return self.openapi == other.openapi and self.info == other.info \
+           and self.servers == other.servers and self.paths == other.paths \
+           and self.components == other.components and self.security == other.security \
+           and self.tags == other.tags and self.externalDocs == other.externalDocs
+ 
+    def __ne__(self, other):
+        return self.openapi != other.openapi and self.info != other.info \
+           and self.servers != other.servers and self.paths != other.paths \
+           and self.components != other.components and self.security != other.security \
+           and self.tags != other.tags and self.externalDocs != other.externalDocs

@@ -24,5 +24,15 @@ class Link(Rep):
         self.parameters = None
         if 'parameters' in dikt:
             self.parameters = get_mapping('scopes', dikt['parameters'])
+            
+    def __eq__(self, other):
+        return self.operationRef == other.operationRef and self.operationId == other.operationId \
+           and self.requestBody == other.requestBody and self.description == other.description \
+           and self.server == other.server and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.operationRef != other.operationRef and self.operationId != other.operationId \
+           and self.requestBody != other.requestBody and self.description != other.description \
+           and self.server != other.server and self.extensions != other.extensions
 
         # !!! parameters and requestBody can be <any | {expression}>

@@ -13,3 +13,11 @@ class License(Rep):
         self.name = d['name']
         self.url = d['url']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.name == other.name and self.url == other.url \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.name != other.name and self.url != other.url \
+           and self.extensions != other.extensions

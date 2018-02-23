@@ -39,3 +39,19 @@ class Operation(Rep):
         self.security = d['security']
         self.servers = d['servers']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.summary == other.summary and self.description == other.description \
+           and self.externalDocs == other.externalDocs and self.operationId == other.operationId \
+           and self.parameters == other.parameters and self.requestBody == other.requestBody \
+           and self.callbacks == other.callbacks and self.deprecated == other.deprecated \
+           and self.security == other.security and self.servers == other.servers \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.summary != other.summary and self.description != other.description \
+           and self.externalDocs != other.externalDocs and self.operationId != other.operationId \
+           and self.parameters != other.parameters and self.requestBody != other.requestBody \
+           and self.callbacks != other.callbacks and self.deprecated != other.deprecated \
+           and self.security != other.security and self.servers != other.servers \
+           and self.extensions != other.extensions

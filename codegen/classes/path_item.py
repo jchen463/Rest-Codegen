@@ -34,3 +34,21 @@ class PathItem(Rep):
         self.servers = d['servers']
         self.parameters = d['parameters']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.summary == other.summary and self.description == other.description \
+           and self.get == other.get and self.put == other.put \
+           and self.post == other.post and self.delete == other.delete \
+           and self.options == other.options and self.head == other.head \
+           and self.patch == other.patch and self.trace == other.trace \
+           and self.servers == other.servers and self.parameters == other.parameters \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.summary != other.summary and self.description != other.description \
+           and self.get != other.get and self.put != other.put \
+           and self.post != other.post and self.delete != other.delete \
+           and self.options != other.options and self.head != other.head \
+           and self.patch != other.patch and self.trace != other.trace \
+           and self.servers != other.servers and self.parameters != other.parameters \
+           and self.extensions != other.extensions

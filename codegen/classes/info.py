@@ -20,3 +20,15 @@ class Info(Rep):
         self.license = d['license']
         self.version = d['version']
         self.extensions = d['extensions']
+
+    def __eq__(self, other):
+        return self.title == other.title and self.description == other.description \
+           and self.termsOfService == other.termsOfService and self.contact == other.contact \
+           and self.license == other.license and self.version == other.version \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.title != other.title and self.description != other.description \
+           and self.termsOfService != other.termsOfService and self.contact != other.contact \
+           and self.license != other.license and self.version != other.version \
+           and self.extensions != other.extensions
