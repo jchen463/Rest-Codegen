@@ -96,6 +96,7 @@ import os
 
 FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
 
+
 def do_renders(renders, template_dir, output_dir):
 
     # Create the Jinja2 environment using custom options and loader, see sections below.

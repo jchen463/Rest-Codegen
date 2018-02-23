@@ -45,6 +45,9 @@ class Task(Model):
         """
         return util.deserialize_model(dikt, cls)
 
+    def a() -> int:
+        pass
+
     @property
     def id(self) -> int:
         """Gets the id of this Task.

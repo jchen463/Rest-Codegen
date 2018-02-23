@@ -1,7 +1,7 @@
 #!venv/bin/python
 from flask import Flask
 from controllers.tasks_controller import tasks_api
-from controllers.defualt_controller import default_api
+from controllers.default_controller import default_api
 import encoder
 
 

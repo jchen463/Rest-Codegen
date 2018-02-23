@@ -5,25 +5,25 @@
 {# classes template #}
 {% for class in classes %}
 class {{class.name}}({% for argument in class.arguments %}{{argument}}{% if not loop.last %},{% endif %}{% endfor %}):
-	def __init__(self,{% for init_arg in class.init_args %} {{init_arg.name}}: {{init_arg.type}}{%if not loop.last %},{% endif %}{% endfor %}):
-		{% for init_arg in class.init_args %} 
-		self._{{init_arg.name}} = {{init_arg.name}} {% endfor %}
+    def __init__(self,{% for init_arg in class.init_args %} {{init_arg.name}}: {{init_arg.type}}{%if not loop.last %},{% endif %}{% endfor %}):
+        {% for init_arg in class.init_args %} 
+        self._{{init_arg.name}} = {{init_arg.name}} {% endfor %}
 
 
-	{% for class_method in class.class_methods %}
-	@classmethod
-	def {{class_method.name}}({% for class_method_arg in class_method.class_method_args %}{{class_method_arg}}{%if not loop.last %}, {% endif %}{% endfor %}) -> {{class_method.ret_type}}:
-		return {{class_method.ret_val}}
-	{% endfor %}
-	
-	{% for init_arg in class.init_args %}
-	@property
-	def {{init_arg.name}}(self):
-		return self._{{init_arg.name}}
+    {% for class_method in class.class_methods %}
+    @classmethod
+    def {{class_method.name}}({% for class_method_arg in class_method.class_method_args %}{{class_method_arg}}{%if not loop.last %}, {% endif %}{% endfor %}) -> {{class_method.ret_type}}:
+        return {{class_method.ret_val}}
+    {% endfor %}
+    
+    {% for init_arg in class.init_args %}
+    @property
+    def {{init_arg.name}}(self):
+        return self._{{init_arg.name}}
 
-	@{{init_arg.name}}.setter
-	def {{init_arg.name}}(self, {{init_arg.name}}):
+    @{{init_arg.name}}.setter
+    def {{init_arg.name}}(self, {{init_arg.name}}):
         self._{{init_arg.name}} = init_arg.name
-	{% endfor %}
+    {% endfor %}
 {% endfor %}
 

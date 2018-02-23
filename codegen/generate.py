@@ -1,6 +1,7 @@
 from collections import namedtuple
-import jinja2
 import os.path
+
+import jinja2
 
 from classes.parse import get_object
 
@@ -11,9 +12,9 @@ def output_model_class(spec):
     models = []
     # print(spec['components'].schemas)
     for scheme_name, schema_obj in spec.components.schemas.items():
-        print(scheme_name)
-        print(schema_obj)
-        print(schema_obj.__dict__)
+        # print(scheme_name)
+        # print(schema_obj)
+        # print(schema_obj.__dict__)
         model_class = {
             'classes': [
                 {
@@ -26,9 +27,9 @@ def output_model_class(spec):
         }
 
         for prop_name, attributes in schema_obj.properties.items():
-            print(prop_name)
-            print(attributes)
-            print(attributes.__dict__)
+            # print(prop_name)
+            # print(attributes)
+            # print(attributes.__dict__)
             if 'ref' in attributes.__dict__:
                 print('ye')
                 print(get_object('schemas', attributes.__dict__))

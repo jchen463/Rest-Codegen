@@ -7,7 +7,6 @@ from models.base_model_ import Model
 class JSONEncoder(JSONEncoder):
     include_nulls = False
 
-
     def default(self, o):
         if isinstance(o, Model):
             print(o)
