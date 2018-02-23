@@ -6,3 +6,22 @@ What connexion does differently on top of flask:
 1. Figure out how jsonencoder work
 2. Figure out how the util deserialize function works
 3. Change functions so that instead of taking in data a certain way from the url, it does so with the request arguments
+
+4. the responses are automatically done if you call return in the pet controllers, not sure how it happens or what it does.
+
+
+swagger codegen generates special things for:
+byte, binary, and date are handle differently than the rest
+different models to import
+different comments to write
+
+all converts to 4 types:
+int, float, bool, str
+
+Todo:
+CHECK WHILE LOOP
+Make sure to check to not add duplicate dependencies
+
+
+
+Dynamic rendering of specification

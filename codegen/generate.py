@@ -7,59 +7,90 @@ from classes.parse import get_object
 
 
 def output_model_class(spec):
+    makeFirstLetterLower = lambda s: s[:1].lower() + s[1:] if s else ''
+
     FileRender = namedtuple(
         'FileRender', ['template', 'output', 'params_dicts'])
-    models = []
+
+    file_name = "base_model_.py"
+    renders = [FileRender('templates/base_model.tmpl', file_name, [])]
+    do_renders(renders, 'templates/', 'models')
+
     # print(spec['components'].schemas)
     for scheme_name, schema_obj in spec.components.schemas.items():
-        # print(scheme_name)
-        # print(schema_obj)
-        # print(schema_obj.__dict__)
-        model_class = {
-            'classes': [
-                {
-                    'name': scheme_name,
-                    'arguments': [],
-                    'init_args': [],
-                    'class_methods': []
-                }
+
+        model = {
+            'name': makeFirstLetterLower(scheme_name),
+            'properties': [],
+        }
+
+        model_lib = {
+            'libraries': [
+                {'name': 'json'},
+            ]
+        }
+        model_dep = {
+            'dependencies': [
+               # {'location': 'base_model_', 'object': 'Model'}
             ]
         }
 
-        for prop_name, attributes in schema_obj.properties.items():
-            # print(prop_name)
-            # print(attributes)
-            # print(attributes.__dict__)
-            if 'ref' in attributes.__dict__:
-                print('ye')
-                # print(get_object('schemas', attributes.__dict__))
-            else:
-                model_class['classes'][0]['init_args'].append(
+        for prop_name, attribute in schema_obj.properties.items():
+
+            attribute_type = ""
+
+            if 'ref' in attribute.__dict__:
+                attribute_type += attribute.ref[attribute.ref.rfind('/') + 1:]
+                model_dep['dependencies'].append({'location': makeFirstLetterLower(attribute_type), 'object': attribute_type})
+            elif attribute.type == 'string':
+                attribute_type += 'str'
+            elif attribute.type == 'integer':
+                attribute_type += 'int'
+            elif attribute.type == 'number':
+                attribute_type += 'float'
+            elif attribute.type == 'array':
+                # print(attribute)
+                #print(attribute.items)
+                temp = attribute.items
+                attribute_type += 'List['
+                array_num = 1
+
+                #untested while loop
+                while hasattr(temp, 'type'):
+                    if temp.type == 'array':
+                        temp = attribute.items
+                        array_num += 1
+                    else:
+                        break
+
+                if 'ref' in attribute.items.__dict__:
+                    attribute_type += attribute.items.ref[attribute.items.ref.rfind('/') + 1:]
+                    model_dep['dependencies'].append({'location': makeFirstLetterLower(attribute.items.ref[attribute.items.ref.rfind('/') + 1:]), 'object': attribute.items.ref[attribute.items.ref.rfind('/') + 1:]})
+                elif attribute.items.type == 'string':
+                    attribute_type += 'str'
+                elif attribute.items.type == 'integer':
+                    attribute_type += 'int'
+                elif attribute.items.type == 'number':
+                    attribute_type += 'float'
+
+                for _ in range(array_num):
+                    attribute_type += ']'
+
+                #untested while loop:
+                #while attribute.items.type
+                #attribute_type = '[]' # this will need to be fixed
+
+            if attribute_type != "":
+                model['properties'].append(
                     {
                         'name': prop_name,
-                        'type': attributes.type
+                        'type': attribute_type
                     }
                 )
 
-        models.append(model_class)
-
-    model_lib = {
-        'libraries': [
-            {'name': 'json'},
-        ]
-    }
-
-    model_dep = {
-        'dependencies': [
-            {'location': 'flask', 'object': 'Blueprint'},
-            {'location': 'flask', 'object': 'jsonify'}
-        ]
-    }
-
-    for model_class in models:
-        file_name = model_class['classes'][0]['name'] + ".py"
+        file_name = model['name'] + ".py"
         renders = [FileRender('templates/models.tmpl', file_name, [
-            model_lib, model_dep, model_class])]
+            model_lib, model_dep, model])]
         do_renders(renders, 'templates/', 'models')
 
 

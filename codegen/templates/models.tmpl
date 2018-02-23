@@ -1,29 +1,43 @@
 {% include "templates/lib.tmpl" %}
 
+
 {% include "templates/dep.tmpl" %}
 
 {# classes template #}
-{% for class in classes %}
-class {{class.name}}({% for argument in class.arguments %}{{argument}}{% if not loop.last %},{% endif %}{% endfor %}):
-    def __init__(self,{% for init_arg in class.init_args %} {{init_arg.name}}: {{init_arg.type}}{%if not loop.last %},{% endif %}{% endfor %}):
-        {% for init_arg in class.init_args %} 
-        self._{{init_arg.name}} = {{init_arg.name}} {% endfor %}
+class {{name}}(Model):
+    {# {% for property in properties %} {{property.name}}: {{property.type}}{%if not loop.last %},{% endif %}{% endfor %} #}
+    def __init__(self,{% for property in properties %} {{property.name}}: {{property.type}}{%if not loop.last %},{% endif %}{% endfor %}):
+        self.swagger_types = {
+        {% for property in properties %}
+         '{{property.name}}': {{property.type}}{%if not loop.last %},{% endif %}
+
+        {% endfor %}
+        }
+
+        self.attribute_map = {
+        {% for property in properties %}
+         '{{property.name}}': {{property.name}}{%if not loop.last %},{% endif %}
+
+        {% endfor %}
+        }
+
+        {% for property in properties %}
+         self._{{property.name}} = {{property.name}}
+        {% endfor %}
 
 
-    {% for class_method in class.class_methods %}
     @classmethod
-    def {{class_method.name}}({% for class_method_arg in class_method.class_method_args %}{{class_method_arg}}{%if not loop.last %}, {% endif %}{% endfor %}) -> {{class_method.ret_type}}:
-        return {{class_method.ret_val}}
-    {% endfor %}
+    def from_dict(cls, dikt) -> '{{name}}':
+        return util.deserialize_model(dikt, cls)
     
-    {% for init_arg in class.init_args %}
+    {% for property in properties %}
     @property
-    def {{init_arg.name}}(self):
-        return self._{{init_arg.name}}
+    def {{property.name}}(self) -> '{{property.type}}':
+        return self._{{property.name}}
 
-    @{{init_arg.name}}.setter
-    def {{init_arg.name}}(self, {{init_arg.name}}):
-        self._{{init_arg.name}} = init_arg.name
+    @{{property.name}}.setter
+    def {{property.name}}(self, {{property.name}}: {{property.type}}):
+        self._{{property.name}} = {{property.name}}
     {% endfor %}
-{% endfor %}
+
 

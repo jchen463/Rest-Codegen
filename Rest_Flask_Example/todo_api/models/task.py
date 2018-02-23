@@ -1,7 +1,6 @@
 from __future__ import absolute_import
-from datetime import date, datetime  # noqa: F401
-
-from typing import List, Dict  # noqa: F401
+from datetime import date, datetime
+from typing import List, Dict
 
 from models.a import A
 from models.base_model_ import Model
@@ -44,9 +43,6 @@ class Task(Model):
         :rtype: Pet
         """
         return util.deserialize_model(dikt, cls)
-
-    def a() -> int:
-        pass
 
     @property
     def id(self) -> int:

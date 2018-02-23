@@ -1,4 +1,6 @@
 {# dependencies #}
 {% for dependency in dependencies %}
-from {{dependency.location}} import {{dependency.object}} 
+from models.{{dependency.location}} import {{dependency.object}}
 {% endfor %}
+from models.base_model_ import Model
+import util
