@@ -6,15 +6,123 @@ import jinja2
 from classes.parse import get_object
 
 
+def generate_flask_server_code(spec, spec_dict):
+    output_main()
+    output_encoder()
+    output_util()
+    output_controllers(spec_dict)
+    output_requirements()
+    output_init()
+    output_model_class(spec)
+
+
+def output_init():
+    FileRender = namedtuple(
+        'FileRender', ['template', 'output', 'params_dicts'])
+
+    file_name = '__init__.py'
+    renders = [FileRender('templates/init.tmpl', file_name, [])]
+    do_renders(renders, 'templates/', 'generated')
+
+
+def output_requirements():
+    FileRender = namedtuple(
+        'FileRender', ['template', 'output', 'params_dicts'])
+
+    file_name = 'requirements.txt'
+    renders = [FileRender('templates/requirements.tmpl', file_name, [])]
+    do_renders(renders, 'templates/', 'generated')
+
+
+def output_main():
+    FileRender = namedtuple(
+        'FileRender', ['template', 'output', 'params_dicts'])
+
+    file_name = '__main__.py'
+    renders = [FileRender('templates/main.tmpl', file_name, [])]
+    do_renders(renders, 'templates/', 'generated')
+
+
+def output_encoder():
+    FileRender = namedtuple(
+        'FileRender', ['template', 'output', 'params_dicts'])
+
+    file_name = 'encoder.py'
+    renders = [FileRender('templates/encoder.tmpl', file_name, [])]
+    do_renders(renders, 'templates/', 'generated')
+
+
+def output_util():
+    FileRender = namedtuple(
+        'FileRender', ['template', 'output', 'params_dicts'])
+
+    file_name = 'util.py'
+    renders = [FileRender('templates/util.tmpl', file_name, [])]
+    do_renders(renders, 'templates/', 'generated')
+
+
+type_mapping = {
+    'integer': 'int',
+    'long': 'int',
+    'float': 'float',
+    'double': 'float',
+    'string': 'str',
+    'byte': 'str',
+    'binary': 'str',
+    'boolean': 'bool',
+    'date': 'str',
+    'dateTime': 'str',
+    'password': 'str',
+    '': ''
+}
+
+
+def output_controllers(spec_dict):
+    FileRender = namedtuple(
+        'FileRender', ['template', 'output', 'params_dicts'])
+
+    methods = {
+        'methods': ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
+    }
+
+    controller_functions = {'dikt': {}}
+    for key, value in spec_dict['paths']['dikt'].items():
+        key = key.replace('{', '<')
+        key = key.replace('}', '>')
+        controller_functions['dikt'][key] = value
+
+    controller_lib = {
+        'libraries': [
+            {'name': 'json'},
+        ]
+    }
+
+    controller_dep = {
+        'dependencies': [
+            {'location': 'flask', 'object': 'Blueprint'},
+            {'location': 'flask', 'object': 'jsonify'},
+            {'location': 'flask', 'object': 'abort'},
+            {'location': 'flask', 'object': 'make_response'},
+            {'location': 'flask', 'object': 'request'},
+        ]
+    }
+
+    file_name = 'default_controller.py'
+    renders = [FileRender('templates/controller.tmpl', file_name,
+                          [controller_lib, controller_dep, controller_functions, methods])]
+    do_renders(renders, 'templates/', 'generated/controllers')
+
+
 def output_model_class(spec):
-    makeFirstLetterLower = lambda s: s[:1].lower() + s[1:] if s else ''
+    def makeFirstLetterLower(s):
+        return s[:1].lower() + s[1:] if s else ''
 
     FileRender = namedtuple(
         'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = "base_model_.py"
     renders = [FileRender('templates/base_model.tmpl', file_name, [])]
-    do_renders(renders, 'templates/', 'models')
+    do_renders(renders, 'templates/', 'generated/models')
 
     # print(spec['components'].schemas)
     for scheme_name, schema_obj in spec.components.schemas.items():
@@ -31,7 +139,7 @@ def output_model_class(spec):
         }
         model_dep = {
             'dependencies': [
-               # {'location': 'base_model_', 'object': 'Model'}
+                # {'location': 'base_model_', 'object': 'Model'}
             ]
         }
 
@@ -41,7 +149,8 @@ def output_model_class(spec):
 
             if 'ref' in attribute.__dict__:
                 attribute_type += attribute.ref[attribute.ref.rfind('/') + 1:]
-                model_dep['dependencies'].append({'location': makeFirstLetterLower(attribute_type), 'object': attribute_type})
+                model_dep['dependencies'].append(
+                    {'location': makeFirstLetterLower(attribute_type), 'object': attribute_type})
             elif attribute.type == 'string':
                 attribute_type += 'str'
             elif attribute.type == 'integer':
@@ -50,12 +159,12 @@ def output_model_class(spec):
                 attribute_type += 'float'
             elif attribute.type == 'array':
                 # print(attribute)
-                #print(attribute.items)
+                # print(attribute.items)
                 temp = attribute.items
                 attribute_type += 'List['
                 array_num = 1
 
-                #untested while loop
+                # untested while loop
                 while hasattr(temp, 'type'):
                     if temp.type == 'array':
                         temp = attribute.items
@@ -64,8 +173,10 @@ def output_model_class(spec):
                         break
 
                 if 'ref' in attribute.items.__dict__:
-                    attribute_type += attribute.items.ref[attribute.items.ref.rfind('/') + 1:]
-                    model_dep['dependencies'].append({'location': makeFirstLetterLower(attribute.items.ref[attribute.items.ref.rfind('/') + 1:]), 'object': attribute.items.ref[attribute.items.ref.rfind('/') + 1:]})
+                    attribute_type += attribute.items.ref[attribute.items.ref.rfind(
+                        '/') + 1:]
+                    model_dep['dependencies'].append({'location': makeFirstLetterLower(attribute.items.ref[attribute.items.ref.rfind(
+                        '/') + 1:]), 'object': attribute.items.ref[attribute.items.ref.rfind('/') + 1:]})
                 elif attribute.items.type == 'string':
                     attribute_type += 'str'
                 elif attribute.items.type == 'integer':
@@ -76,9 +187,9 @@ def output_model_class(spec):
                 for _ in range(array_num):
                     attribute_type += ']'
 
-                #untested while loop:
-                #while attribute.items.type
-                #attribute_type = '[]' # this will need to be fixed
+                # untested while loop:
+                # while attribute.items.type
+                # attribute_type = '[]' # this will need to be fixed
 
             if attribute_type != "":
                 model['properties'].append(
@@ -91,11 +202,7 @@ def output_model_class(spec):
         file_name = model['name'] + ".py"
         renders = [FileRender('templates/models.tmpl', file_name, [
             model_lib, model_dep, model])]
-        do_renders(renders, 'templates/', 'models')
-
-
-def generate_flask_server_code(spec):
-    output_model_class(spec)
+        do_renders(renders, 'templates/', 'generated/models')
 
 
 def do_renders(renders, template_dir, output_dir):
@@ -112,7 +219,7 @@ def do_renders(renders, template_dir, output_dir):
             params.update(param_dict)
 
         # Render the template
-        output = env.get_template(render.template).render(**params)
+        output = env.get_template(render.template).render(params)
 
         # Output the file, creating directories if needed.
         output_file = output_dir + os.path.sep + render.output

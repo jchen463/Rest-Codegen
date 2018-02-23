@@ -1,11 +1,10 @@
-from flask import Blueprint
+import json
 
+from flask import Blueprint
 from flask import jsonify  # puts our data into a json object when we reply back
 from flask import abort
 from flask import make_response
 from flask import request
-
-import json
 
 from models.task import Task
 
@@ -74,18 +73,32 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
+# @tasks_api.route('/todo/api/v1.0/tasks', methods=['POST'])
+# def create_task():
+#     if not request.json or 'title' not in request.json:
+#         abort(400)
+#     task = {
+#         'id': tasks[-1]['id'] + 1,
+#         'title': request.json['title'],
+#         'description': request.json.get('description', ""),
+#         'done': False
+#     }
+#     tasks.append(task)
+#     return jsonify({'task': task}), 201
+
+
 @tasks_api.route('/todo/api/v1.0/tasks', methods=['POST'])
 def create_task():
+    # return 'do magic bois'
+    tasks = []
     if not request.json or 'title' not in request.json:
         abort(400)
-    task = {
-        'id': tasks[-1]['id'] + 1,
-        'title': request.json['title'],
-        'description': request.json.get('description', ""),
-        'done': False
-    }
+    task_dict = request.json
+    task = Task.from_dict(task_dict)
     tasks.append(task)
-    return jsonify({'task': task}), 201
+    tasks.append(task)
+
+    return str(tasks), 200
 
 
 @tasks_api.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['PUT'])
