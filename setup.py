@@ -7,7 +7,7 @@ setup(
     version='0.1dev',
     packages=['codegen', ],
     license='asdf',
-    entry_points={  # Optional
+    entry_points={
         'console_scripts': [
             'codegen=codegen.main:main',
         ],
