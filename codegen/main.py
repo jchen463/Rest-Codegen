@@ -7,9 +7,9 @@ import ast
 
 from openapi_spec_validator import openapi_v3_spec_validator
 
-import app_config as cfg
-from classes.specification import Specification
-from generate import generate_flask_server_code
+import codegen.app_config as cfg
+from codegen.classes.specification import Specification
+from codegen.generate import generate_flask_server_code
 
 
 def main():
