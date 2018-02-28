@@ -5,8 +5,7 @@
 
 {# classes template #}
 class {{name}}(Model):
-    {# {% for property in properties %} {{property.name}}: {{property.type}}{%if not loop.last %},{% endif %}{% endfor %} #}
-    def __init__(self,{% for property in properties %} {{property.name}}: {{property.type}}{%if not loop.last %},{% endif %}{% endfor %}):
+    def __init__(self,{% for property in properties %} {{property.name}}: {{property.type}}=None{%if not loop.last %},{% endif %}{% endfor %}):
         self.swagger_types = {
         {% for property in properties %}
          '{{property.name}}': {{property.type}}{%if not loop.last %},{% endif %}
