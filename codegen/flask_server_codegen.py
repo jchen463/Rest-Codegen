@@ -1,4 +1,5 @@
-import default_codegen as default
+import codegen.default_codegen as default
+from codegen.main2 import load_build_file
 
 
 def flask_project_setup(dikt):
@@ -46,7 +47,7 @@ def run_iterators():
         iterator(default.iterator_functions_mapping[iterator_name])
 
 
-def generate():
+def flask_server_codegen(spec_dict, build_file):
     stage_default_iterators()
-    stage_custom_iterators()
-    run_iterators()
+    load_build_file(build_file)
+    run_iterators(spec_dict)

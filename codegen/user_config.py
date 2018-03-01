@@ -1,20 +1,33 @@
 """
-Things we need to work out.
-User can define iterators and their functions here
-
-How should user define file outputs?
-
-How should user define using custom templates/functions over defaults?
-
-Specify specification file here or in command line?
-
-How to use user-defined functions in place of defaults?
-
-How to use user-defined templates at all?
-
-Notes:
-Swagger currently has a base CodegenConfig.java and a DefaultCodegen.java
-Each language is a new class that extends DefaultCodegen.java 
-Things that should go in here:
-    codegen output preferences
+Minimal structure and strictness
+We're going to have to load this twice if specification stays in here
 """
+import default_codegen
+
+SPECIFICATION = 'sample.yaml'
+PROJECT_OUTPUT_DIR = 'myproject'
+
+
+def my_iterator(my_iterator_functions):
+    print('starting my iterator')
+
+
+def function1():
+    print('function1')
+
+
+def function2():
+    print('function2')
+
+
+def main():
+    my_iterator_functions = [
+        function1,
+        function2,
+    ]
+
+    default_codegen.codegen_stage(my_iterator, my_iterator_functions)
+    default_codegen.codegen_stage(default_codegen.invocation_iterator, [])
+
+
+main()
