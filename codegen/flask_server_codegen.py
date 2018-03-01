@@ -47,14 +47,15 @@ def stage_default_iterators():
                           flask_paths_iterator_functions)
 
 
-def run_iterators():
+def run_iterators(spec_dict):
     for iterator_name, iterator in default.iterators_mapping.items():
-        iterator(default.iterator_functions_mapping[iterator_name])
+        iterator(spec_dict, default.iterator_functions_mapping[iterator_name])
 
 
 def flask_server_codegen(spec_dict, build_file):
     stage_default_iterators()
 
+    # Stages user-defined iterators
     cwd = os.getcwd()
     full_path = cwd + '/' + build_file
     spec = importlib.util.spec_from_file_location(
@@ -62,6 +63,4 @@ def flask_server_codegen(spec_dict, build_file):
     build_script = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(build_script)
 
-    print(default.iterators_mapping)
-    # run_iterators(spec_dict)
-    run_iterators()
+    run_iterators(spec_dict)
