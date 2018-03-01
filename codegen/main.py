@@ -1,36 +1,54 @@
-import json
-import os.path
 import sys
+import os
+import importlib.util
 import yaml
-import pprint
 import ast
+import json
 
 from openapi_spec_validator import openapi_v3_spec_validator
 
-import codegen.app_config as cfg
 from codegen.classes.specification import Specification
-from codegen.generate import generate_flask_server_code
+from codegen.flask_server_codegen import flask_server_codegen
+
+
+SPEC = 'default.yaml'
+SPEC_FILE_PATH = os.getcwd() + '/' + SPEC
+
+BUILD = None
+BUILD_FILE_PATH = None
+if len(sys.argv) > 1:
+    BUILD = sys.argv[1]
+    BUILD_FILE_PATH = os.getcwd() + '/' + BUILD
+
+PROJECT_OUTPUT = os.getcwd()
 
 
 def main():
-    spec_dict = load_spec_file('sample.yaml')
-    validate_specification(spec_dict)
+    if BUILD is not None:
+        print('loading build file:', BUILD)
+        spec = importlib.util.spec_from_file_location(
+            BUILD[:-3], BUILD_FILE_PATH)
+        build_script = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(build_script)
+        SPEC = build_script.SPEC
 
+    spec_dict = load_spec_file(SPEC)
     spec = Specification(spec_dict)
-    spec_dict2 = ast.literal_eval(str(vars(spec)))
+    spec_tree_dict = ast.literal_eval(str(vars(spec)))
 
-    # pprint.pprint(spec_dict2['info'])
-    # print(json.dumps(spec_dict2['paths'], indent=4))
-    with open('spec_tree.json', 'wt') as out:
-        json.dump(spec_dict2, out, indent=4)
-    # paths = [{key: value} for key, value in spec.paths.dikt.items()]
-    # print(paths)
-    # path_urls = [key for key, value in spec.paths.dikt.items()]
-    # path_urls.sort()
-    # print(path_urls)
-    # print(path_names)
+    # with open('spec_tree.json', 'wt') as out:
+    #     json.dump(spec_tree_dict, out, indent=4)
 
-    generate_flask_server_code(spec, spec_dict2)
+    flask_server_codegen(spec_dict, BUILD)
+
+
+def load_build_file(filename):
+    cwd = os.getcwd()
+    full_path = cwd + '/' + filename
+    spec = importlib.util.spec_from_file_location(
+        filename[:-3], full_path)
+    build_script = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(build_script)
 
 
 def load_spec_file(file_path):

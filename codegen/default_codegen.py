@@ -12,18 +12,28 @@ def invocation_iterator(invocation_iterator_functions):
     # pull relevant pieces of specification into dictionary
     # (may have to create intermediate representation later)
     dikt = {}
+    # dikt['info'] = spec_dict['info']
+    # dikt['externalDocs'] = spec_dict['externalDocs']
     # might need to pass in parameters here too? unsure
     for f in invocation_iterator_functions:
         f(dikt)
 
 
 def specification_iterator(specification_iterator_functions):
-    pass
+    dikt = {}
+    for f in specification_iterator_functions:
+        f(dikt)
 
 
 def schemas_iterator(schemas_iterator_functions):
-    pass
+    dikt = {}
+
+    for f in schemas_iterator_functions:
+        f(dikt)
 
 
 def paths_iterator(paths_iterator_functions):
-    pass
+    dikt = {}
+
+    for f in paths_iterator_functions:
+        f(dikt)

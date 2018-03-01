@@ -1,43 +1,35 @@
-import sys
-import os
-import importlib.util
-import yaml
-import ast
 import json
+import os.path
+import sys
+import yaml
+import pprint
+import ast
 
 from openapi_spec_validator import openapi_v3_spec_validator
 
 from codegen.classes.specification import Specification
-from codegen.flask_server_codegen import flask_server_codegen
+from codegen.generate import generate_flask_server_code
 
 
-SPEC = 'swagger.yaml'
-SPEC_FILE_PATH = os.getcwd() + '/' + DEFAULT_SPEC
+def main():
+    spec_dict = load_spec_file('sample.yaml')
+    validate_specification(spec_dict)
 
-PROJECT_OUTPUT = os.getcwd()
-
-
-def main(build_file=None):
-    if build_file is not None:
-        load_build_file(build_file)
-
-    spec_dict = load_spec_file(SPEC)
     spec = Specification(spec_dict)
-    spec_tree_dict = ast.literal_eval(str(vars(spec)))
+    spec_dict2 = ast.literal_eval(str(vars(spec)))
 
+    # pprint.pprint(spec_dict2['info'])
+    # print(json.dumps(spec_dict2['paths'], indent=4))
     with open('spec_tree.json', 'wt') as out:
-        json.dump(spec_tree_dict, out, indent=4)
+        json.dump(spec_dict2, out, indent=4)
+    # paths = [{key: value} for key, value in spec.paths.dikt.items()]
+    # print(paths)
+    # path_urls = [key for key, value in spec.paths.dikt.items()]
+    # path_urls.sort()
+    # print(path_urls)
+    # print(path_names)
 
-    flask_server_codegen(spec_dict, build_file)
-
-
-def load_build_file(filename):
-    cwd = os.getcwd()
-    full_path = cwd + '/' + filename
-    spec = importlib.util.spec_from_file_location(
-        filename[:-3], full_path)
-    build_script = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(build_script)
+    generate_flask_server_code(spec, spec_dict2)
 
 
 def load_spec_file(file_path):
@@ -69,7 +61,4 @@ def validate_specification(spec):
 
 
 if __name__ == '__main__':
-    if len(argv) > 1:
-        main(sys.argv[1])
-    else:
-        main()
+    main()
