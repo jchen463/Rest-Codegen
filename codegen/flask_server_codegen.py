@@ -5,7 +5,6 @@ import importlib.util
 """
 These are essentially wrappers for templates
 Responsible for certain files
-
 """
 
 
