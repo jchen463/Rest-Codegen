@@ -13,7 +13,7 @@ from codegen.generate import generate_flask_server_code
 
 
 def main():
-    spec_dict = load_spec_file(cfg.SPEC_FILES[0])
+    spec_dict = load_spec_file('sample.yaml')
     validate_specification(spec_dict)
 
     spec = Specification(spec_dict)

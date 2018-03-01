@@ -30,7 +30,8 @@ def output_requirements():
         'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = 'requirements.txt'
-    renders = [FileRender('codegen/templates/requirements.tmpl', file_name, [])]
+    renders = [FileRender(
+        'codegen/templates/requirements.tmpl', file_name, [])]
     do_renders(renders, 'codegen/templates/', 'codegen/generated')
 
 
