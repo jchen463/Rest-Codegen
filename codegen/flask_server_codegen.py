@@ -2,20 +2,34 @@ import os
 import codegen.default_codegen as default
 import importlib.util
 
+"""
+These are essentially wrappers for templates
+Responsible for certain files
+
+"""
+
 
 def flask_project_setup(dikt):
+    # outer codegen folder: setup.py, requirements.txt. ???
+    # dikt contains 'info', 'externalDocs'
     print('flask_project_setup')
 
 
 def flask_api_setup(dikt):
+    # inner codegen folder: base classes, encoder, deserializer. ???
+    # dikt is the specification
     print('flask_api_setup')
 
 
 def flask_controllers_setup(dikt):
+    # controller files
+    # dikt contains 'paths'
     print('flask_controllers_setup')
 
 
 def flask_models_setup(dikt):
+    # model files
+    # dikt contains 'schemas'
     print('flask_models_setup')
 
 

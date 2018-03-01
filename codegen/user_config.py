@@ -2,10 +2,10 @@
 Minimal structure and strictness
 We're going to have to load this twice if specification stays in here
 user will have to import our default_codegen module to use codegen_stage()
+I think variable things, such as spec and project_output need to either be required or invoked via a function call
 """
 import codegen.default_codegen
 
-# I think these two fields have to be required when using a build file
 SPEC = 'swagger.yaml'
 PROJECT_OUTPUT = 'myproject'
 
