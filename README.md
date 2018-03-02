@@ -13,3 +13,15 @@ other times: pip install codegen/ --upgrade
 verify installation: pip freeze
 
 uninstall: pip uninstall codegen
+
+usage:
+
+`$codegen`
+
+runs code generation reading in 'swagger.yaml' from cwd and outputting to cwd
+
+`$codegen user_config.py`
+
+runs code generation reading in config/build file. Uses spec and outputs to directory specified in build file.
+
+
