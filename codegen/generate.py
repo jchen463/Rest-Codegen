@@ -5,6 +5,11 @@ import jinja2
 
 from classes.parse import get_object
 
+FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
+
+methods = {
+        'methods': ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
+    }
 
 def generate_flask_server_code(spec, spec_dict):
     output_main()
@@ -15,18 +20,56 @@ def generate_flask_server_code(spec, spec_dict):
     output_init()
     output_model_class(spec)
 
+
 def generate_typescript_client_code(spec, spec_dict):
-    output_client_api(spec_dict, spec);
+    output_client_api(spec_dict);
+    output_client_model(spec_dict);
 
-def output_client_api(spec_dict, spec):
+def output_client_model(spec_dict):
 
-    FileRender = namedtuple(
-        'FileRender', ['template', 'output', 'params_dicts'])
+    type_map = {'integer': 'number', 'string': 'string', 'array': None, 'boolean': 'boolean' }
 
-    methods = {
-        'methods': ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
-    }
+    for key, value in spec_dict['components']['schemas'].items():
 
+        models = {'model_name': key,
+                'properties': [],
+                'required': value['required']}
+
+        for attribute, attribute_type in value['properties'].items():
+            name = attribute
+            if 'type' in attribute_type:
+                if attribute_type['type'] != 'array':
+                    val_type = attribute_type['type']
+                    var_type = type_map[val_type]
+                else:
+                    if 'type' in attribute_type['items']:
+                        item = attribute_type['items']['type']
+                        var_type = 'Array<' + type_map[item] +'>'
+                    elif '$ref' in attribute_type['items']:
+                        item = attribute_type['items']['$ref']
+                        var_type = 'Array<' + item +'>'
+                    else: 
+                        var_type = 'Array<' + 'None' + '>'
+            else:
+                var_type = 'none'
+            
+            if '$ref' in attribute_type:
+                ref = attribute_type['$ref']
+            else:
+                ref = 'none'
+            
+            if 'enum' in attribute_type:
+                enum = attribute_type['enum']
+
+            new_attribute = { 'name': name, 'type': var_type, 'ref': ref, 'enum': enum }
+            models['properties'].append(new_attribute)
+
+        file_name = key + '.ts'
+        model_name = {'model_name': key}
+        renders = [FileRender('templates/client_models.tmpl', file_name, [models])]
+        do_renders(renders, 'templates/', 'generated/client/models')
+
+def output_client_api(spec_dict):
     tags = {'tags': [] }
 
     for tag in spec_dict['tags']:
@@ -52,32 +95,26 @@ def output_client_api(spec_dict, spec):
         ]
     }
 
-    file_name = 'default_client_api.py'
-    renders = [FileRender('templates/client_api.tmpl', file_name,
-                          [controller_dep, tags, controller_functions, methods, basePath])]
-    do_renders(renders, 'templates/', 'generated/client/api')
-    
-def output_init():
-    FileRender = namedtuple(
-        'FileRender', ['template', 'output', 'params_dicts'])
+    for tag in tags['tags']:
+        file_name = tag.capitalize() + 'Api.ts'
+        tag = {'tag': tag}
+        renders = [FileRender('templates/client_api.tmpl', file_name,
+                              [controller_dep, tags, controller_functions, methods, basePath])]
+        do_renders(renders, 'templates/', 'generated/client/api')
 
+def output_init():
     file_name = '__init__.py'
     renders = [FileRender('templates/init.tmpl', file_name, [])]
     do_renders(renders, 'templates/', 'generated')
 
 
 def output_requirements():
-    FileRender = namedtuple(
-        'FileRender', ['template', 'output', 'params_dicts'])
-
     file_name = 'requirements.txt'
     renders = [FileRender('templates/requirements.tmpl', file_name, [])]
     do_renders(renders, 'templates/', 'generated')
 
 
 def output_main():
-    FileRender = namedtuple(
-        'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = '__main__.py'
     renders = [FileRender('templates/main.tmpl', file_name, [])]
@@ -85,8 +122,6 @@ def output_main():
 
 
 def output_encoder():
-    FileRender = namedtuple(
-        'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = 'encoder.py'
     renders = [FileRender('templates/encoder.tmpl', file_name, [])]
@@ -94,8 +129,6 @@ def output_encoder():
 
 
 def output_util():
-    FileRender = namedtuple(
-        'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = 'util.py'
     renders = [FileRender('templates/util.tmpl', file_name, [])]
@@ -119,13 +152,6 @@ type_mapping = {
 
 
 def output_controllers(spec_dict):
-    FileRender = namedtuple(
-        'FileRender', ['template', 'output', 'params_dicts'])
-
-    methods = {
-        'methods': ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
-    }
-
     controller_functions = {'dikt': {}}
     for key, value in spec_dict['paths']['dikt'].items():
         key = key.replace('{', '<')
@@ -157,9 +183,6 @@ def output_controllers(spec_dict):
 def output_model_class(spec):
     def makeFirstLetterLower(s):
         return s[:1].lower() + s[1:] if s else ''
-
-    FileRender = namedtuple(
-        'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = "base_model_.py"
     renders = [FileRender('templates/base_model.tmpl', file_name, [])]

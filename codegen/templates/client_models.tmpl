@@ -1,0 +1,23 @@
+import * as models from './models';
+
+export interface {{model_name}} {
+
+	{% for property in properties %}
+		{{property.name}}{% if required %}{% if property.name not in required %}?{% endif %}{% endif %}: {% if property.type %}{{property.type}}{% else%} {{property.ref}}{% endif %};
+	{% endfor %}
+
+}
+
+{% for property in properties %}
+{% if property.enum %} export namespace {{model_name}} {
+	export enum {{property.name|capitalize}}Enum {
+		{% for item in property.enum %}
+        {{item|capitalize}} = <any> '{{item}}'{%if not loop.last %},
+        {% endif %}
+        {% endfor %}
+
+    }
+
+}
+{% endif %}
+{% endfor %}
