@@ -1,16 +1,16 @@
 """
 Minimal structure and strictness
-We're going to have to load this twice if specification stays in here
 user will have to import our default_codegen module to use codegen_stage()
-I think variable things, such as spec and project_output need to either be required or invoked via a function call
 """
-import codegen.default_codegen
+# import codegen.default_codegen as default  # import will look like this because codegen will be a package
+import default_codegen as default   # use this if just testing within the files
 
-SPEC = 'swagger.yaml'
+SPEC = 'sample.yaml'
 PROJECT_OUTPUT = 'myproject'
+TEMPLATES_DIR = 'templates'
 
 
-def my_iterator(my_iterator_functions):
+def my_iterator(spec_dict, my_iterator_functions):
     print('starting my iterator')
     dikt = {}
     for f in my_iterator_functions:
@@ -31,8 +31,8 @@ def main():
         function2,
     ]
 
-    codegen.default_codegen.codegen_stage(my_iterator, my_iterator_functions)
-    # default_codegen.codegen_stage(default_codegen.invocation_iterator, [])
+    default.codegen_stage(my_iterator, my_iterator_functions)
+    # default.codegen_stage(default_codegen.invocation_iterator, [])
 
 
 main()

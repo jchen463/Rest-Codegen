@@ -4,51 +4,60 @@ import importlib.util
 import yaml
 import ast
 import json
+import argparse
 
 from openapi_spec_validator import openapi_v3_spec_validator
 
-from codegen.classes.specification import Specification
-from codegen.flask_server_codegen import flask_server_codegen
+try:  # when just doing $ python3 main.py only below imports work
+    from codegen.classes.specification import Specification
+    from codegen.flask_server_codegen import flask_server_codegen, stage_default_iterators
+    import codegen.codegen_config as cfg
+except ImportError as err:  # when packaged, only above imports work
+    from classes.specification import Specification
+    from flask_server_codegen import flask_server_codegen, stage_default_iterators
+    import codegen_config as cfg
 
-
-SPEC = 'default.yaml'
-SPEC_FILE_PATH = os.getcwd() + '/' + SPEC
-
-BUILD = None
-BUILD_FILE_PATH = None
-if len(sys.argv) > 1:
-    BUILD = sys.argv[1]
-    BUILD_FILE_PATH = os.getcwd() + '/' + BUILD
-
-PROJECT_OUTPUT = os.getcwd()
+# figure out how argparse works later. Not a high priority though??
+# parser = argparse.ArgumentParser()
+# parser.add_argument('buildfile', nargs='?', type=argparse.FileType('r'), default=sys.stdin)
+# args = parser.parse_args()
+# print(args.buildfile)
 
 
 def main():
-    if BUILD is not None:
-        print('loading build file:', BUILD)
-        spec = importlib.util.spec_from_file_location(
-            BUILD[:-3], BUILD_FILE_PATH)
-        build_script = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(build_script)
-        SPEC = build_script.SPEC
 
-    spec_dict = load_spec_file(SPEC)
+    stage_default_iterators()
+    print(sys.argv)
+    if len(sys.argv) > 1:
+        load_build_file()
+
+    spec_dict = load_spec_file(cfg.SPEC_FILE_PATH)
+    validate_specification(spec_dict)
+
     spec = Specification(spec_dict)
-    spec_tree_dict = ast.literal_eval(str(vars(spec)))
+    spec_dict2 = ast.literal_eval(str(vars(spec)))
 
-    # with open('spec_tree.json', 'wt') as out:
-    #     json.dump(spec_tree_dict, out, indent=4)
+    # # with open('spec_tree.json', 'wt') as out:
+    # #     json.dump(spec_tree_dict, out, indent=4)
 
-    flask_server_codegen(spec_dict, BUILD)
+    flask_server_codegen(spec_dict)
 
 
-def load_build_file(filename):
-    cwd = os.getcwd()
-    full_path = cwd + '/' + filename
-    spec = importlib.util.spec_from_file_location(
-        filename[:-3], full_path)
+def load_build_file():
+    # update defaults to reflect user's build file
+    filename = sys.argv[1]
+    print('loading build file:', filename)
+    filepath = os.getcwd() + '/' + filename
+    spec = importlib.util.spec_from_file_location(filename[:-3], filepath)
     build_script = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(build_script)
+    cfg.BUILD = filename
+    cfg.BUILD_FILE_PATH = filepath
+    if hasattr(build_script, 'SPEC'):
+        cfg.SPEC = build_script.SPEC
+        cfg.SPEC_FILE_PATH = os.getcwd() + os.path.sep + cfg.SPEC
+    if hasattr(build_script, 'PROJECT_OUTPUT'):
+        cfg.PROJECT_OUTPUT = os.getcwd() + os.path.sep + build_script.PROJECT_OUTPUT
 
 
 def load_spec_file(file_path):
@@ -81,3 +90,12 @@ def validate_specification(spec):
 
 if __name__ == '__main__':
     main()
+
+
+# def load_build_file(filename):
+#     cwd = os.getcwd()
+#     full_path = cwd + '/' + filename
+#     spec = importlib.util.spec_from_file_location(
+#         filename[:-3], full_path)
+#     build_script = importlib.util.module_from_spec(spec)
+#     spec.loader.exec_module(build_script)
