@@ -2,8 +2,8 @@
 Minimal structure and strictness
 user will have to import our default_codegen module to use codegen_stage()
 """
-# import codegen.default_codegen as default  # import will look like this because codegen will be a package
-import default_codegen as default   # use this if just testing within the files
+import codegen.default_codegen as default  # import will look like this because codegen will be a package
+# import default_codegen as default   # use this if just testing within the files
 
 SPEC = 'sample.yaml'
 PROJECT_OUTPUT = 'myproject'

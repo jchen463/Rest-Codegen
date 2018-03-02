@@ -6,10 +6,10 @@ Go to the directory that contains this codegen project (dir/codegen/codegen) be 
 
 make sure virtualenv is on or else you'll do global install (source codegen-env/bin/activate)
 
-first time:  sudo pip install codegen/ 
-other times: sudo pip install codegen/ --upgrade
-sudo pip install codegen/ again will not update it if it's already been installed
-(at least it didn't for me)
+first time:  pip install codegen/ 
+
+other times: pip install codegen/ --upgrade
 
 verify installation: pip freeze
-uninstall: sudo pip uninstall codegen
+
+uninstall: pip uninstall codegen

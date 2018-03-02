@@ -26,6 +26,7 @@ def flask_project_setup(dikt):
 def flask_api_setup(dikt):
     # inner codegen folder: base classes, encoder, deserializer. ???
     # dikt is the specification
+
     print('flask_api_setup')
     default.emit_template('init.tmpl', dikt, cfg.PROJECT_OUTPUT, '__init__.py')
     default.emit_template('main.tmpl', dikt, cfg.PROJECT_OUTPUT, '__main__.py')
