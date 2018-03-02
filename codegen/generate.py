@@ -129,7 +129,7 @@ def output_model_class(spec):
     for scheme_name, schema_obj in spec.components.schemas.items():
 
         model = {
-            'name': makeFirstLetterLower(scheme_name),
+            'name': scheme_name,
             'properties': [],
         }
 
@@ -200,8 +200,8 @@ def output_model_class(spec):
                     }
                 )
 
-        file_name = model['name'] + ".py"
-        renders = [FileRender('codegen/templates/models.tmpl', file_name, [
+        file_name = makeFirstLetterLower(model['name']) + ".py"
+        renders = [FileRender('templates/models.tmpl', file_name, [
             model_lib, model_dep, model])]
         do_renders(renders, 'codegen/templates/', 'codegen/generated/models')
 

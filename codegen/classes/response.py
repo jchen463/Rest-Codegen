@@ -18,3 +18,13 @@ class Response(Rep):
         self.content = d['content']
         self.links = d['links']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.description == other.description and self.headers == other.headers \
+           and self.content == other.content and self.links == other.links \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.description != other.description and self.headers != other.headers \
+           and self.content != other.content and self.links != other.links \
+           and self.extensions != other.extensions

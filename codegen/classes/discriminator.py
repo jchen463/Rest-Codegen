@@ -14,3 +14,9 @@ class Discriminator(Rep):
 
         self.propertyName = d['propertyName']
         self.mapping = d['mapping']
+        
+    def __eq__(self, other):
+        return self.propertyName == other.propertyName and self.mapping == other.mapping
+ 
+    def __ne__(self, other):
+        return self.propertyName != other.propertyName and self.mapping != other.mapping

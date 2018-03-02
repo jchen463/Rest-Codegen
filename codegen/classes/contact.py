@@ -1,6 +1,5 @@
 from .rep import Rep
 
-
 class Contact(Rep):
     def __init__(self, dikt):
         from .parse import parse_dict
@@ -13,3 +12,11 @@ class Contact(Rep):
         self.url = d['url']
         self.email = d['email']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.name == other.name and self.url == other.url \
+           and self.email == other.email and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.name != other.name and self.url != other.url \
+           and self.email != other.email and self.extensions != other.extensions

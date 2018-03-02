@@ -15,3 +15,11 @@ class Server(Rep):
         self.description = d['description']
         self.variables = d['variables']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.url == other.url and self.description == other.description \
+           and self.variables == other.variables and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.url != other.url and self.description != other.description \
+           and self.variables != other.variables and self.extensions != other.extensions

@@ -51,6 +51,22 @@ class Parameter(Rep):
         self.examples = d['examples']
         self.content = d['content']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.name == other.name and self._in == other._in \
+           and self.description == other.description and self.required == other.required \
+           and self.deprecated == other.deprecated and self.style == other.style \
+           and self.explode == other.explode and self.allowReserved == other.allowReserved \
+           and self.schema == other.schema and self.examples == other.examples \
+           and self.content == other.content and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.name != other.name and self._in != other._in \
+           and self.description != other.description and self.required != other.required \
+           and self.deprecated != other.deprecated and self.style != other.style \
+           and self.explode != other.explode and self.allowReserved != other.allowReserved \
+           and self.schema != other.schema and self.examples != other.examples \
+           and self.content != other.content and self.extensions != other.extensions
 
     """
     Rules for serialization of parameter:

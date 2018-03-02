@@ -39,3 +39,17 @@ class SecurityScheme(Rep):
         self.flows = d['flows']
         self.openIdConnectUrl = d['openIdConnectUrl']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.type == other.type and self.description == other.description \
+           and self.name == other.name and self._in == other._in \
+           and self.scheme == other.scheme and self.bearerFormat == other.bearerFormat \
+           and self.flows == other.flows and self.openIdConnectUrl == other.replaopenIdConnectUrlce \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.type != other.type and self.description != other.description \
+           and self.name != other.name and self._in != other._in \
+           and self.scheme != other.scheme and self.bearerFormat != other.bearerFormat \
+           and self.flows != other.flows and self.openIdConnectUrl != other.replaopenIdConnectUrlce \
+           and self.extensions != other.extensions

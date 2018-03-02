@@ -15,3 +15,13 @@ class Example(Rep):
         self.value = d['value']
         self.externalValue = d['externalValue']
         self.extensions = d['extensions']
+
+    def __eq__(self, other):
+        return self.summary == other.summary and self.description == other.description \
+           and self.value == other.value and self.externalValue == other.externalValue \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.summary != other.summary and self.description != other.description \
+           and self.value != other.value and self.externalValue != other.externalValue \
+           and self.extensions != other.extensions
