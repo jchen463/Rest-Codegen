@@ -1,6 +1,5 @@
 from .rep import Rep
 
-
 class OAuthFlow(Rep):
     def __init__(self, dikt, flow_name):
         from .parse import parse_dict
@@ -30,7 +29,16 @@ class OAuthFlow(Rep):
         self.refreshUrl = d['refreshUrl']
         self.scopes = d['scopes']
         self.extensions = d['extensions']
-
+        
+    def __eq__(self, other):
+        return self.authorizationCode == other.authorizationCode and self.tokenUrl == other.tokenUrl \
+           and self.refreshUrl == other.refreshUrl and self.scopes == other.scopes \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.authorizationCode != other.authorizationCode and self.tokenUrl != other.tokenUrl \
+           and self.refreshUrl != other.refreshUrl and self.scopes != other.scopes \
+           and self.extensions != other.extensions
 
 class OAuthFlows(Rep):
     def __init__(self, dikt):
@@ -56,3 +64,13 @@ class OAuthFlows(Rep):
         if 'authorizationCode' in dikt:
             self.authorizationCode = OAuthFlow(
                 dikt['authorizationCode'], 'authorizationCode')
+                
+    def __eq__(self, other):
+        return self.implicit == other.implicit and self.password == other.password \
+           and self.clientCredentials == other.clientCredentials and self.authorizationCode == \
+           other.authorizationCode
+ 
+    def __ne__(self, other):
+        return self.implicit != other.implicit and self.password != other.password \
+           and self.clientCredentials != other.clientCredentials and self.authorizationCode != \
+           other.authorizationCode

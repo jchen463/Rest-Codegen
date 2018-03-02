@@ -1,12 +1,11 @@
-{% include "templates/lib.tmpl" %}
+{% include "codegen/templates/lib.tmpl" %}
 
 
-{% include "templates/models_dep.tmpl" %}
+{% include "codegen/templates/models_dep.tmpl" %}
 
 {# classes template #}
 class {{name}}(Model):
-    {# {% for property in properties %} {{property.name}}: {{property.type}}{%if not loop.last %},{% endif %}{% endfor %} #}
-    def __init__(self,{% for property in properties %} {{property.name}}: {{property.type}}{%if not loop.last %},{% endif %}{% endfor %}):
+    def __init__(self,{% for property in properties %} {{property.name}}: {{property.type}}=None{%if not loop.last %},{% endif %}{% endfor %}):
         self.swagger_types = {
         {% for property in properties %}
          '{{property.name}}': {{property.type}}{%if not loop.last %},{% endif %}
@@ -22,7 +21,7 @@ class {{name}}(Model):
         }
 
         {% for property in properties %}
-         self._{{property.name}} = {{property.name}}
+        self._{{property.name}} = {{property.name}}
         {% endfor %}
 
 

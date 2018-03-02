@@ -18,3 +18,13 @@ class MediaType(Rep):
         self.examples = d['examples']
         self.encoding = d['encoding']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.schema == other.schema and self.example == other.example \
+           and self.examples == other.examples and self.encoding == other.encoding \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.schema != other.schema and self.example != other.example \
+           and self.examples != other.examples and self.encoding != other.encoding \
+           and self.extensions != other.extensions

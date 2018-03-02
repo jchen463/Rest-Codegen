@@ -12,3 +12,8 @@ class Callback(Rep):
                 self.extensions.append({key, value})
             else:
                 self.dikt[key] = value
+    def __eq__(self, other):
+        return self.dikt == other.dikt and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.dikt != other.dikt or self.extensions != other.extensions

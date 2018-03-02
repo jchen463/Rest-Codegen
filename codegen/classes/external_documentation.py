@@ -13,3 +13,11 @@ class ExternalDocumentation(Rep):
         self.description = d['description']
         self.url = d['url']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.description == other.description and self.url == other.url \
+           and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.description != other.description and self.url != other.url \
+           and self.extensions != other.extensions

@@ -15,3 +15,11 @@ class ServerVariable(Rep):
         self.default = d['default']
         self.description = d['description']
         self.extensions = d['extensions']
+        
+    def __eq__(self, other):
+        return self.enum == other.enum and self.default == other.default \
+           and self.description == other.description and self.extensions == other.extensions
+ 
+    def __ne__(self, other):
+        return self.enum != other.enum and self.default != other.default \
+           and self.description != other.description and self.extensions != other.extensions

@@ -86,6 +86,46 @@ class Schema(Rep):
             self.minLength = int(d['minLength'])
         if d['maxLength'] is not None:
             self.maxLength = int(d['maxLength'])
+            
+    def __eq__(self, other):
+        return self.title == other.title and self.exclusiveMaximum == other.exclusiveMaximum \
+           and self.exclusiveMinimum == other.exclusiveMinimum and self.pattern == other.pattern \
+           and self.uniqueItems == other.uniqueItems and self.required == other.required \
+           and self.type == other.type and self.allOf == other.allOf \
+           and self.default == other.default and self.oneOf == other.oneOf \
+           and self.anyOf == other.anyOf and self.notOf == other.notOf \
+           and self.items == other.items and self.properties == other.properties \
+           and self.example == other.example and self.description == other.description \
+           and self.format == other.format and self.enum == other.enum \
+           and self.nullable == other.nullable and self.discriminator == other.discriminator \
+           and self.readOnly == other.readOnly and self.writeOnly == other.writeOnly \
+           and self.xml == other.xml and self.externalDocs == other.externalDocs \
+           and self.deprecated == other.deprecated and self.extensions == other.extensions \
+           and self.additionalProperties == other.additionalProperties and self.multipleOf == other.multipleOf \
+           and self.maximum == other.maximum and self.minimum == other.minimum \
+           and self.maxItems == other.maxItems and self.minItems == other.minItems \
+           and self.maxProperties == other.maxProperties and self.minProperties == other.minProperties \
+           and self.minLength == other.minLength and self.maxLength == other.maxLength
+ 
+    def __ne__(self, other):
+        return self.title != other.title and self.exclusiveMaximum != other.exclusiveMaximum \
+           and self.exclusiveMinimum != other.exclusiveMinimum and self.pattern != other.pattern \
+           and self.uniqueItems != other.uniqueItems and self.required != other.required \
+           and self.type != other.type and self.allOf != other.allOf \
+           and self.default != other.default and self.oneOf != other.oneOf \
+           and self.anyOf != other.anyOf and self.notOf != other.notOf \
+           and self.items != other.items and self.properties != other.properties \
+           and self.example != other.example and self.description != other.description \
+           and self.format != other.format and self.enum != other.enum \
+           and self.nullable != other.nullable and self.discriminator != other.discriminator \
+           and self.readOnly != other.readOnly and self.writeOnly != other.writeOnly \
+           and self.xml != other.xml and self.externalDocs != other.externalDocs \
+           and self.deprecated != other.deprecated and self.extensions != other.extensions \
+           and self.additionalProperties != other.additionalProperties and self.multipleOf != other.multipleOf \
+           and self.maximum != other.maximum and self.minimum != other.minimum \
+           and self.maxItems != other.maxItems and self.minItems != other.minItems \
+           and self.maxProperties != other.maxProperties and self.minProperties != other.minProperties \
+           and self.minLength != other.minLength and self.maxLength != other.maxLength
 
         # these will be strings
         # any: default, example
