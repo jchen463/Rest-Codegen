@@ -1,6 +1,6 @@
-{% include "templates/lib.tmpl" %}
+{% include "codegen/templates/lib.tmpl" %}
 
-{% include "templates/dep.tmpl" %}
+{% include "codegen/templates/dep.tmpl" %}
 
 default_api = Blueprint('default', __name__)
 
@@ -20,3 +20,4 @@ def {{value['operationId']}}({% if value['parameters'] is not none %}{% for arg 
 {% endif %}
 {% endfor %}
 {% endfor %}
+
