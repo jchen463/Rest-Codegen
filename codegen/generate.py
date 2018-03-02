@@ -3,7 +3,7 @@ import os.path
 
 import jinja2
 
-from classes.parse import get_object
+from codegen.classes.parse import get_object
 
 
 def generate_flask_server_code(spec, spec_dict):
@@ -21,8 +21,8 @@ def output_init():
         'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = '__init__.py'
-    renders = [FileRender('templates/init.tmpl', file_name, [])]
-    do_renders(renders, 'templates/', 'generated')
+    renders = [FileRender('codegen/templates/init.tmpl', file_name, [])]
+    do_renders(renders, 'codegen/templates/', 'codegen/generated')
 
 
 def output_requirements():
@@ -30,8 +30,9 @@ def output_requirements():
         'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = 'requirements.txt'
-    renders = [FileRender('templates/requirements.tmpl', file_name, [])]
-    do_renders(renders, 'templates/', 'generated')
+    renders = [FileRender(
+        'codegen/templates/requirements.tmpl', file_name, [])]
+    do_renders(renders, 'codegen/templates/', 'codegen/generated')
 
 
 def output_main():
@@ -39,8 +40,8 @@ def output_main():
         'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = '__main__.py'
-    renders = [FileRender('templates/main.tmpl', file_name, [])]
-    do_renders(renders, 'templates/', 'generated')
+    renders = [FileRender('codegen/templates/main.tmpl', file_name, [])]
+    do_renders(renders, 'codegen/templates/', 'codegen/generated')
 
 
 def output_encoder():
@@ -48,8 +49,8 @@ def output_encoder():
         'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = 'encoder.py'
-    renders = [FileRender('templates/encoder.tmpl', file_name, [])]
-    do_renders(renders, 'templates/', 'generated')
+    renders = [FileRender('codegen/templates/encoder.tmpl', file_name, [])]
+    do_renders(renders, 'codegen/templates/', 'codegen/generated')
 
 
 def output_util():
@@ -57,8 +58,8 @@ def output_util():
         'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = 'util.py'
-    renders = [FileRender('templates/util.tmpl', file_name, [])]
-    do_renders(renders, 'templates/', 'generated')
+    renders = [FileRender('codegen/templates/util.tmpl', file_name, [])]
+    do_renders(renders, 'codegen/templates/', 'codegen/generated')
 
 
 type_mapping = {
@@ -108,9 +109,9 @@ def output_controllers(spec_dict):
     }
 
     file_name = 'default_controller.py'
-    renders = [FileRender('templates/controller.tmpl', file_name,
+    renders = [FileRender('codegen/templates/controller.tmpl', file_name,
                           [controller_lib, controller_dep, controller_functions, methods])]
-    do_renders(renders, 'templates/', 'generated/controllers')
+    do_renders(renders, 'codegen/templates/', 'codegen/generated/controllers')
 
 
 def output_model_class(spec):
@@ -121,8 +122,8 @@ def output_model_class(spec):
         'FileRender', ['template', 'output', 'params_dicts'])
 
     file_name = "base_model_.py"
-    renders = [FileRender('templates/base_model.tmpl', file_name, [])]
-    do_renders(renders, 'templates/', 'generated/models')
+    renders = [FileRender('codegen/templates/base_model.tmpl', file_name, [])]
+    do_renders(renders, 'codegen/templates/', 'codegen/generated/models')
 
     # print(spec['components'].schemas)
     for scheme_name, schema_obj in spec.components.schemas.items():
@@ -202,7 +203,7 @@ def output_model_class(spec):
         file_name = makeFirstLetterLower(model['name']) + ".py"
         renders = [FileRender('templates/models.tmpl', file_name, [
             model_lib, model_dep, model])]
-        do_renders(renders, 'templates/', 'generated/models')
+        do_renders(renders, 'codegen/templates/', 'codegen/generated/models')
 
 
 def do_renders(renders, template_dir, output_dir):
