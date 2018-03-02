@@ -9,7 +9,7 @@ from openapi_spec_validator import openapi_v3_spec_validator
 
 import app_config as cfg
 from classes.specification import Specification
-from generate import generate_flask_server_code
+from generate import generate_flask_server_code, generate_typescript_client_code
 
 
 def main():
@@ -31,6 +31,7 @@ def main():
     # print(path_names)
 
     generate_flask_server_code(spec, spec_dict2)
+    generate_typescript_client_code(spec, spec_dict2)
 
 
 def load_spec_file(file_path):

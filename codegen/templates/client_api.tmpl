@@ -1,0 +1,74 @@
+{% include "templates/client_dep.tmpl" %}
+
+{% for tag in tags %}
+@Injectable() 
+export class {{ tag|capitalize }}Api {
+	private basePath = '{{url}}'
+	public defaultHeaders: Headers = new Headers();
+	public configuration: Configuration = new Configuration();
+
+	 constructor(protected http: Http, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+        if (basePath) {
+            this.basePath = basePath;
+        }
+        if (configuration) {
+            this.configuration = configuration;
+        }
+    }
+{% for path_name, path_info in dikt.items() %}{% for key, value in path_info.items() %}{% if key in methods and value is not none %}{% if tag in value['tags'] %} 
+	public {{value['operationId']}}( body: models.Pet , extraHttpRequestParams?: any): Observable<{}> {
+        return this.{{value['operationId']}}WithHttpInfo(body, extraHttpRequestParams)
+            .map((response: Response) => {
+                if (response.status === 204) {
+                    return undefined;
+                } else {
+                    return response.json() || {};
+                }
+            });
+    }
+{% endif %}{% endif %}{% endfor %}{% endfor %}
+
+{% for path_name, path_info in dikt.items() %}{% for key, value in path_info.items() %}{% if key in methods and value is not none %}{% if tag in value['tags'] %}
+	public {{value['operationId']}}WithHttpInfo(petId: number, extraHttpRequestParams?: any): Observable<Response> {
+        const path = this.basePath + {{path_name}}
+                    .replace('${' + 'petId' + '}', String(petId));
+
+        let queryParameters = new URLSearchParams();
+        let headers = new Headers(this.defaultHeaders.toJSON()); // https://github.com/angular/angular/issues/6845
+        
+        if (petId === null || petId === undefined) {
+            throw new Error('Required parameter petId was null or undefined when calling getPetById.');
+        }
+        
+        let consumes: string[] = [
+        ];
+
+        
+        let produces: string[] = [
+            'application/json',
+            'application/xml'
+        ];
+
+        
+        if (this.configuration.apiKey) {
+            headers.set('api_key', this.configuration.apiKey);
+        }
+
+        let requestOptions: RequestOptionsArgs = new RequestOptions({
+            method: RequestMethod.Get,
+            headers: headers,
+            search: queryParameters,
+            withCredentials:this.configuration.withCredentials
+        });
+        
+        if (extraHttpRequestParams) {
+            requestOptions = (<any>Object).assign(requestOptions, extraHttpRequestParams);
+        }
+        return this.http.request(path, requestOptions);
+    }
+
+{% endif %}{% endif %}{% endfor %}{% endfor %}
+
+}
+
+{% endfor %}

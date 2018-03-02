@@ -15,7 +15,48 @@ def generate_flask_server_code(spec, spec_dict):
     output_init()
     output_model_class(spec)
 
+def generate_typescript_client_code(spec, spec_dict):
+    output_client_api(spec_dict, spec);
 
+def output_client_api(spec_dict, spec):
+
+    FileRender = namedtuple(
+        'FileRender', ['template', 'output', 'params_dicts'])
+
+    methods = {
+        'methods': ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
+    }
+
+    tags = {'tags': [] }
+
+    for tag in spec_dict['tags']:
+        tags['tags'].append(tag['name'])
+
+    basePath = {'url': spec_dict['servers'][0]['url'] }
+
+    controller_functions = {'dikt': {}}
+    for key, value in spec_dict['paths']['dikt'].items():
+        key = key.replace('{', '<')
+        key = key.replace('}', '>')
+        controller_functions['dikt'][key] = value
+
+    controller_dep = {
+        'dependencies': [
+            {'location': '@angular/core', 'objects': ['Inject', 'Injectable', 'Optional'] },
+            {'location': '@angular/http', 'objects': ['Http', 'Headers', 'URLSearchParams'] },
+            {'location': '@angular/http', 'objects': ['RequestMethod', 'RequestOptions', 'RequestOptionsArgs'] },
+            {'location': '@angular/http', 'objects': ['Response, ResponseContentType']},
+            {'location': 'rxjs/Observable', 'objects': ['Observable']},
+            {'location': '../variables', 'objects': ['BASE_PATH', 'COLLECTION_FORMATS']},
+            {'location': '../configuration', 'objects': ['Configuration']}
+        ]
+    }
+
+    file_name = 'default_client_api.py'
+    renders = [FileRender('templates/client_api.tmpl', file_name,
+                          [controller_dep, tags, controller_functions, methods, basePath])]
+    do_renders(renders, 'templates/', 'generated/client/api')
+    
 def output_init():
     FileRender = namedtuple(
         'FileRender', ['template', 'output', 'params_dicts'])

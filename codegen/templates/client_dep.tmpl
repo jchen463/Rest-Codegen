@@ -1,0 +1,4 @@
+{# typescript client dependencies #}
+{% for dependency in dependencies %}
+import {% for object in dependency.objects %} { {{object}} {% if not loop.last %}, {% endif %} } {% endfor %} from '{{dependency.location}}'
+{% endfor %}
