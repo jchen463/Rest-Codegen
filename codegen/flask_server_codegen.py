@@ -37,20 +37,20 @@ def flask_api_setup(dikt):
                           cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'base_model.py')
 
 
-def flask_controllers_setup(dikt):
+def flask_generate_controller(dikt):
     # controller files
-    # dikt contains 'paths'
     print('flask_controllers_setup')
-    # for url, _ in dikt['paths'].items():
-    #    dikt['paths']['url']
+
+    default.emit_template('controller.tmpl', params,
+                          cfg.PROJECT_OUTPUT + os.path.sep + 'controllers', tag + '_controller' + '.py')
 
 
-def flask_models_setup(dikt):
+def flask_generate_model(dikt):
     # model files
-    # dikt contains 'schemas'
     print('flask_models_setup')
-    # for schema_name, schema_info in dikt['schemas'].items():
-    #     dikt['schemas']['schema_name']
+
+    default.emit_template('model.tmpl', params, cfg.PROJECT_OUTPUT +
+                          os.path.sep + 'models', schema_name + '.py')
 
 
 flask_invocation_iterator_functions = [
@@ -62,11 +62,11 @@ flask_specification_iterator_functions = [
 ]
 
 flask_paths_iterator_functions = [
-    flask_models_setup,
+    flask_generate_controller,
 ]
 
 flask_schemas_iterator_functions = [
-    flask_controllers_setup,
+    flask_generate_model,
 ]
 
 
