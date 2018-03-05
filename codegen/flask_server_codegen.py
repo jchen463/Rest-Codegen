@@ -81,10 +81,5 @@ def stage_default_iterators():
                           flask_paths_iterator_functions)
 
 
-def run_iterators(spec_dict):
-    for iterator_name, iterator in default.iterators_mapping.items():
-        iterator(spec_dict, default.iterator_functions_mapping[iterator_name])
-
-
 def flask_server_codegen(spec_dict):
-    run_iterators(spec_dict)
+    default.run_iterators(spec_dict)
