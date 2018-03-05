@@ -50,6 +50,11 @@ def paths_iterator(spec_dict, paths_iterator_functions):
         f(dikt)
 
 
+def run_iterators(spec_dict):
+    for iterator_name, iterator in iterators_mapping.items():
+        iterator(spec_dict, iterator_functions_mapping[iterator_name])
+
+
 def emit_template(template_name, dikt, output_dir, output_name):
     # template_loader = jinja2.FileSystemLoader(searchpath='./')
 

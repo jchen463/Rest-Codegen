@@ -3,7 +3,7 @@ import os.path
 
 import jinja2
 
-from codegen.classes.parse import get_object
+from codegen.classes import get_object
 
 
 def generate_flask_server_code(spec, spec_dict):
