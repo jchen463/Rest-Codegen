@@ -87,13 +87,4 @@ def run_iterators(spec_dict):
 
 
 def flask_server_codegen(spec_dict):
-    # stage_default_iterators()
-
-    # Stages user-defined iterators
-    # if cfg.BUILD is not None:
-    #     spec = importlib.util.spec_from_file_location(cfg.BUILD[:-3],
-    #                                                   cfg.BUILD_FILE_PATH)
-    #     build_script = importlib.util.module_from_spec(spec)
-    #     spec.loader.exec_module(build_script)
-
     run_iterators(spec_dict)

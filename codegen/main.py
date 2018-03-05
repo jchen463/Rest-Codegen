@@ -34,7 +34,7 @@ def main():
     with open('spec_tree.json', 'wt') as out:
         json.dump(spec_dict2, out, indent=4)
 
-    # flask_server_codegen(spec_dict)
+    flask_server_codegen(spec)
 
 
 def load_build_file():
