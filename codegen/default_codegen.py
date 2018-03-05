@@ -23,34 +23,40 @@ def invocation_iterator(spec, invocation_iterator_functions):
     # (may have to create intermediate representation later)
     # might need to pass in parameters here too? unsure
     # also unsure what object we're going to pass into these functions
-    dikt = {}
-    dikt['info'] = spec_dict['info']
-    dikt['externalDocs'] = spec_dict['externalDocs']
+    # dikt = {}
+    # dikt['info'] = spec_dict['info']
+    # dikt['externalDocs'] = spec_dict['externalDocs']
     for f in invocation_iterator_functions:
         f(spec)
 
 
 def specification_iterator(spec, specification_iterator_functions):
     # right now we're only using one spec though
-    for specification in specifications:
-        for f in specification_iterator_functions:
-            f(specification)
+    # for specification in specifications:
+    #     for f in specification_iterator_functions:
+    #         f(specification)
+    for f in specification_iterator_functions:
+        f(spec)
 
 
 def schemas_iterator(spec, schemas_iterator_functions):
-    schemas = spec.components['schemas']  # array of schemas
-    for schema in schemas:
-        for f in schemas_iterator_functions:
-            f(schema)
+    # schemas = spec.components['schemas']  # array of schemas
+    # for schema in schemas:
+    #     for f in schemas_iterator_functions:
+    #         f(schema)
+    for f in schemas_iterator_functions:
+        f(spec)
 
 
 def paths_iterator(spec, paths_iterator_functions):
     paths = spec.paths.dikt  # dictionary where pathname is key and path details is value
     # create a dictionary where tag is key and all following paths is value
     # probably need to change this to an array of path objects -- may need to refactor Paths class
-    for path_grouping in paths:
-        for f in paths_iterator_functions:
-            f(dikt)
+    # for path_grouping in paths:
+    #     for f in paths_iterator_functions:
+    #         f(dikt)
+    for f in paths_iterator_functions:
+        f(spec)
 
 # paths are stored as a dictionary
 # group paths by tag
@@ -72,13 +78,13 @@ def paths_iterator(spec, paths_iterator_functions):
 # }
 
 
-def run_iterators(spec_dict):
+def run_iterators():
     # run each iterator once
     for iterator_name, iterator in iterators_mapping.items():
-        iterator(spec_dict, iterator_functions_mapping[iterator_name])
+        iterator(cfg.SPECIFICATION, iterator_functions_mapping[iterator_name])
 
 
-def emit_template(template_name, dikt, output_dir, output_name):
+def emit_template(template_name, params, output_dir, output_name):
     # template_loader = jinja2.FileSystemLoader(searchpath='./')
 
     # THIS DOESN'T WORK WHEN RUNNING 'python3 main.py'
@@ -92,7 +98,7 @@ def emit_template(template_name, dikt, output_dir, output_name):
                              line_comment_prefix='//*')
 
     # template_path = cfg.DEFAULT_TEMPLATES_DIR + os.path.sep + template_name
-    output = env.get_template(template_name).render(dikt)
+    output = env.get_template(template_name).render(params)
 
     output_file = output_dir + os.path.sep + output_name
 

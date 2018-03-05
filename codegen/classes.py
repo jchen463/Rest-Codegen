@@ -1,5 +1,10 @@
 import re
 
+try:
+    import codegen.codegen_config as cfg
+except ImportError as err:
+    import codegen_config as cfg
+
 
 class Rep:
     def __repr__(self):
@@ -562,6 +567,8 @@ def get_boolean(value):
 def get_object(keyword, dikt):
     if '$ref' in dikt:
         return Reference(dikt)
+        # ref = dikt['$ref'][2:].split('/')
+        # return get_object(ref[1], cfg.SPEC_DICT[ref[0]][ref[1]][ref[2]])
     if keyword in keyword_to_object:
         return keyword_to_object[keyword](dikt)
     return None

@@ -25,16 +25,16 @@ def main():
     if len(sys.argv) > 1:
         load_build_file()
 
-    spec_dict = load_spec_file(cfg.SPEC_FILE_PATH)
-    validate_specification(spec_dict)
+    cfg.SPEC_DICT = load_spec_file(cfg.SPEC_FILE_PATH)
+    validate_specification(cfg.SPEC_DICT)
 
-    spec = Specification(spec_dict)
-    spec_dict2 = ast.literal_eval(str(vars(spec)))
+    cfg.SPECIFICATION = Specification(cfg.SPEC_DICT)
+    spec_dict2 = ast.literal_eval(str(vars(cfg.SPECIFICATION)))
 
     with open('spec_tree.json', 'wt') as out:
         json.dump(spec_dict2, out, indent=4)
 
-    flask_server_codegen(spec)
+    flask_server_codegen()
 
 
 def load_build_file():

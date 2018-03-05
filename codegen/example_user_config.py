@@ -10,7 +10,7 @@ PROJECT_OUTPUT = 'myproject'
 TEMPLATES_DIR = 'templates'
 
 
-def my_iterator(spec_dict, my_iterator_functions):
+def my_iterator(spec, my_iterator_functions):
     print('starting my iterator')
     dikt = {}
     for f in my_iterator_functions:

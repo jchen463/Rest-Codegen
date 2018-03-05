@@ -14,18 +14,22 @@ Responsible for certain files
 """
 
 
-def flask_project_setup(dikt):
+def flask_project_setup(params):
     # outer codegen folder: setup.py, requirements.txt. Dockerfile
-    # dikt contains 'info', 'externalDocs'
+    # params contains 'info', 'externalDocs'
+    dikt = {}
+
     print('flask_project_setup')
     default.emit_template('requirements.tmpl', dikt,
                           cfg.PROJECT_OUTPUT, 'requirements.txt')
-    # default.emit_template('setup.tmpl', dikt, cfg.PROJECT_OUTPUT, 'setup.py')
+    # default.emit_template('setup.tmpl', params, cfg.PROJECT_OUTPUT, 'setup.py')
 
 
-def flask_api_setup(dikt):
+def flask_api_setup(params):
     # inner codegen folder: base classes, encoder, deserializer. ???
-    # dikt is the specification
+    # params is the specification class
+
+    dikt = {}  # access keys in templates
 
     print('flask_api_setup')
     default.emit_template('init.tmpl', dikt, cfg.PROJECT_OUTPUT, '__init__.py')
@@ -37,20 +41,20 @@ def flask_api_setup(dikt):
                           cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'base_model.py')
 
 
-def flask_generate_controller(dikt):
+def flask_generate_controller(params):
     # controller files
     print('flask_controllers_setup')
 
-    default.emit_template('controller.tmpl', params,
-                          cfg.PROJECT_OUTPUT + os.path.sep + 'controllers', tag + '_controller' + '.py')
+    # default.emit_template('controller.tmpl', params,
+    #                       cfg.PROJECT_OUTPUT + os.path.sep + 'controllers', tag + '_controller' + '.py')
 
 
-def flask_generate_model(dikt):
+def flask_generate_model(params):
     # model files
     print('flask_models_setup')
 
-    default.emit_template('model.tmpl', params, cfg.PROJECT_OUTPUT +
-                          os.path.sep + 'models', schema_name + '.py')
+    # default.emit_template('model.tmpl', params, cfg.PROJECT_OUTPUT +
+    #                       os.path.sep + 'models', schema_name + '.py')
 
 
 flask_invocation_iterator_functions = [
@@ -81,5 +85,5 @@ def stage_default_iterators():
                           flask_paths_iterator_functions)
 
 
-def flask_server_codegen(spec_dict):
-    default.run_iterators(spec_dict)
+def flask_server_codegen():
+    default.run_iterators()
