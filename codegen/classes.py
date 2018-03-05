@@ -319,8 +319,9 @@ class Reference(Rep):
     def __init__(self, dikt):
         allowed = ['$ref']
         required = ['$ref']
-        self.__dict__ = parse_dict(
+        d = parse_dict(
             dikt=dikt, allowed=allowed, required=required)
+        self.ref = d['$ref']
 
 
 class RequestBody(Rep):
