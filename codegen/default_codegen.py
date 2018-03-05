@@ -18,39 +18,62 @@ def codegen_stage(x_iterator, x_iterator_functions):
     iterator_functions_mapping[iterator_name] = x_iterator_functions
 
 
-def invocation_iterator(spec_dict, invocation_iterator_functions):
+def invocation_iterator(spec, invocation_iterator_functions):
     # pull relevant pieces of specification into dictionary
     # (may have to create intermediate representation later)
     # might need to pass in parameters here too? unsure
+    # also unsure what object we're going to pass into these functions
     dikt = {}
     dikt['info'] = spec_dict['info']
     dikt['externalDocs'] = spec_dict['externalDocs']
     for f in invocation_iterator_functions:
-        f(dikt)
+        f(spec)
 
 
-def specification_iterator(spec_dict, specification_iterator_functions):
-    dikt = {}
-    dikt = spec_dict
-    for f in specification_iterator_functions:
-        f(dikt)
+def specification_iterator(spec, specification_iterator_functions):
+    # right now we're only using one spec though
+    for specification in specifications:
+        for f in specification_iterator_functions:
+            f(specification)
 
 
-def schemas_iterator(spec_dict, schemas_iterator_functions):
-    dikt = {}
-    dikt['schemas'] = spec_dict['components']['schemas']
-    for f in schemas_iterator_functions:
-        f(dikt)
+def schemas_iterator(spec, schemas_iterator_functions):
+    schemas = spec.components['schemas']  # array of schemas
+    for schema in schemas:
+        for f in schemas_iterator_functions:
+            f(schema)
 
 
-def paths_iterator(spec_dict, paths_iterator_functions):
-    dikt = {}
-    dikt['paths'] = spec_dict['paths']
-    for f in paths_iterator_functions:
-        f(dikt)
+def paths_iterator(spec, paths_iterator_functions):
+    paths = spec.paths.dikt  # dictionary where pathname is key and path details is value
+    # create a dictionary where tag is key and all following paths is value
+    # probably need to change this to an array of path objects -- may need to refactor Paths class
+    for path_grouping in paths:
+        for f in paths_iterator_functions:
+            f(dikt)
+
+# paths are stored as a dictionary
+# group paths by tag
+# execute each function once per path-group
+
+# paths = {
+#     'pet': [
+#         Path object,
+#         Path object,
+#         Path object,
+#     ],
+#     'user': [
+#         Path object,
+#         Path object,
+#     ],
+#     'store': [
+
+#     ]
+# }
 
 
 def run_iterators(spec_dict):
+    # run each iterator once
     for iterator_name, iterator in iterators_mapping.items():
         iterator(spec_dict, iterator_functions_mapping[iterator_name])
 
