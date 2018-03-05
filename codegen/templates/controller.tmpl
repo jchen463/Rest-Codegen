@@ -1,23 +1,22 @@
-{% include "codegen/templates/lib.tmpl" %}
+import json
 
-{% include "codegen/templates/dep.tmpl" %}
+from flask import Blueprint 
+from flask import jsonify
+from flask import abort
+from flask import make_response
+from flask import request
 
-default_api = Blueprint('default', __name__)
+{{ paths_list[0]['tag'] }}_api = Blueprint('{{ paths_list[0]['tag'] }}', __name__)
 
-{% for path_name, path_info in dikt.items() %}
-{% for key, value in path_info.items() %}
-{% if key in methods and value is not none%}
+{% for path in paths_list %}
 
-@default_api.route('{{path_name}}', methods=['{{key.upper()}}'])
-def {{value['operationId']}}({% if value['parameters'] is not none %}{% for arg in value['parameters'] %}{{arg.name}}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}):
+@{{ paths_list[0]['tag'] }}_api.route('{{path['url']}}', methods=['{{path['method']}}'])
+def {{path['properties'].operationId}}({% if path['properties'].parameters is not none %}{% for param in path['properties'].parameters %}{{param.name}}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}):
 
-    {% if key == 'post'%}
+    {% if path['method'] == 'post'%}
     if not request.json:
         abort(400)
     {% endif %}
-    return 'do something!'
+    return '{{ path['url'] }} {{ path['method'].upper() }}'
 
-{% endif %}
 {% endfor %}
-{% endfor %}
-

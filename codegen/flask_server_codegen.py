@@ -20,8 +20,7 @@ def flask_project_setup(params):
     dikt = {}
 
     print('flask_project_setup')
-    default.emit_template('requirements.tmpl', dikt,
-                          cfg.PROJECT_OUTPUT, 'requirements.txt')
+    default.emit_template('requirements.tmpl', dikt, cfg.PROJECT_OUTPUT, 'requirements.txt')
     # default.emit_template('setup.tmpl', params, cfg.PROJECT_OUTPUT, 'setup.py')
 
 
@@ -34,19 +33,34 @@ def flask_api_setup(params):
     print('flask_api_setup')
     default.emit_template('init.tmpl', dikt, cfg.PROJECT_OUTPUT, '__init__.py')
     default.emit_template('main.tmpl', dikt, cfg.PROJECT_OUTPUT, '__main__.py')
-    default.emit_template('encoder.tmpl', dikt,
-                          cfg.PROJECT_OUTPUT, 'encoder.py')
+    default.emit_template('encoder.tmpl', dikt, cfg.PROJECT_OUTPUT, 'encoder.py')
     default.emit_template('util.tmpl', dikt, cfg.PROJECT_OUTPUT, 'util.py')
-    default.emit_template('base_model.tmpl', dikt,
-                          cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'base_model.py')
+    default.emit_template('base_model.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'base_model.py')
 
 
 def flask_generate_controller(params):
     # controller files
+    """
+    params = 
+    [
+        {
+            'url': ,
+            'method': ,
+            'tag': ,
+            'properties': ,
+        },
+        {
+
+        },
+    ]
+    """
     print('flask_controllers_setup')
 
-    # default.emit_template('controller.tmpl', params,
-    #                       cfg.PROJECT_OUTPUT + os.path.sep + 'controllers', tag + '_controller' + '.py')
+    dikt = {
+        'paths_list': params 
+    }
+
+    default.emit_template('controller.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'controllers', params[0]['tag'] + '_controller' + '.py')
 
 
 def flask_generate_model(params):
@@ -75,14 +89,10 @@ flask_schemas_iterator_functions = [
 
 
 def stage_default_iterators():
-    default.codegen_stage(default.invocation_iterator,
-                          flask_invocation_iterator_functions)
-    default.codegen_stage(default.specification_iterator,
-                          flask_specification_iterator_functions)
-    default.codegen_stage(default.schemas_iterator,
-                          flask_schemas_iterator_functions)
-    default.codegen_stage(default.paths_iterator,
-                          flask_paths_iterator_functions)
+    default.codegen_stage(default.invocation_iterator, flask_invocation_iterator_functions)
+    default.codegen_stage(default.specification_iterator, flask_specification_iterator_functions)
+    default.codegen_stage(default.schemas_iterator, flask_schemas_iterator_functions)
+    default.codegen_stage(default.paths_iterator, flask_paths_iterator_functions)
 
 
 def flask_server_codegen():
