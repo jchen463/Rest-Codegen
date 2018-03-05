@@ -72,12 +72,10 @@ def specification_iterator(spec, specification_iterator_functions):
 
 
 def schemas_iterator(spec, schemas_iterator_functions):
-    # schemas = spec.components['schemas']  # array of schemas
-    # for schema in schemas:
-    #     for f in schemas_iterator_functions:
-    #         f(schema)
-    for f in schemas_iterator_functions:
-        f(spec)
+    schemas = spec.components.schemas  # array of schemas
+    for schema_name, schema in schemas.items():
+        for f in schemas_iterator_functions:
+            f({'name': schema_name, 'object': schema})
 
 def paths_iterator(spec, paths_iterator_functions):
     paths_by_tag = get_paths_by_tag(spec.paths.dikt)
