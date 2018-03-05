@@ -9,19 +9,13 @@ import argparse
 from openapi_spec_validator import openapi_v3_spec_validator
 
 try:  # when just doing $ python3 main.py only below imports work
-    from codegen.classes.specification import Specification
+    from codegen.classes import Specification
     from codegen.flask_server_codegen import flask_server_codegen, stage_default_iterators
     import codegen.codegen_config as cfg
 except ImportError as err:  # when packaged, only above imports work
-    from classes.specification import Specification
+    from classes import Specification
     from flask_server_codegen import flask_server_codegen, stage_default_iterators
     import codegen_config as cfg
-
-# figure out how argparse works later. Not a high priority though??
-# parser = argparse.ArgumentParser()
-# parser.add_argument('buildfile', nargs='?', type=argparse.FileType('r'), default=sys.stdin)
-# args = parser.parse_args()
-# print(args.buildfile)
 
 
 def main():
@@ -31,20 +25,16 @@ def main():
     if len(sys.argv) > 1:
         load_build_file()
 
-    spec_dict = load_spec_file(cfg.SPEC_FILE_PATH)
-    validate_specification(spec_dict)
+    cfg.SPEC_DICT = load_spec_file(cfg.SPEC_FILE_PATH)
+    validate_specification(cfg.SPEC_DICT)
 
-    spec = Specification(spec_dict)
-    spec_dict2 = ast.literal_eval(str(vars(spec)))
+    cfg.SPECIFICATION = Specification(cfg.SPEC_DICT)
+    spec_dict2 = ast.literal_eval(str(vars(cfg.SPECIFICATION)))
 
-    # # with open('spec_tree.json', 'wt') as out:
-    # #     json.dump(spec_tree_dict, out, indent=4)
-
-    # MAKE A FILE CALLED flask_client_codegen.py, do it similarly to flask_server_codegen.py
-    # generate_typescript_client_code(spec, spec_dict2)
-
-    flask_server_codegen(spec_dict)
-
+    with open('spec_tree.json', 'wt') as out:
+        json.dump(spec_dict2, out, indent=4)
+        
+    flask_server_codegen()
 
 def load_build_file():
     # update defaults to reflect user's build file

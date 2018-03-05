@@ -14,18 +14,22 @@ Responsible for certain files
 """
 
 
-def flask_project_setup(dikt):
+def flask_project_setup(params):
     # outer codegen folder: setup.py, requirements.txt. Dockerfile
-    # dikt contains 'info', 'externalDocs'
+    # params contains 'info', 'externalDocs'
+    dikt = {}
+
     print('flask_project_setup')
     default.emit_template('requirements.tmpl', dikt,
                           cfg.PROJECT_OUTPUT, 'requirements.txt')
-    # default.emit_template('setup.tmpl', dikt, cfg.PROJECT_OUTPUT, 'setup.py')
+    # default.emit_template('setup.tmpl', params, cfg.PROJECT_OUTPUT, 'setup.py')
 
 
-def flask_api_setup(dikt):
+def flask_api_setup(params):
     # inner codegen folder: base classes, encoder, deserializer. ???
-    # dikt is the specification
+    # params is the specification class
+
+    dikt = {}  # access keys in templates
 
     print('flask_api_setup')
     default.emit_template('init.tmpl', dikt, cfg.PROJECT_OUTPUT, '__init__.py')
@@ -37,20 +41,20 @@ def flask_api_setup(dikt):
                           cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'base_model.py')
 
 
-def flask_controllers_setup(dikt):
+def flask_generate_controller(params):
     # controller files
-    # dikt contains 'paths'
     print('flask_controllers_setup')
-    # for url, _ in dikt['paths'].items():
-    #    dikt['paths']['url']
+
+    # default.emit_template('controller.tmpl', params,
+    #                       cfg.PROJECT_OUTPUT + os.path.sep + 'controllers', tag + '_controller' + '.py')
 
 
-def flask_models_setup(dikt):
+def flask_generate_model(params):
     # model files
-    # dikt contains 'schemas'
     print('flask_models_setup')
-    # for schema_name, schema_info in dikt['schemas'].items():
-    #     dikt['schemas']['schema_name']
+
+    # default.emit_template('model.tmpl', params, cfg.PROJECT_OUTPUT +
+    #                       os.path.sep + 'models', schema_name + '.py')
 
 
 flask_invocation_iterator_functions = [
@@ -62,11 +66,11 @@ flask_specification_iterator_functions = [
 ]
 
 flask_paths_iterator_functions = [
-    flask_models_setup,
+    flask_generate_controller,
 ]
 
 flask_schemas_iterator_functions = [
-    flask_controllers_setup,
+    flask_generate_model,
 ]
 
 
@@ -81,19 +85,5 @@ def stage_default_iterators():
                           flask_paths_iterator_functions)
 
 
-def run_iterators(spec_dict):
-    for iterator_name, iterator in default.iterators_mapping.items():
-        iterator(spec_dict, default.iterator_functions_mapping[iterator_name])
-
-
-def flask_server_codegen(spec_dict):
-    # stage_default_iterators()
-
-    # Stages user-defined iterators
-    # if cfg.BUILD is not None:
-    #     spec = importlib.util.spec_from_file_location(cfg.BUILD[:-3],
-    #                                                   cfg.BUILD_FILE_PATH)
-    #     build_script = importlib.util.module_from_spec(spec)
-    #     spec.loader.exec_module(build_script)
-
-    run_iterators(spec_dict)
+def flask_server_codegen():
+    default.run_iterators()

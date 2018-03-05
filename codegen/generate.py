@@ -3,7 +3,7 @@ import os.path
 
 import jinja2
 
-from codegen.classes.parse import get_object
+from codegen.classes import get_object
 
 FileRender = namedtuple('FileRender', ['template', 'output', 'params_dicts'])
 
