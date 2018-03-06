@@ -23,8 +23,10 @@ def main():
     stage_default_iterators()
     print(sys.argv)
     if len(sys.argv) > 1:
-        load_build_file()
+        cfg.load_build_file(sys.argv[1])
 
+    print(cfg.SPEC)
+    print(cfg.SPEC_FILE_PATH)
     cfg.SPEC_DICT = load_spec_file(cfg.SPEC_FILE_PATH)
     validate_specification(cfg.SPEC_DICT)
 
@@ -38,24 +40,6 @@ def main():
         json.dump(spec_dict2, out, indent=4)
 
     flask_server_codegen()
-
-
-def load_build_file():
-    # update defaults to reflect user's build file
-    filename = sys.argv[1]
-    print('loading build file:', filename)
-    filepath = os.getcwd() + '/' + filename
-    spec = importlib.util.spec_from_file_location(filename[:-3], filepath)
-    build_script = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(build_script)
-    cfg.BUILD = filename
-    cfg.BUILD_FILE_PATH = filepath
-    if hasattr(build_script, 'SPEC'):
-        cfg.SPEC = build_script.SPEC
-        cfg.SPEC_FILE_PATH = os.getcwd() + os.path.sep + cfg.SPEC
-    if hasattr(build_script, 'PROJECT_OUTPUT'):
-        cfg.PROJECT_OUTPUT = os.getcwd() + os.path.sep + build_script.PROJECT_OUTPUT
-        cfg.SERVER_OUTPUT = cfg.PROJECT_OUTPUT + os.path.sep + 'server'
 
 
 def load_spec_file(file_path):
@@ -88,12 +72,3 @@ def validate_specification(spec):
 
 if __name__ == '__main__':
     main()
-
-
-# def load_build_file(filename):
-#     cwd = os.getcwd()
-#     full_path = cwd + '/' + filename
-#     spec = importlib.util.spec_from_file_location(
-#         filename[:-3], full_path)
-#     build_script = importlib.util.module_from_spec(spec)
-#     spec.loader.exec_module(build_script)
