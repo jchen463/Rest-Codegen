@@ -12,7 +12,7 @@ SPEC_DICT = None
 SPECIFICATION = None
 
 PROJECT_OUTPUT = os.getcwd() + os.path.sep + 'generated'
-API_CALLS_OUTPUT = PROJECT_OUTPUT + os.path.sep + ''
+SERVER_OUTPUT = PROJECT_OUTPUT + os.path.sep + 'server'
 
 USER_TEMPLATES_NAME = None
 USER_TEMPLATES_PATH = None

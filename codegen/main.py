@@ -55,6 +55,7 @@ def load_build_file():
         cfg.SPEC_FILE_PATH = os.getcwd() + os.path.sep + cfg.SPEC
     if hasattr(build_script, 'PROJECT_OUTPUT'):
         cfg.PROJECT_OUTPUT = os.getcwd() + os.path.sep + build_script.PROJECT_OUTPUT
+        cfg.SERVER_OUTPUT = cfg.PROJECT_OUTPUT + os.path.sep + 'server'
 
 
 def load_spec_file(file_path):
