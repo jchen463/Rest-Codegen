@@ -105,14 +105,14 @@ class Header(Rep):
         objects = ['schema']
 
         self.__dict__ = parse_dict(dikt=dikt, allowed=allowed, required=required,
-                                   objects=objects, mappings=mappings, booleans=booleans, arrays=arrays)
+                                   objects=objects, mappings=mappings, booleans=booleans)
 
         # <any>
         if 'example' in dikt:
             self.example = dikt['example']
 
-        if dikt['in'] == 'path':
-            required.append('required')
+        # if dikt['in'] == 'path':
+        #     required.append('required')
 
         # Default values
         # self.explode = False
@@ -140,8 +140,7 @@ class License(Rep):
         allowed = ['name', 'url', 'extensions']
         required = ['name']
 
-        self.__dict__ = parse_dict(
-            dikt=dikt, allowed=allowed, required=required)
+        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed, required=required)
 
 
 class Link(Rep):
@@ -156,8 +155,8 @@ class Link(Rep):
         if 'parameters' in dikt:
             self.parameters = get_mapping('scopes', dikt['parameters'])
 
-        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed, objects=objects,
-                                   mappings=mappings)
+        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed,
+                                   objects=objects, mappings=mappings)
 
 
 class MediaType(Rep):
@@ -167,8 +166,8 @@ class MediaType(Rep):
         objects = ['schema']
         mappings = ['examples', 'encoding']
 
-        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed, objects=objects,
-                                   mappings=mappings)
+        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed,
+                                   objects=objects, mappings=mappings)
 
 
 class OAuthFlow(Rep):
@@ -178,8 +177,7 @@ class OAuthFlow(Rep):
         required = ['scopes']
         mappings = ['scopes']
 
-        flows_requiring_tokenUrl = ['password',
-                                    'clientCredentials', 'authorizationCode']
+        flows_requiring_tokenUrl = ['password', 'clientCredentials', 'authorizationCode']
         flows_requiring_authorizationUrl = ['implicit', 'authorizationCode']
         if flow_name in flows_requiring_tokenUrl:
             required.append('tokenUrl')
@@ -206,8 +204,7 @@ class OAuthFlows(Rep):
         if 'password' in dikt:
             self.password = OAuthFlow(dikt['password'], 'password')
         if 'clientCredentials' in dikt:
-            self.clientCredentials = OAuthFlow(
-                dikt['clientCredentials'], 'clientCredentials')
+            self.clientCredentials = OAuthFlow(dikt['clientCredentials'], 'clientCredentials')
         if 'authorizationCode' in dikt:
             self.authorizationCode = OAuthFlow(
                 dikt['authorizationCode'], 'authorizationCode')
@@ -230,22 +227,22 @@ class Operation(Rep):
                                    arrays=arrays)
 
         if 'tags' in dikt:
-            self.tags = parse.get_array('op_tags', dikt['tags'])
+            self.tags = get_array('op_tags', dikt['tags'])
         else:
             self.tags = None
 
         self.responses = {}
-        for key, value in dikt['responses']:
-            self.responses[key] = parse.get_object('responses', value)
+        for key, value in dikt['responses'].items():
+            self.responses[key] = get_object('responses', value)
 
 
 class Parameter(Rep):
     def __init__(self, dikt):
         if 'content' in dikt != 'schema' in dikt:
-            raise ValueError('REQUIRED: one of \'content\' or \'schema\' only')
+            raise ValueError("REQUIRED: one of 'content' or 'schema' only")
         if 'example' in dikt != 'examples' in dikt:
             raise ValueError(
-                'REQUIRED: one of \'example\' or \'examples\' only')
+                "REQUIRED: one of 'example' or 'examples' only")
 
         allowed = ['name', 'in', 'description',
                    'required', 'deprecated', 'allowEmptyValue',
@@ -253,8 +250,8 @@ class Parameter(Rep):
                    'schema', 'examples',
                    'content', 'extensions']
         required = ['name', 'in']
-        booleans = ['required', 'deprecated', 'allowEmptyValue'
-                                              'explode', 'allowReserved']
+        booleans = ['required', 'deprecated', 'allowEmptyValue',
+                    'explode', 'allowReserved']
         mappings = ['content', 'examples']
         objects = ['schema']
 
@@ -297,11 +294,13 @@ class PathItem(Rep):
                    'patch', 'trace']
         arrays = ['servers', 'parameters']
 
-        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed)
+        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed, objects=objects, arrays=arrays)
 
         self.ref = None
         if '$ref' in dikt:
             self.ref = dikt['$ref']
+
+        self.billy = 'asdf'
 
 
 class Paths(Rep):
@@ -319,8 +318,9 @@ class Reference(Rep):
     def __init__(self, dikt):
         allowed = ['$ref']
         required = ['$ref']
-        self.__dict__ = parse_dict(
+        d = parse_dict(
             dikt=dikt, allowed=allowed, required=required)
+        self.ref = d['$ref']
 
 
 class RequestBody(Rep):
@@ -485,8 +485,8 @@ class Tag(Rep):
         required = ['name']
         objects = ['externalDocs']
 
-        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed, required=required,
-                                   objects=objects)
+        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed,
+                                   required=required, objects=objects)
 
 
 class XML(Rep):
@@ -496,8 +496,8 @@ class XML(Rep):
         required = ['name']
         booleans = ['attribute', 'wrapped']
 
-        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed, required=required,
-                                   booleans=booleans)
+        self.__dict__ = parse_dict(dikt=dikt, allowed=allowed,
+                                   required=required, booleans=booleans)
 
 
 """

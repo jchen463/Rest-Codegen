@@ -31,6 +31,9 @@ def main():
     cfg.SPECIFICATION = Specification(cfg.SPEC_DICT)
     spec_dict2 = ast.literal_eval(str(vars(cfg.SPECIFICATION)))
 
+    # print(cfg.SPECIFICATION.paths.dikt['/pet'].post)
+    # print(type(cfg.SPECIFICATION.paths.dikt['/pet'].post))
+
     with open('spec_tree.json', 'wt') as out:
         json.dump(spec_dict2, out, indent=4)
         
