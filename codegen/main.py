@@ -44,23 +44,6 @@ def main():
     flask_server_codegen()
 
 
-def load_build_file():
-    # update defaults to reflect user's build file
-    filename = sys.argv[1]
-    print('loading build file:', filename)
-    filepath = os.getcwd() + '/' + filename
-    spec = importlib.util.spec_from_file_location(filename[:-3], filepath)
-    build_script = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(build_script)
-    cfg.BUILD = filename
-    cfg.BUILD_FILE_PATH = filepath
-    if hasattr(build_script, 'SPEC'):
-        cfg.SPEC = build_script.SPEC
-        cfg.SPEC_FILE_PATH = os.getcwd() + os.path.sep + cfg.SPEC
-    if hasattr(build_script, 'PROJECT_OUTPUT'):
-        cfg.PROJECT_OUTPUT = os.getcwd() + os.path.sep + build_script.PROJECT_OUTPUT
-
-
 def load_spec_file(file_path):
     extension = os.path.splitext(file_path)[1][1:]
     if extension == 'yaml' or 'yml':
