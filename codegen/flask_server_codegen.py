@@ -55,6 +55,9 @@ def flask_generate_controller(params):
     """
     print('flask_controllers_setup')
 
+    for path in params:
+        path['url'] = path['url'].replace('{', '<').replace('}', '>')
+
     dikt = {
         'paths_list': params
     }
