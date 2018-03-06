@@ -30,6 +30,8 @@ def emit_template(template_name, params, output_dir, output_name):
                              lstrip_blocks=True,
                              line_comment_prefix='//*')
 
+    env.globals['cfg'] = cfg
+
     # template_path = cfg.DEFAULT_TEMPLATES_DIR + os.path.sep + template_name
     output = env.get_template(template_name).render(params)
 
