@@ -32,10 +32,10 @@ def flask_api_setup(params):
 
     print('flask_api_setup')
     default.emit_template('init.tmpl', dikt, cfg.PROJECT_OUTPUT, '__init__.py')
-    default.emit_template('main.tmpl', dikt, cfg.PROJECT_OUTPUT, '__main__.py')
+    # default.emit_template('main.tmpl', dikt, cfg.PROJECT_OUTPUT, '__main__.py')
     default.emit_template('encoder.tmpl', dikt, cfg.PROJECT_OUTPUT, 'encoder.py')
     default.emit_template('util.tmpl', dikt, cfg.PROJECT_OUTPUT, 'util.py')
-    default.emit_template('base_model.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'base_model.py')
+    default.emit_template('base_model.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'base_model_.py')
 
 
 def flask_generate_controller(params):
@@ -158,7 +158,6 @@ def flask_generate_model(schema):
 
         default.emit_template('model.tmpl', model, cfg.PROJECT_OUTPUT +
                            os.path.sep + 'models', class_name + '.py')
-
 
 
 flask_invocation_iterator_functions = [

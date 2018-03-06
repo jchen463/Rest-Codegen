@@ -2,7 +2,6 @@ import os
 
 import jinja2
 
-
 try:  # when just doing $ python3 main.py only below imports work
     import codegen.codegen_config as cfg
 except ImportError as err:  # when packaged, only above imports work
@@ -102,9 +101,14 @@ def paths_iterator(spec, paths_iterator_functions):
         ]
     }
     """
+
+    tags = {'tags': paths_by_tag.keys()}
+    emit_template('main.tmpl', tags, cfg.PROJECT_OUTPUT, '__main__.py')
     for tag, path_dicts in paths_by_tag.items():
         for f in paths_iterator_functions:
             f(path_dicts)
+
+
 
 
 def get_paths_by_tag(paths_dict):

@@ -1,5 +1,7 @@
 from flask import Flask
-from controllers.default_controller import default_api
+{% for tag in tags %}
+from controllers.{{tag}}_controller import {{tag}}_api
+{% endfor %}
 import encoder
 
 
@@ -7,7 +9,9 @@ def main():
     app = Flask(__name__)
     app.json_encoder = encoder.JSONEncoder
     # app.json_decoder
-    app.register_blueprint(default_api)
+    {% for tag in tags %}
+    app.register_blueprint({{tag}}_api)
+    {% endfor %}
     app.run(port=8080, debug=True)
 
 
