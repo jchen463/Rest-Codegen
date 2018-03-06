@@ -9,19 +9,20 @@ from models.{{file_name}} import {{class_name}}
 from models.base_model_ import Model
 import util
 
+
 {# classes template #}
 class {{name}}(Model):
     def __init__(self,{% for property_name, property_type in properties.items() %} {{property_name}}: {{property_type}}=None{%if not loop.last %},{% endif %}{% endfor %}):
         self.swagger_types = {
         {% for property_name, property_type in properties.items() %}
-         '{{property_name}}': {{property_type}}{%if not loop.last %},{% endif %}
+            '{{property_name}}': {{property_type}}{%if not loop.last %},{% endif %}
 
         {% endfor %}
         }
 
         self.attribute_map = {
         {% for property_name, property_type in properties.items() %}
-         '{{property_name}}': {{property_name}}{%if not loop.last %},{% endif %}
+            '{{property_name}}': {{property_name}}{%if not loop.last %},{% endif %}
 
         {% endfor %}
         }
@@ -30,11 +31,10 @@ class {{name}}(Model):
         self._{{property_name}} = {{property_name}}
         {% endfor %}
 
-
     @classmethod
     def from_dict(cls, dikt) -> '{{name}}':
         return util.deserialize_model(dikt, cls)
-    
+
     {% for property_name, property_type in properties.items() %}
     @property
     def {{property_name}}(self) -> '{{property_type}}':
@@ -43,6 +43,7 @@ class {{name}}(Model):
     @{{property_name}}.setter
     def {{property_name}}(self, {{property_name}}: {{property_type}}):
         self._{{property_name}} = {{property_name}}
+    {% if not loop.last %}
+
+    {% endif %}
     {% endfor %}
-
-

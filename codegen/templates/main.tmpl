@@ -1,8 +1,8 @@
 from flask import Flask
 {% for tag in tags %}
-from server.controllers.{{tag}}_controller import {{tag}}_api
+from controllers.{{tag}}_controller import {{tag}}_api
 {% endfor %}
-import server.encoder
+import encoder
 
 
 def main():
@@ -17,3 +17,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+{# main end #}

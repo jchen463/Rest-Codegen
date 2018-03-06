@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint 
+from flask import Blueprint
 from flask import jsonify
 from flask import abort
 from flask import make_response
@@ -18,5 +18,7 @@ def {{path['properties'].operationId}}({% if path['properties'].parameters is no
         abort(400)
     {% endif %}
     return '{{ path['url'] }} {{ path['method'].upper() }}'
+{% if not loop.last %}
 
+{% endif %}
 {% endfor %}
