@@ -52,29 +52,33 @@ def typescript_api_setup(params):
                         newArg += ": " + type_map[param.schema.type]
                     newPathDic['parameters'].append(newArg)
             dikt['paths'].append(newPathDic)
-    
-
-        #if path['properties'].requestBody is not None:
-            # for key, value in path['properties'].requestBody: 
-            #     if path['properties'].requestBody.content is not None:
-            #     print(path['properties'].requestBody.content)
-            #     for key, value in path['properties'].requestBody.content.items():
-            #         if (key == "application/x-www-form-urlencoded"):
-            #             #for item, key in path['properties'].requestBody.content:
-            #             newArg += value.schema.name
-            #             newArg += type_map[value.schema.type]
-            #         else:
-            #             newArg = "body :"
-            #     newPathDic['parameters'].append(newArg)
-
-        #print(newPathDic['parameters'])
-        #else:
-            #if 
-        #     print(paths['properties'][''])
-
-            #print(params)
-                #args.append( params.name + ":" str(params.schema.type) )
-            #path.update(args[])
+        if path['properties'].requestBody is not None:
+            if 'ref' in path['properties'].requestBody.__dict__:
+                refPath = path['properties'].requestBody.ref
+                splitPath = refPath.split('/')
+                newArg = "body: models." + splitPath[len(splitPath) - 1].capitalize()
+                newPathDic['parameters'].append(newArg)
+            elif 'content' in path['properties'].requestBody.__dict__:
+                if 'application/x-www-form-urlencoded' in path['properties'].requestBody.content:
+                    for key, value in path['properties'].requestBody.content['application/x-www-form-urlencoded'].schema.properties.items():
+                        newArg = key + "?: "
+                        if value.type == 'array':
+                            newArg += "Array<" + type_map[value.schema.items.type] + ">"
+                        else: 
+                            newArg += type_map[value.type]
+                        newPathDic['parameters'].append(newArg)
+                elif 'application/json' in path['properties'].requestBody.content:
+                    refPath = path['properties'].requestBody.content['application/json'].schema.ref
+                    splitPath = refPath.split('/')
+                    newArg = "body: models." + splitPath[len(splitPath) - 1].capitalize()
+                    newPathDic['parameters'].append(newArg)
+                elif 'application/octet-stream' in path['properties'].requestBody.content:
+                    newArg = "additionalMetadata?: " + path['properties'].requestBody.content['application/octet-stream'].schema.type
+                    newPathDic['parameters'].append(newArg)
+                    newArg = "file?: any"
+                    newPathDic['parameters'].append(newArg)
+        print(path['properties'].operationId)
+        print(newPathDic['parameters'])
 
     default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
