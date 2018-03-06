@@ -35,3 +35,23 @@ For controllers:
 - Add something that isn't just do something, put relevant code that will actually help.
 
 Dynamic rendering of specification
+
+
+
+should we handle arguments like
+from flask import request
+
+@app.route(...)
+def login():
+    username = request.args.get('username')
+    password = request.args.get('password')
+
+or 
+
+from flask import request
+
+@app.route(...)/<request>
+def login():
+
+
+
