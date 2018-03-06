@@ -1,8 +1,8 @@
 from flask import Flask
 {% for tag in tags %}
-from controllers.{{tag}}_controller import {{tag}}_api
+from {{cfg.SERVER_NAME}}.controllers.{{tag}}_controller import {{tag}}_api
 {% endfor %}
-import encoder
+from {{cfg.SERVER_NAME}} import encoder
 
 
 def main():
@@ -12,8 +12,9 @@ def main():
     {% for tag in tags %}
     app.register_blueprint({{tag}}_api)
     {% endfor %}
-    app.run(port=8080, debug=True)
+    app.run(port=8080, debug=False)
 
 
 if __name__ == '__main__':
     main()
+{# main end #}

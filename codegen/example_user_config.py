@@ -6,7 +6,8 @@ import codegen.default_codegen as default  # import will look like this because 
 # import default_codegen as default   # use this if just testing within the files
 
 SPEC = 'sample.yaml'
-PROJECT_OUTPUT = 'myproject'
+PROJECT_NAME = 'myproject'
+# PROJECT_OUTPUT = 'myproject'
 TEMPLATES_DIR = 'templates'
 
 

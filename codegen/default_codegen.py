@@ -30,6 +30,8 @@ def emit_template(template_name, params, output_dir, output_name):
                              lstrip_blocks=True,
                              line_comment_prefix='//*')
 
+    env.globals['cfg'] = cfg
+
     # template_path = cfg.DEFAULT_TEMPLATES_DIR + os.path.sep + template_name
     output = env.get_template(template_name).render(params)
 
@@ -50,24 +52,31 @@ def run_iterators():
 
 
 def invocation_iterator(spec, invocation_iterator_functions):
-    # pull relevant pieces of specification into dictionary
-    # (may have to create intermediate representation later)
-    # might need to pass in parameters here too? unsure
-    # also unsure what object we're going to pass into these functions
-    # dikt = {}
-    # dikt['info'] = spec_dict['info']
-    # dikt['externalDocs'] = spec_dict['externalDocs']
+    """
+    pull relevant pieces of specification into dictionary
+    (may have to create intermediate representation later)
+    might need to pass in parameters here too? unsure
+    also unsure what object we're going to pass into these functions
+    """
+    dikt = {}
+    dikt['info'] = spec.info
+    dikt['externalDocs'] = spec.externalDocs
     for f in invocation_iterator_functions:
-        f(spec)
+        f(dikt)
 
 
 def specification_iterator(spec, specification_iterator_functions):
-    # right now we're only using one spec though
-    # for specification in specifications:
-    #     for f in specification_iterator_functions:
-    #         f(specification)
+    paths_by_tag = get_paths_by_tag(spec.paths.dikt)
+    tags = {'tags': paths_by_tag.keys()}
+    """
+    right now we're only using one spec though
+    for specification in specifications:
+        for f in specification_iterator_functions:
+            f(specification)
+    seems like we only need tags and port
+    """
     for f in specification_iterator_functions:
-        f(spec)
+        f(tags)
 
 
 def schemas_iterator(spec, schemas_iterator_functions):
@@ -75,6 +84,7 @@ def schemas_iterator(spec, schemas_iterator_functions):
     for schema_name, schema in schemas.items():
         for f in schemas_iterator_functions:
             f({'name': schema_name, 'object': schema})
+
 
 def paths_iterator(spec, paths_iterator_functions):
     paths_by_tag = get_paths_by_tag(spec.paths.dikt)
@@ -103,8 +113,9 @@ def paths_iterator(spec, paths_iterator_functions):
     }
     """
 
-    tags = {'tags': paths_by_tag.keys()}
-    #emit_template('main.tmpl', tags, cfg.PROJECT_OUTPUT, '__main__.py')
+    # tags = {'tags': paths_by_tag.keys()}
+    # emit_template('main.tmpl', tags, cfg.PROJECT_OUTPUT, '__main__.py')
+
     for tag, path_dicts in paths_by_tag.items():
         for f in paths_iterator_functions:
             path_dicts[0].update(basePath)
@@ -146,5 +157,5 @@ def get_path_dict(path_url, method, tags, info):
         'url': path_url,
         'method': method,
         'tag': tags[0],
-        'properties': info, # Operation Object
+        'properties': info,  # Operation Object
     }

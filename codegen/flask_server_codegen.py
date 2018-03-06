@@ -17,31 +17,30 @@ Responsible for certain files
 def flask_project_setup(params):
     # outer codegen folder: setup.py, requirements.txt. Dockerfile
     # params contains 'info', 'externalDocs'
-    dikt = {}
-
+    dikt = params
     print('flask_project_setup')
     default.emit_template('requirements.tmpl', dikt, cfg.PROJECT_OUTPUT, 'requirements.txt')
     # default.emit_template('setup.tmpl', params, cfg.PROJECT_OUTPUT, 'setup.py')
 
 
-def flask_api_setup(params):
-    # inner codegen folder: base classes, encoder, deserializer. ???
-    # params is the specification class
+def flask_generate_base_model(params):
+    dikt = {}
+    default.emit_template('base_model.tmpl', dikt, cfg.SERVER_OUTPUT + os.path.sep + 'models', 'base_model.py')
+    default.emit_template('util.tmpl', dikt, cfg.SERVER_OUTPUT, 'util.py')
+    default.emit_template('encoder.tmpl', dikt, cfg.SERVER_OUTPUT, 'encoder.py')
 
-    dikt = {}  # access keys in templates
 
-    print('flask_api_setup')
-    default.emit_template('init.tmpl', dikt, cfg.PROJECT_OUTPUT, '__init__.py')
-    # default.emit_template('main.tmpl', dikt, cfg.PROJECT_OUTPUT, '__main__.py')
-    default.emit_template('encoder.tmpl', dikt, cfg.PROJECT_OUTPUT, 'encoder.py')
-    default.emit_template('util.tmpl', dikt, cfg.PROJECT_OUTPUT, 'util.py')
-    default.emit_template('base_model.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'base_model_.py')
+def flask_generate_main(params):
+    # params contains 'tags'
+    dikt = params
+    default.emit_template('init.tmpl', dikt, cfg.SERVER_OUTPUT, '__init__.py')
+    default.emit_template('main.tmpl', dikt, cfg.SERVER_OUTPUT, '__main__.py')
 
 
 def flask_generate_controller(params):
     # controller files
     """
-    params = 
+    params =
     [
         {
             'url': ,
@@ -56,19 +55,21 @@ def flask_generate_controller(params):
     """
     print('flask_controllers_setup')
 
+    for path in params:
+        path['url'] = path['url'].replace('{', '<').replace('}', '>')
+
     dikt = {
-        'paths_list': params 
+        'paths_list': params
     }
 
-    default.emit_template('controller.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'controllers', params[0]['tag'] + '_controller' + '.py')
-
+    default.emit_template('controller.tmpl', dikt, cfg.SERVER_OUTPUT + os.path.sep + 'controllers', params[0]['tag'] + '_controller' + '.py')
 
 
 # returns the python type and if needed, adds libraries/dependencies
 def getPythonType(attribute, model):
     # maps the type in OpenApi3 to the type in python
-        #types: [array, boolean, integer, null,  number, object, string]
-        #formats that matter for strings: ByteArray, Binary, date, datetime
+        # types: [array, boolean, integer, null,  number, object, string]
+        # formats that matter for strings: ByteArray, Binary, date, datetime
     typeMapping = {
         'integer': 'int', 'long': 'int', 'float': 'float', 'double': 'float',
         'string': 'str', 'byte': 'ByteArray', 'binary': 'Binary', 'boolean': 'bool',
@@ -78,14 +79,14 @@ def getPythonType(attribute, model):
     python_type = ""
 
     if 'ref' in attribute.__dict__:
-        python_type += attribute.ref[attribute.ref.rfind('/') + 1:] # reference name wil lbe the name of the type
+        python_type += attribute.ref[attribute.ref.rfind('/') + 1:]  # reference name wil lbe the name of the type
         # if the class has not been added to the dependencies, add it
         if makeFirstLetterLower(python_type) not in model['dependencies']:
             model['dependencies'][makeFirstLetterLower(python_type)] = python_type
     elif attribute.type == 'array':
         tempAttr = attribute.items
         python_type += 'List['
-        array_num = 1 # count the number of arrays found
+        array_num = 1  # count the number of arrays found
 
         # untested while loop
         while hasattr(tempAttr, 'type'):
@@ -127,15 +128,17 @@ def getPythonType(attribute, model):
 
     return python_type
 
+
 def makeFirstLetterLower(s):
     return s[:1].lower() + s[1:] if s else ''
+
 
 def flask_generate_model(schema):
 
     model = {
         'name': schema['name'],
-        'properties': {}, # key is property name, value is property type
-        'dependencies': {} # key is filename, value is class that is being imported
+        'properties': {},  # key is property name, value is property type
+        'dependencies': {}  # key is filename, value is class that is being imported
 
     }
 
@@ -143,10 +146,10 @@ def flask_generate_model(schema):
 
     # if properties does not exist, print an empty class
     if not schema['object'].properties:
-        default.emit_template('model.tmpl', model, cfg.PROJECT_OUTPUT +
+        default.emit_template('model.tmpl', model, cfg.SERVER_OUTPUT +
                               os.path.sep + 'models', class_name + '.py')
     else:
-        #run through each item within the properties
+        # run through each item within the properties
         for attribute_name, attribute in schema['object'].properties.items():
 
             # find the property, and insert dependencies into the model if needed
@@ -156,8 +159,8 @@ def flask_generate_model(schema):
             if attribute_type != "" and attribute_type != 'null':
                 model['properties'][attribute_name] = attribute_type
 
-        default.emit_template('model.tmpl', model, cfg.PROJECT_OUTPUT +
-                           os.path.sep + 'models', class_name + '.py')
+        default.emit_template('model.tmpl', model, cfg.SERVER_OUTPUT +
+                              os.path.sep + 'models', class_name + '.py')
 
 
 flask_invocation_iterator_functions = [
@@ -165,7 +168,8 @@ flask_invocation_iterator_functions = [
 ]
 
 flask_specification_iterator_functions = [
-    flask_api_setup,
+    flask_generate_main,
+    flask_generate_base_model,
 ]
 
 flask_paths_iterator_functions = [
