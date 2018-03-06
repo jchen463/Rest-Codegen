@@ -78,6 +78,7 @@ def schemas_iterator(spec, schemas_iterator_functions):
 
 def paths_iterator(spec, paths_iterator_functions):
     paths_by_tag = get_paths_by_tag(spec.paths.dikt)
+    basePath = {'basePath': spec.servers[0].url }
     """
     paths_by_tag = {
         'pet': [
@@ -103,12 +104,12 @@ def paths_iterator(spec, paths_iterator_functions):
     """
 
     tags = {'tags': paths_by_tag.keys()}
-    emit_template('main.tmpl', tags, cfg.PROJECT_OUTPUT, '__main__.py')
+    #emit_template('main.tmpl', tags, cfg.PROJECT_OUTPUT, '__main__.py')
     for tag, path_dicts in paths_by_tag.items():
         for f in paths_iterator_functions:
+            path_dicts[0].update(basePath)
+           # print(path_dicts)
             f(path_dicts)
-
-
 
 
 def get_paths_by_tag(paths_dict):

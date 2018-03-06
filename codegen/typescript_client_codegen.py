@@ -13,53 +13,70 @@ These are essentially wrappers for templates
 Responsible for certain files
 """
 
-def typescript_project_setup(dikt):
+def typescript_project_setup(params):
     print('typescript_project_setup')
+    dikt = {}
     default.emit_template('requirements.tmpl', dikt, cfg.PROJECT_OUTPUT, 'requirements.txt')
 
  
-def typescript_specification_setup(dikt):
+def typescript_specification_setup(params):
+    dikt = {}
     default.emit_template('typescript_client/index.tmpl', dikt, cfg.PROJECT_OUTPUT, 'index.ts')
-    default.emit_template('typescript_client/variables_client.tmpl', dikt, cfg.PROJECT_OUTPUT, 'variables.ts')
+    default.emit_template('typescript_client/variables.tmpl', dikt, cfg.PROJECT_OUTPUT, 'variables.ts')
     default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.PROJECT_OUTPUT, 'configuration.ts')
    
+type_map = {'integer': 'number', 'string': 'string', 'array': 'Array', 'boolean': 'boolean' }
 
-def typescript_api_setup(dikt):
-    # controller files
-    # dikt contains 'paths'
-    # print('typescript_controllers_setup')
-    # # for url, _ in dikt['paths'].items():
-    # #    dikt['paths']['url']
-    # tags = {'tags': [] }
+def typescript_api_setup(params):
+    print('typescript_controllers_setup')
+    basePath = params[0]['basePath']
+    dikt = { 'basePath': basePath, 'paths': [], 'tag': params[0]['tag']}
 
-    # # for tag in spec_dict['tags']:
-    # #     tags['tags'].append(tag['name'])
-    # new_dikt = {}
+    # get the arguments
+    for path in params:
+        newPathDic = { 'url': path['url'], 'parameters' : [] , 'properties': path['properties'], 'method': path['method']}
+        if newPathDic['properties'].parameters is not None:
+            # print(path['properties'].parameters)
+            if path['properties'].parameters is not None:
+                for param in path['properties'].parameters: 
+                    #print(param.name)
+                    newArg = param.name
+                    if param.schema.type == 'array':
+                        #print(param.required)
+                        if param.required == False:
+                            newArg += "?"
+                        newArg += ": Array<" + type_map[param.schema.items.type] + ">"
+                    else: 
+                        if param.required == False:
+                            newArg += "?"
+                        newArg += ": " + type_map[param.schema.type]
+                    newPathDic['parameters'].append(newArg)
+            dikt['paths'].append(newPathDic)
+    
 
-    # for key, value in dikt:
-    #     new_dikt[key] = value
+        #if path['properties'].requestBody is not None:
+            # for key, value in path['properties'].requestBody: 
+            #     if path['properties'].requestBody.content is not None:
+            #     print(path['properties'].requestBody.content)
+            #     for key, value in path['properties'].requestBody.content.items():
+            #         if (key == "application/x-www-form-urlencoded"):
+            #             #for item, key in path['properties'].requestBody.content:
+            #             newArg += value.schema.name
+            #             newArg += type_map[value.schema.type]
+            #         else:
+            #             newArg = "body :"
+            #     newPathDic['parameters'].append(newArg)
 
-    print(dikt['url'])
-    print(dikt['paths'])
+        #print(newPathDic['parameters'])
+        #else:
+            #if 
+        #     print(paths['properties'][''])
 
-    # controller_dep = {
-    #     'dependencies': [
-    #         {'location': '@angular/core', 'objects': ['Inject', 'Injectable', 'Optional'] },
-    #         {'location': '@angular/http', 'objects': ['Http', 'Headers', 'URLSearchParams'] },
-    #         {'location': '@angular/http', 'objects': ['RequestMethod', 'RequestOptions', 'RequestOptionsArgs'] },
-    #         {'location': '@angular/http', 'objects': ['Response, ResponseContentType']},
-    #         {'location': 'rxjs/Observable', 'objects': ['Observable']},
-    #         {'location': '../variables', 'objects': ['BASE_PATH', 'COLLECTION_FORMATS']},
-    #         {'location': '../configuration', 'objects': ['Configuration']}
-    #     ]
-    # }
+            #print(params)
+                #args.append( params.name + ":" str(params.schema.type) )
+            #path.update(args[])
 
-    # for tag in tags['tags']:
-    #     file_name = tag.capitalize() + 'Api.ts'
-    #     tag = {'tag': tag}
-    #     # renders = [FileRender('templates/client_api.tmpl', file_name,
-    #     #                       [controller_dep, tags, controller_functions, methods, basePath])]
-    #     default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT, capitalize(tag) + 'Api.ts')
+    default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 
 def typescript_models_setup(dikt):
@@ -140,6 +157,6 @@ def stage_default_iterators():
     default.codegen_stage(default.paths_iterator,
                           typescript_paths_iterator_functions)
 
-def flask_server_codegen():
+def typescript_client_codegen():
     default.run_iterators()
 

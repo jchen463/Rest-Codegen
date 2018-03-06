@@ -1,9 +1,9 @@
-{% include "templates/typescript_client/dep.tmpl" %}
+{% include "dep.tmpl" %}
 
-{% for tag in tags %}
+
 @Injectable() 
 export class {{ tag|capitalize }}Api {
-	private basePath = '{{url}}'
+	private basePath = '{{basePath}}'
 	public defaultHeaders: Headers = new Headers();
 	public configuration: Configuration = new Configuration();
 
@@ -15,9 +15,9 @@ export class {{ tag|capitalize }}Api {
             this.configuration = configuration;
         }
     }
-{% for path_name, path_info in dikt.items() %}{% for key, value in path_info.items() %}{% if key in methods and value is not none %}{% if tag in value['tags'] %} 
-	public {{value['operationId']}}( body: models.Pet , extraHttpRequestParams?: any): Observable<{}> {
-        return this.{{value['operationId']}}WithHttpInfo(body, extraHttpRequestParams)
+{% for path in paths %} 
+	public {{path['properties'].operationId}}( {{path.parameters}}  , extraHttpRequestParams?: any): Observable<{}> {
+        return this.{{path['properties'].operationId}}WithHttpInfo(body, extraHttpRequestParams)
             .map((response: Response) => {
                 if (response.status === 204) {
                     return undefined;
@@ -26,18 +26,17 @@ export class {{ tag|capitalize }}Api {
                 }
             });
     }
-{% endif %}{% endif %}{% endfor %}{% endfor %}
+{% endfor %}
 
-{% for path_name, path_info in dikt.items() %}{% for key, value in path_info.items() %}{% if key in methods and value is not none %}{% if tag in value['tags'] %}
-	public {{value['operationId']}}WithHttpInfo(petId: number, extraHttpRequestParams?: any): Observable<Response> {
-        const path = this.basePath + {{path_name}}
-                    .replace('${' + 'petId' + '}', String(petId));
+{% for path in paths %}
+	public {{path['properties'].operationId}}WithHttpInfo( {{path.parameters}}, extraHttpRequestParams?: any): Observable<Response> {
+        const path = this.basePath + {{path['url']}}
 
         let queryParameters = new URLSearchParams();
-        let headers = new Headers(this.defaultHeaders.toJSON()); // https://github.com/angular/angular/issues/6845
+        let headers = new Headers(this.defaultHeaders.toJSON());
         
-        if (petId === null || petId === undefined) {
-            throw new Error('Required parameter petId was null or undefined when calling getPetById.');
+        if ({{path.parameters}} === null || {{path.parameters}} === undefined) {
+            throw new Error('Required parameter {{path.parameters}} was null or undefined when calling path['properties'].operationId.');
         }
         
         let consumes: string[] = [
@@ -55,7 +54,7 @@ export class {{ tag|capitalize }}Api {
         }
 
         let requestOptions: RequestOptionsArgs = new RequestOptions({
-            method: RequestMethod.Get,
+            method: RequestMethod.{{path['method']|capitalize}},
             headers: headers,
             search: queryParameters,
             withCredentials:this.configuration.withCredentials
@@ -67,8 +66,6 @@ export class {{ tag|capitalize }}Api {
         return this.http.request(path, requestOptions);
     }
 
-{% endif %}{% endif %}{% endfor %}{% endfor %}
+{% endfor %}
 
 }
-
-{% endfor %}
