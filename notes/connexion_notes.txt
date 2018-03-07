@@ -59,3 +59,5 @@ def login():
 
 4. how to deal with cap and uncap, my function assumes defintions will be capitalized which may not be true
 
+
+CHECK IF MODIFYING DICTONARY IN FUNCTION MODIFYS IT EVERYWHERE ELSE
