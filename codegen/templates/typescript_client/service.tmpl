@@ -1,0 +1,113 @@
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+
+import { Observable } from 'rxjs/Observable';
+import '../rxjs-operators';
+
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { Configuration } from '../configuration';
+import { CustomHttpUrlEncodingCodec } from '../encoder';
+
+NEED LIST OF MODELS THEY DEPEND ON
+import { ApiResponse } from '../model/apiResponse';
+import { Pet } from '../model/pet';
+
+@Injectable()
+export class {{ schema_name|capitalize }}Service {
+
+    protected basePath = ;
+    public defaultHeaders = new HttpHeaders();
+    public configuration = new Configuration();
+
+
+    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+        if (basePath) {
+            this.basePath = basePath;
+        }
+        if (configuration) {
+            this.configuration = configuration;
+            this.basePath = basePath || configuration.basePath || this.basePath;
+        }
+    }
+
+
+    private canConsumeForm(consumes: string[]): boolean {
+        const form = 'multipart/form-data';
+        for (let consume of consumes) {
+            if (form === consume) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public {{operationId}}({% for param in params %}{{param}}{% if not param.required %}?{% endif %}: {{param_type}}{% if not loop.last %},{% endif %}{% endfor %}): Observable<{{}}> {
+        {% for param in params %}
+        {% if param.required %}
+        if ({{param}} === null || {{param}} === undefined) {
+            throw new Error('Required parameter {{param}} was null or undefined when calling {{operationId}})
+        }
+        {% endif %}
+        {% endfor %}
+
+        let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
+        {% for param in params %}
+        if ({{param}}) {
+            {{param}}.forEach((element) => {
+                queryParameters = queryParameters.append('status', <{{type}}>element);
+            })
+        }
+        {% endfor %}
+
+        let headers = this.defaultHeaders;
+        {% for param in params %}
+        {% if param.in == 'header' %}
+        if ({{param}} !== undefined && {{param}} !== null) {
+            headers = headers.set('{{param}}', String({{param}}));
+        }
+        {% endif %}
+        {% endfor %}
+
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = 
+            {% for something in somethings %}
+            '{{ something }}'{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+        let httpHeaderAcceptSelected: string = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set("Accept", httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        let consumes: string[] = [
+            {% for responseBody in responseBodies %}
+            '{{ responseBody }}'{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+        {%%}
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set("Content-Type", httpContentTypeSelected);
+        }
+        {%%}
+
+
+        return this.httpClient.delete<any>(`${this.basePath}/pet/${encodeURIComponent(String(petId))}`,
+            {
+                headers: headers,
+                withCredentials: this.configuration.withCredentials,
+            }
+        );
+
+        return this.httpClient.{{method}}<{{type}}>(`${this.basePath}/{{}}/${encodeURIComponent(String({{param}}))}/{{}}`, 
+            convertFormParamsToString ? formParams.toString() : formParams, 
+            {
+                headers: headers,
+                withCredentials: this.configuration.withCredentials,
+            }
+        ;)
+    }
+}
