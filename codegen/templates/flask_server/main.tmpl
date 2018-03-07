@@ -1,8 +1,8 @@
 from flask import Flask
 {% for tag in tags %}
-from {{cfg.SERVER_NAME}}.controllers.{{tag}}_controller import {{tag}}_api
+from {{cfg.FLASK_SERVER_NAME}}.controllers.{{tag}}_controller import {{tag}}_api
 {% endfor %}
-from {{cfg.SERVER_NAME}} import encoder
+from {{cfg.FLASK_SERVER_NAME}} import encoder
 
 
 def main():

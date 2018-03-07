@@ -1,0 +1,11 @@
+{# dependencies #}
+{% for file_name, class_name in dependencies.items() %}
+import {{ "{" }} {{ class_name | capitalize}} {{ "}" }} from './{{file_name}}';
+{% endfor %}
+
+export interface {{name}} {{ "{" }}
+    {% for property_name, property_type in properties.items() %}
+    {{property_name}}?: {{property_type}};
+    {% endfor %}
+
+{{ "}" }}

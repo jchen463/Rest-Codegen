@@ -19,22 +19,22 @@ def flask_project_setup(params):
     # params contains 'info', 'externalDocs'
     dikt = params
     print('flask_project_setup')
-    default.emit_template('requirements.tmpl', dikt, cfg.PROJECT_OUTPUT, 'requirements.txt')
-    # default.emit_template('setup.tmpl', params, cfg.PROJECT_OUTPUT, 'setup.py')
+    default.emit_template('flask_server/requirements.tmpl', dikt, cfg.FLASK_PROJECT_OUTPUT, 'requirements.txt')
+    # default.emit_template('flask_server/setup.tmpl', params, cfg.FLASK_PROJECT_OUTPUT, 'setup.py')
 
 
 def flask_generate_base_model(params):
     dikt = {}
-    default.emit_template('base_model.tmpl', dikt, cfg.SERVER_OUTPUT + os.path.sep + 'models', 'base_model.py')
-    default.emit_template('util.tmpl', dikt, cfg.SERVER_OUTPUT, 'util.py')
-    default.emit_template('encoder.tmpl', dikt, cfg.SERVER_OUTPUT, 'encoder.py')
+    default.emit_template('flask_server/base_model.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', 'base_model.py')
+    default.emit_template('flask_server/util.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT, 'util.py')
+    default.emit_template('flask_server/encoder.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT, 'encoder.py')
 
 
 def flask_generate_main(params):
     # params contains 'tags'
     dikt = params
-    default.emit_template('init.tmpl', dikt, cfg.SERVER_OUTPUT, '__init__.py')
-    default.emit_template('main.tmpl', dikt, cfg.SERVER_OUTPUT, '__main__.py')
+    default.emit_template('flask_server/init.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT, '__init__.py')
+    default.emit_template('flask_server/main.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT, '__main__.py')
 
 
 def flask_generate_controller(params):
@@ -62,7 +62,7 @@ def flask_generate_controller(params):
         'paths_list': params
     }
 
-    default.emit_template('controller.tmpl', dikt, cfg.SERVER_OUTPUT + os.path.sep + 'controllers', params[0]['tag'] + '_controller' + '.py')
+    default.emit_template('flask_server/controller.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'controllers', params[0]['tag'] + '_controller' + '.py')
 
 
 # returns the python type and if needed, adds libraries/dependencies
@@ -146,21 +146,18 @@ def flask_generate_model(schema):
 
     # if properties does not exist, print an empty class
     if not schema['object'].properties:
-        default.emit_template('model.tmpl', model, cfg.SERVER_OUTPUT +
-                              os.path.sep + 'models', class_name + '.py')
+        default.emit_template('flask_server/model.tmpl', model,
+                              cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', class_name + '.py')
     else:
         # run through each item within the properties
         for attribute_name, attribute in schema['object'].properties.items():
-
             # find the property, and insert dependencies into the model if needed
             attribute_type = getPythonType(attribute, model)
-
             # if attribute type is null or empty do not include it into the dictionary
-            if attribute_type != "" and attribute_type != 'null':
-                model['properties'][attribute_name] = attribute_type
-
-        default.emit_template('model.tmpl', model, cfg.SERVER_OUTPUT +
-                              os.path.sep + 'models', class_name + '.py')
+        if attribute_type != "" and attribute_type != 'null':
+            model['properties'][attribute_name] = attribute_type
+        default.emit_template('flask_server/model.tmpl', model,
+                              cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', class_name + '.py')
 
 
 flask_invocation_iterator_functions = [
