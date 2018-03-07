@@ -13,19 +13,20 @@ These are essentially wrappers for templates
 Responsible for certain files
 """
 # maps the type in OpenApi3 to the type in python
-        # types: [array, boolean, integer, null,  number, object, string]
-        # formats that matter for strings: ByteArray, Binary, date, datetime
+# types: [array, boolean, integer, null,  number, object, string]
+# formats that matter for strings: ByteArray, Binary, date, datetime
 
 typeMapping = {
-        'integer': 'number', 'long': 'number', 'float': 'number', 'double': 'number',
-        'string': 'string', 'byte': 'string', 'binary': 'string', 'boolean': 'boolean',
-        'date': 'string', 'date-time': 'string', 'password': 'string', 'object': 'any'
-    }
+    'integer': 'number', 'long': 'number', 'float': 'number', 'double': 'number',
+    'string': 'string', 'byte': 'string', 'binary': 'string', 'boolean': 'boolean',
+    'date': 'string', 'date-time': 'string', 'password': 'string', 'object': 'any'
+}
+
 
 def typescript_project_setup(params):
     print('typescript_project_setup')
     dikt = {}
-    #default.emit_template('requirements.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'requirements.txt')
+    # default.emit_template('requirements.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'requirements.txt')
 
 
 def typescript_specification_setup(params):
@@ -34,6 +35,7 @@ def typescript_specification_setup(params):
     default.emit_template('typescript_client/variables.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
     default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
 
+
 def typescript_api_setup(params):
     print('typescript_controllers_setup')
     basePath = params[0]['basePath']
@@ -41,17 +43,17 @@ def typescript_api_setup(params):
 
     # get the arguments
     for path in params:
-        newPathDic = { 'url': path['url'], 'parameters' : [], 'properties': path['properties'], 'method': path['method']}
-        # GET THE ARGUMENTS 
+        newPathDic = {'url': path['url'], 'parameters': [], 'properties': path['properties'], 'method': path['method']}
+        # GET THE ARGUMENTS
         if path['properties'].parameters is not None:
-            for param in path['properties'].parameters: 
+            for param in path['properties'].parameters:
                 newArg = param.name
                 if param.schema.type == 'array':
-                    if param.required == False:
+                    if not param.required:
                         newArg += "?"
                     newArg += ": Array<" + typeMapping[param.schema.items.type] + ">"
-                else: 
-                    if param.required == False:
+                else:
+                    if not param.required:
                         newArg += "?"
                     newArg += ": " + typeMapping[param.schema.type]
                 newPathDic['parameters'].append(newArg)
@@ -67,7 +69,7 @@ def typescript_api_setup(params):
                         newArg = key + "?: "
                         if value.type == 'array':
                             newArg += "Array<" + typeMapping[value.schema.items.type] + ">"
-                        else: 
+                        else:
                             newArg += typeMapping[value.type]
                         newPathDic['parameters'].append(newArg)
                 elif 'application/json' in path['properties'].requestBody.content:
@@ -101,11 +103,13 @@ def typescript_api_setup(params):
                                     newPathDic.update({'response_200': response_200})
                                     # print(newPathDic['response_200'])
         dikt['paths'].append(newPathDic)
-        #print(path['properties'].operationId)
-        #print(newPathDic['parameters'])
+        # print(path['properties'].operationId)
+        # print(newPathDic['parameters'])
     default.emit_template('typescript_client/api.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 # returns the python type and if needed, adds libraries/dependencies
+
+
 def getTypeScriptType(attribute, model):
     python_type = ""
 
