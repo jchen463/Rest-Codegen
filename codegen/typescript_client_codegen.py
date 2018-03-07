@@ -17,14 +17,14 @@ Responsible for certain files
 def typescript_project_setup(params):
     print('typescript_project_setup')
     dikt = {}
-    default.emit_template('requirements.tmpl', dikt, cfg.PROJECT_OUTPUT, 'requirements.txt')
+    default.emit_template('requirements.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'requirements.txt')
 
 
 def typescript_specification_setup(params):
     dikt = {}
-    default.emit_template('typescript_client/index.tmpl', dikt, cfg.PROJECT_OUTPUT, 'index.ts')
-    default.emit_template('typescript_client/variables.tmpl', dikt, cfg.PROJECT_OUTPUT, 'variables.ts')
-    default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.PROJECT_OUTPUT, 'configuration.ts')
+    default.emit_template('typescript_client/index.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
+    default.emit_template('typescript_client/variables.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
+    default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
 
 
 type_map = {'integer': 'number', 'string': 'string', 'array': 'Array', 'boolean': 'boolean'}
@@ -103,7 +103,7 @@ def typescript_api_setup(params):
         dikt['paths'].append(newPathDic)
         print(path['properties'].operationId)
         print(newPathDic['parameters'])
-    default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
+    default.emit_template('typescript_client/api.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 
 # returns the python type and if needed, adds libraries/dependencies
@@ -185,7 +185,7 @@ def typescript_models_setup(schema):
 
     # if properties does not exist, print an empty class
     if not schema['object'].properties:
-        default.emit_template('model.tmpl', model, cfg.PROJECT_OUTPUT +
+        default.emit_template('model.tmpl', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
                               os.path.sep + 'models', class_name + '.py')
     else:
         # run through each item within the properties
@@ -198,7 +198,7 @@ def typescript_models_setup(schema):
             if attribute_type != "" and attribute_type != 'null':
                 model['properties'][attribute_name] = attribute_type
 
-        default.emit_template('typescript_client/model.tmpl', model, cfg.PROJECT_OUTPUT +
+        default.emit_template('typescript_client/model.tmpl', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
                               os.path.sep + 'models', class_name + '.ts')
 
     pass
@@ -257,14 +257,14 @@ def typescript_generate_models_ts(params):
     print("typescript_generate_models_ts")
     dikt = params
     dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
-    default.emit_template('typescript_client/models.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'models.ts')
+    default.emit_template('typescript_client/models.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'models', 'models.ts')
 
 
 def typescript_generate_api_ts(params):
     # params contains 'tags', 'models
     print("typescript_generate_api_ts")
     dikt = params
-    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
+    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
 
 
 typescript_invocation_iterator_functions = [
