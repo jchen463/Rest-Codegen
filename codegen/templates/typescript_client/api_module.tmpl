@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Configuration } from './configuration';
 
 {% for tag in tags %}
-import {{ "{" }} {{ tag | capitalize}}Service {{ "}" }} from './{{tag}}.service';
+import {{ "{" }} {{ tag | capitalize}}Service {{ "}" }} from './api/{{tag}}.service';
 {% endfor %}
 
 
@@ -14,7 +14,7 @@ import {{ "{" }} {{ tag | capitalize}}Service {{ "}" }} from './{{tag}}.service'
   exports:      [],
   providers: [
   {% for tag in tags %}
-  {{ tag | capitalize}}Service{%if not loop.last %},
+    {{ tag | capitalize}}Service{%if not loop.last %},
   {% endif %}
   {% endfor %} ]
 })
