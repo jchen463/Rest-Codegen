@@ -4,10 +4,10 @@ from typing import List, Dict
 
 {# dependencies #}
 {% for file_name, class_name in dependencies.items() %}
-from {{cfg.SERVER_NAME}}.models.{{file_name}} import {{class_name}}
+from {{cfg.FLASK_SERVER_NAME}}.models.{{file_name}} import {{class_name}}
 {% endfor %}
-from {{cfg.SERVER_NAME}}.models.base_model import Model
-from {{cfg.SERVER_NAME}} import util
+from {{cfg.FLASK_SERVER_NAME}}.models.base_model import Model
+from {{cfg.FLASK_SERVER_NAME}} import util
 
 
 {# classes template #}
