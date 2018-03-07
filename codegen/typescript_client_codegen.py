@@ -13,6 +13,16 @@ These are essentially wrappers for templates
 Responsible for certain files
 """
 
+# maps the type in OpenApi3 to the type in python
+        # types: [array, boolean, integer, null,  number, object, string]
+        # formats that matter for strings: ByteArray, Binary, date, datetime
+
+typeMapping = {
+        'integer': 'number', 'long': 'number', 'float': 'number', 'double': 'number',
+        'string': 'string', 'byte': 'string', 'binary': 'string', 'boolean': 'boolean',
+        'date': 'string', 'date-time': 'string', 'password': 'string', 'object': 'any'
+    }
+
 def typescript_project_setup(params):
     print('typescript_project_setup')
     dikt = {}
@@ -24,8 +34,7 @@ def typescript_specification_setup(params):
     default.emit_template('typescript_client/index.tmpl', dikt, cfg.PROJECT_OUTPUT, 'index.ts')
     default.emit_template('typescript_client/variables.tmpl', dikt, cfg.PROJECT_OUTPUT, 'variables.ts')
     default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.PROJECT_OUTPUT, 'configuration.ts')
-   
-type_map = {'integer': 'number', 'string': 'string', 'array': 'Array', 'boolean': 'boolean' }
+
 
 def typescript_api_setup(params):
     print('typescript_controllers_setup')
@@ -36,22 +45,18 @@ def typescript_api_setup(params):
     for path in params:
         newPathDic = { 'url': path['url'], 'parameters' : [], 'properties': path['properties'], 'method': path['method']}
         # GET THE ARGUMENTS 
-        if newPathDic['properties'].parameters is not None:
-            # print(path['properties'].parameters)
-            if path['properties'].parameters is not None:
-                for param in path['properties'].parameters: 
-                    #print(param.name)
-                    newArg = param.name
-                    if param.schema.type == 'array':
-                        #print(param.required)
-                        if param.required == False:
-                            newArg += "?"
-                        newArg += ": Array<" + type_map[param.schema.items.type] + ">"
-                    else: 
-                        if param.required == False:
-                            newArg += "?"
-                        newArg += ": " + type_map[param.schema.type]
-                    newPathDic['parameters'].append(newArg)
+        if path['properties'].parameters is not None:
+            for param in path['properties'].parameters: 
+                newArg = param.name
+                if param.schema.type == 'array':
+                    if param.required == False:
+                        newArg += "?"
+                    newArg += ": Array<" + typeMapping[param.schema.items.type] + ">"
+                else: 
+                    if param.required == False:
+                        newArg += "?"
+                    newArg += ": " + typeMapping[param.schema.type]
+                newPathDic['parameters'].append(newArg)
         if path['properties'].requestBody is not None:
             if 'ref' in path['properties'].requestBody.__dict__:
                 refPath = path['properties'].requestBody.ref
@@ -63,9 +68,9 @@ def typescript_api_setup(params):
                     for key, value in path['properties'].requestBody.content['application/x-www-form-urlencoded'].schema.properties.items():
                         newArg = key + "?: "
                         if value.type == 'array':
-                            newArg += "Array<" + type_map[value.schema.items.type] + ">"
+                            newArg += "Array<" + typeMapping[value.schema.items.type] + ">"
                         else: 
-                            newArg += type_map[value.type]
+                            newArg += typeMapping[value.type]
                         newPathDic['parameters'].append(newArg)
                 elif 'application/json' in path['properties'].requestBody.content:
                     refPath = path['properties'].requestBody.content['application/json'].schema.ref
@@ -98,22 +103,13 @@ def typescript_api_setup(params):
                                     newPathDic.update({ 'response_200': response_200})
                                     #print(newPathDic['response_200'])
         dikt['paths'].append(newPathDic)
-        print(path['properties'].operationId)
-        print(newPathDic['parameters'])
+        #print(path['properties'].operationId)
+        #print(newPathDic['parameters'])
     default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 
 # returns the python type and if needed, adds libraries/dependencies
 def getTypeScriptType(attribute, model):
-    # maps the type in OpenApi3 to the type in python
-        # types: [array, boolean, integer, null,  number, object, string]
-        # formats that matter for strings: ByteArray, Binary, date, datetime
-    typeMapping = {
-        'integer': 'number', 'long': 'number', 'float': 'number', 'double': 'number',
-        'string': 'string', 'byte': 'string', 'binary': 'string', 'boolean': 'boolean',
-        'date': 'string', 'date-time': 'string', 'password': 'string', 'object': 'any'
-    }
-
     python_type = ""
 
     if 'ref' in attribute.__dict__:
@@ -202,7 +198,7 @@ def typescript_models_setup(schema):
     # for schema_name, schema_info in dikt['schemas'].items():
     #     dikt['schemas']['schema_name']
 
-    # type_map = {'integer': 'number', 'string': 'string', 'array': None, 'boolean': 'boolean' }
+    # typeMapping = {'integer': 'number', 'string': 'string', 'array': None, 'boolean': 'boolean' }
 
     # for key, value in spec_dict['components']['schemas'].items():
 
@@ -215,11 +211,11 @@ def typescript_models_setup(schema):
     #         if 'type' in attribute_type:
     #             if attribute_type['type'] != 'array':
     #                 val_type = attribute_type['type']
-    #                 var_type = type_map[val_type]
+    #                 var_type = typeMapping[val_type]
     #             else:
     #                 if 'type' in attribute_type['items']:
     #                     item = attribute_type['items']['type']
-    #                     var_type = 'Array<' + type_map[item] +'>'
+    #                     var_type = 'Array<' + typeMapping[item] +'>'
     #                 elif '$ref' in attribute_type['items']:
     #                     item = attribute_type['items']['$ref']
     #                     var_type = 'Array<' + item +'>'

@@ -31,11 +31,14 @@ export class {{ tag|capitalize }}Api {
 
 {% for path in paths %}
     public {{path['properties'].operationId}}WithHttpInfo({% for param in path.parameters %}{{param}}, {% endfor %} extraHttpRequestParams?: any): Observable<Response> {
+        {# need to fix basePath #}
         const path = this.basePath + {{path['url']}}
 
         let queryParameters = new URLSearchParams();
         let headers = new Headers(this.defaultHeaders.toJSON());
-        
+        {# need to add this for certain conditions}
+        {# let formParams = new URLSearchParams(); #}
+
         {% for param in path.parameters %}
         {% if 'apiKey' in param %}
         if (apiKey !== undefined && apiKey !== null) {
@@ -71,14 +74,15 @@ export class {{ tag|capitalize }}Api {
 
         headers.set('Content-Type', 'application/x-www-form-urlencoded');
 
+        {# must add something inside based on accept content types #}
         let consumes: string[] = [
             ];
 
+        {# may very per function #}
         let produces: string[] = [
             'application/json',
             'application/xml'
         ];
-
         
         if (this.configuration.apiKey) {
             headers.set('api_key', this.configuration.apiKey);
@@ -88,7 +92,8 @@ export class {{ tag|capitalize }}Api {
             method: RequestMethod.{{path['method']|capitalize}},
             headers: headers,
             {% for param in path.parameters %}{% if 'body' in param %}
-            body: body == null ? '' : JSON.stringify(body), {% endif %}{% endfor %}
+            {# need and if else for different body parameters #}
+                body: body == null ? '' : JSON.stringify(body), {% endif %}{% endfor %}
             search: queryParameters,
             withCredentials:this.configuration.withCredentials
         });
