@@ -160,12 +160,12 @@ def typescript_generate_models_ts(params):
     # params contains 'tags', 'models
     dikt = params
     dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
-    default.emit_template('typescript_client/models.tmpl', dikt, cfg.SERVER_OUTPUT + os.path.sep + 'models', 'models.ts')
+    default.emit_template('typescript_client/models.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'models.ts')
 
 def typescript_generate_api_ts(params):
     # params contains 'tags', 'models
     dikt = params
-    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.SERVER_OUTPUT + os.path.sep + 'api', 'api.ts')
+    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
 
 typescript_invocation_iterator_functions = [
     typescript_project_setup,
