@@ -146,8 +146,18 @@ def flask_generate_model(schema):
 
     # if properties does not exist, print an empty class
     if not schema['object'].properties:
-        default.emit_template('flask_server/model.tmpl', model, cfg.FLASK_SERVER_OUTPUT +
-                              os.path.sep + 'models', class_name + '.py')
+        default.emit_template('flask_server/model.tmpl', model,
+                              cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', class_name + '.py')
+    else:
+        # run through each item within the properties
+        for attribute_name, attribute in schema['object'].properties.items():
+            # find the property, and insert dependencies into the model if needed
+            attribute_type = getPythonType(attribute, model)
+            # if attribute type is null or empty do not include it into the dictionary
+        if attribute_type != "" and attribute_type != 'null':
+            model['properties'][attribute_name] = attribute_type
+        default.emit_template('flask_server/model.tmpl', model,
+                              cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', class_name + '.py')
 
 
 flask_invocation_iterator_functions = [
