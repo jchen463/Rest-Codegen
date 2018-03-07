@@ -30,10 +30,18 @@ def typescript_project_setup(params):
 
 
 def typescript_specification_setup(params):
-    dikt = {}
+    dikt = params
+    # params contains 'tags', 'models
     default.emit_template('typescript_client/index.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
     default.emit_template('typescript_client/variables.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
     default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
+    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api',
+                          'api.ts')
+    dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
+    default.emit_template('typescript_client/models.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'models',
+                          'models.ts')
+    default.emit_template('typescript_client/encoder.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'encoder.ts')
+    default.emit_template('typescript_client/api_module.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'api.module.ts')
 
 
 def typescript_api_setup(params):
@@ -43,17 +51,17 @@ def typescript_api_setup(params):
 
     # get the arguments
     for path in params:
-        newPathDic = {'url': path['url'], 'parameters': [], 'properties': path['properties'], 'method': path['method']}
-        # GET THE ARGUMENTS
+        newPathDic = { 'url': path['url'], 'parameters' : [], 'properties': path['properties'], 'method': path['method'], 'response_200': None}
+        # GET THE ARGUMENTS 
         if path['properties'].parameters is not None:
-            for param in path['properties'].parameters:
+            for param in path['properties'].parameters: 
                 newArg = param.name
                 if param.schema.type == 'array':
-                    if not param.required:
+                    if param.required == False:
                         newArg += "?"
                     newArg += ": Array<" + typeMapping[param.schema.items.type] + ">"
-                else:
-                    if not param.required:
+                else: 
+                    if param.required == False:
                         newArg += "?"
                     newArg += ": " + typeMapping[param.schema.type]
                 newPathDic['parameters'].append(newArg)
@@ -69,7 +77,7 @@ def typescript_api_setup(params):
                         newArg = key + "?: "
                         if value.type == 'array':
                             newArg += "Array<" + typeMapping[value.schema.items.type] + ">"
-                        else:
+                        else: 
                             newArg += typeMapping[value.type]
                         newPathDic['parameters'].append(newArg)
                 elif 'application/json' in path['properties'].requestBody.content:
@@ -83,28 +91,31 @@ def typescript_api_setup(params):
                     newArg = "file?: any"
                     newPathDic['parameters'].append(newArg)
         # GET THE OBSERVABLE PARAM
-            if '200' in path['properties'].responses:
-                if 'content' in path['properties'].responses['200'].__dict__:
-                    # print(path['properties'].responses['200'].content)
-                    if 'application/json' in path['properties'].responses['200'].content:
-                        if 'schema' in path['properties'].responses['200'].content['application/json'].__dict__:
-                            for key, value in path['properties'].responses['200'].content['application/json'].__dict__.items():
-                                if key == 'schema':
-                                    if 'ref' in value.__dict__:
-                                        refPath = value.ref
-                                        splitPath = refPath.split('/')
-                                        response_200 = "models." + splitPath[len(splitPath) - 1]
-                                    elif 'type' in value.__dict__:
-                                        if value.type == 'array':
-                                            if 'ref' in value.items:
-                                                refPath = value.ref
-                                                splitPath = refPath.split('/')
-                                                response_200 = "<Array<models." + splitPath[len(splitPath) - 1] + ">"
+        if '200' in path['properties'].responses:
+            if 'content' in path['properties'].responses['200'].__dict__:
+                # print(path['properties'].responses['200'].content)
+                if 'application/json' in path['properties'].responses['200'].content:
+                    if 'schema' in path['properties'].responses['200'].content['application/json'].__dict__:
+                        for key, value in path['properties'].responses['200'].content['application/json'].__dict__.items():
+                            if key == 'schema':
+                                if 'ref' in value.__dict__:
+                                    refPath = value.ref
+                                    splitPath = refPath.split('/')
+                                    response_200 = "models." + splitPath[len(splitPath) - 1]
                                     newPathDic.update({'response_200': response_200})
-                                    # print(newPathDic['response_200'])
+                                    #print(newPathDic['response_200'])
+                                elif 'type' in value.__dict__:
+                                    if value.type == 'array':
+                                        #print(value)
+                                        if 'ref' in value.items.__dict__:
+                                            refPath = value.items.ref
+                                            splitPath = refPath.split('/')
+                                            response_200 = "<Array<models." + splitPath[len(splitPath) - 1] + ">"
+                                            newPathDic.update({'response_200': response_200})
+                                            #print(newPathDic['response_200'])
         dikt['paths'].append(newPathDic)
-        # print(path['properties'].operationId)
-        # print(newPathDic['parameters'])
+        #print(path['properties'].operationId)
+        #print(newPathDic['parameters'])
     default.emit_template('typescript_client/api.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 # returns the python type and if needed, adds libraries/dependencies
@@ -171,9 +182,11 @@ def typescript_models_setup(schema):
     model = {
         'name': schema['name'],
         'properties': {},  # key is property name, value is property type
-        'dependencies': {}  # key is filename, value is class that is being imported
+        'dependencies': {},  # key is filename, value is class that is being imported
+        'required': schema['object'].required
 
     }
+    print(model['required'])
 
     class_name = makeFirstLetterLower(model['name'])
 
@@ -246,29 +259,12 @@ def makeFirstLetterLower(s):
     return s[:1].lower() + s[1:] if s else ''
 
 
-def typescript_generate_models_ts(params):
-    # params contains 'tags', 'models
-    print("typescript_generate_models_ts")
-    dikt = params
-    dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
-    default.emit_template('typescript_client/models.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'models', 'models.ts')
-
-
-def typescript_generate_api_ts(params):
-    # params contains 'tags', 'models
-    print("typescript_generate_api_ts")
-    dikt = params
-    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
-
-
 typescript_invocation_iterator_functions = [
     typescript_project_setup,
 ]
 
 typescript_specification_iterator_functions = [
-    typescript_specification_setup,
-    typescript_generate_models_ts,
-    typescript_generate_api_ts
+    typescript_specification_setup
 ]
 
 typescript_paths_iterator_functions = [
