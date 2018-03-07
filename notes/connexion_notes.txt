@@ -38,7 +38,7 @@ Dynamic rendering of specification
 
 
 
-should we handle arguments like
+1. should we handle arguments like
 from flask import request
 
 @app.route(...)
@@ -53,5 +53,9 @@ from flask import request
 @app.route(...)/<request>
 def login():
 
+2. byteArray and binary
 
+3. dealing with enums
+
+4. how to deal with cap and uncap, my function assumes defintions will be capitalized which may not be true
 
