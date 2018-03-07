@@ -13,41 +13,44 @@ These are essentially wrappers for templates
 Responsible for certain files
 """
 
+
 def typescript_project_setup(params):
     print('typescript_project_setup')
     dikt = {}
     default.emit_template('requirements.tmpl', dikt, cfg.PROJECT_OUTPUT, 'requirements.txt')
 
- 
+
 def typescript_specification_setup(params):
     dikt = {}
     default.emit_template('typescript_client/index.tmpl', dikt, cfg.PROJECT_OUTPUT, 'index.ts')
     default.emit_template('typescript_client/variables.tmpl', dikt, cfg.PROJECT_OUTPUT, 'variables.ts')
     default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.PROJECT_OUTPUT, 'configuration.ts')
-   
-type_map = {'integer': 'number', 'string': 'string', 'array': 'Array', 'boolean': 'boolean' }
+
+
+type_map = {'integer': 'number', 'string': 'string', 'array': 'Array', 'boolean': 'boolean'}
+
 
 def typescript_api_setup(params):
     print('typescript_controllers_setup')
     basePath = params[0]['basePath']
-    dikt = { 'basePath': basePath, 'paths': [], 'tag': params[0]['tag']}
+    dikt = {'basePath': basePath, 'paths': [], 'tag': params[0]['tag']}
 
     # get the arguments
     for path in params:
-        newPathDic = { 'url': path['url'], 'parameters' : [], 'properties': path['properties'], 'method': path['method']}
-        # GET THE ARGUMENTS 
+        newPathDic = {'url': path['url'], 'parameters': [], 'properties': path['properties'], 'method': path['method']}
+        # GET THE ARGUMENTS
         if newPathDic['properties'].parameters is not None:
             # print(path['properties'].parameters)
             if path['properties'].parameters is not None:
-                for param in path['properties'].parameters: 
-                    #print(param.name)
+                for param in path['properties'].parameters:
+                    # print(param.name)
                     newArg = param.name
                     if param.schema.type == 'array':
-                        #print(param.required)
+                        # print(param.required)
                         if param.required == False:
                             newArg += "?"
                         newArg += ": Array<" + type_map[param.schema.items.type] + ">"
-                    else: 
+                    else:
                         if param.required == False:
                             newArg += "?"
                         newArg += ": " + type_map[param.schema.type]
@@ -64,7 +67,7 @@ def typescript_api_setup(params):
                         newArg = key + "?: "
                         if value.type == 'array':
                             newArg += "Array<" + type_map[value.schema.items.type] + ">"
-                        else: 
+                        else:
                             newArg += type_map[value.type]
                         newPathDic['parameters'].append(newArg)
                 elif 'application/json' in path['properties'].requestBody.content:
@@ -80,7 +83,7 @@ def typescript_api_setup(params):
         # GET THE OBSERVABLE PARAM
             if '200' in path['properties'].responses:
                 if 'content' in path['properties'].responses['200'].__dict__:
-                    #print(path['properties'].responses['200'].content)
+                    # print(path['properties'].responses['200'].content)
                     if 'application/json' in path['properties'].responses['200'].content:
                         if 'schema' in path['properties'].responses['200'].content['application/json'].__dict__:
                             for key, value in path['properties'].responses['200'].content['application/json'].__dict__.items():
@@ -95,8 +98,8 @@ def typescript_api_setup(params):
                                                 refPath = value.ref
                                                 splitPath = refPath.split('/')
                                                 response_200 = "<Array<models." + splitPath[len(splitPath) - 1] + ">"
-                                    newPathDic.update({ 'response_200': response_200})
-                                    #print(newPathDic['response_200'])
+                                    newPathDic.update({'response_200': response_200})
+                                    # print(newPathDic['response_200'])
         dikt['paths'].append(newPathDic)
         print(path['properties'].operationId)
         print(newPathDic['parameters'])
@@ -166,6 +169,7 @@ def getTypeScriptType(attribute, model):
 
     return python_type
 
+
 def typescript_models_setup(schema):
     # model files
     print('typescript_models_setup')
@@ -197,7 +201,6 @@ def typescript_models_setup(schema):
         default.emit_template('typescript_client/model.tmpl', model, cfg.PROJECT_OUTPUT +
                               os.path.sep + 'models', class_name + '.ts')
 
-
     pass
     # for schema_name, schema_info in dikt['schemas'].items():
     #     dikt['schemas']['schema_name']
@@ -223,16 +226,16 @@ def typescript_models_setup(schema):
     #                 elif '$ref' in attribute_type['items']:
     #                     item = attribute_type['items']['$ref']
     #                     var_type = 'Array<' + item +'>'
-    #                 else: 
+    #                 else:
     #                     var_type = 'Array<' + 'None' + '>'
     #         else:
     #             var_type = 'none'
-            
+
     #         if '$ref' in attribute_type:
     #             ref = attribute_type['$ref']
     #         else:
     #             ref = 'none'
-            
+
     #         if 'enum' in attribute_type:
     #             enum = attribute_type['enum']
 
@@ -244,8 +247,10 @@ def typescript_models_setup(schema):
     #     renders = [FileRender('templates/client_models.tmpl', file_name, [models])]
     #     do_renders(renders, 'templates/', 'generated/client/models')
 
+
 def makeFirstLetterLower(s):
     return s[:1].lower() + s[1:] if s else ''
+
 
 def typescript_generate_models_ts(params):
     # params contains 'tags', 'models
@@ -254,11 +259,13 @@ def typescript_generate_models_ts(params):
     dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
     default.emit_template('typescript_client/models.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'models.ts')
 
+
 def typescript_generate_api_ts(params):
     # params contains 'tags', 'models
     print("typescript_generate_api_ts")
     dikt = params
     default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
+
 
 typescript_invocation_iterator_functions = [
     typescript_project_setup,
@@ -280,15 +287,11 @@ typescript_schemas_iterator_functions = [
 
 
 def stage_default_iterators():
-    default.codegen_stage(default.invocation_iterator,
-                          typescript_invocation_iterator_functions)
-    default.codegen_stage(default.specification_iterator,
-                          typescript_specification_iterator_functions)
-    default.codegen_stage(default.schemas_iterator,
-                          typescript_schemas_iterator_functions)
-    default.codegen_stage(default.paths_iterator,
-                          typescript_paths_iterator_functions)
+    default.codegen_stage(default.invocation_iterator, typescript_invocation_iterator_functions)
+    default.codegen_stage(default.specification_iterator, typescript_specification_iterator_functions)
+    default.codegen_stage(default.schemas_iterator, typescript_schemas_iterator_functions)
+    default.codegen_stage(default.paths_iterator, typescript_paths_iterator_functions)
+
 
 def typescript_client_codegen():
     default.run_iterators()
-

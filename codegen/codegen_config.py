@@ -12,10 +12,19 @@ SPEC_FILE_PATH = os.getcwd() + os.path.sep + SPEC
 SPEC_DICT = None
 SPECIFICATION = None
 
-PROJECT_NAME = 'generated'
-PROJECT_OUTPUT = os.getcwd() + os.path.sep + PROJECT_NAME
-SERVER_NAME = PROJECT_NAME
-SERVER_OUTPUT = PROJECT_OUTPUT + os.path.sep + PROJECT_NAME
+# PROJECT_NAME = 'generated'
+# PROJECT_OUTPUT = os.getcwd() + os.path.sep + PROJECT_NAME
+# SERVER_NAME = PROJECT_NAME
+# SERVER_OUTPUT = PROJECT_OUTPUT + os.path.sep + PROJECT_NAME
+
+FLASK_PROJECT_NAME = 'flask-server-generated'
+FLASK_PROJECT_OUTPUT = os.getcwd() + os.path.sep + FLASK_PROJECT_NAME
+FLASK_SERVER_NAME = FLASK_PROJECT_NAME
+FLASK_SERVER_OUTPUT = FLASK_PROJECT_OUTPUT + os.path.sep + FLASK_PROJECT_NAME
+
+TYPESCRIPT_PROJECT_NAME = 'typescript-client-generated'
+TYPESCRIPT_PROJECT_OUTPUT = os.getcwd() + os.path.sep + TYPESCRIPT_PROJECT_NAME
+
 
 # not implemented yet
 # USER_TEMPLATES_NAME = None
