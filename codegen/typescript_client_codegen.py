@@ -30,10 +30,18 @@ def typescript_project_setup(params):
 
 
 def typescript_specification_setup(params):
-    dikt = {}
+    dikt = params
+    # params contains 'tags', 'models
     default.emit_template('typescript_client/index.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
     default.emit_template('typescript_client/variables.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
     default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
+    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api',
+                          'api.ts')
+    dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
+    default.emit_template('typescript_client/models.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'models',
+                          'models.ts')
+    default.emit_template('typescript_client/encoder.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'encoder.ts')
+    default.emit_template('typescript_client/api_module.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'api.module.ts')
 
 
 def typescript_api_setup(params):
@@ -246,29 +254,12 @@ def makeFirstLetterLower(s):
     return s[:1].lower() + s[1:] if s else ''
 
 
-def typescript_generate_models_ts(params):
-    # params contains 'tags', 'models
-    print("typescript_generate_models_ts")
-    dikt = params
-    dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
-    default.emit_template('typescript_client/models.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'models', 'models.ts')
-
-
-def typescript_generate_api_ts(params):
-    # params contains 'tags', 'models
-    print("typescript_generate_api_ts")
-    dikt = params
-    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
-
-
 typescript_invocation_iterator_functions = [
     typescript_project_setup,
 ]
 
 typescript_specification_iterator_functions = [
-    typescript_specification_setup,
-    typescript_generate_models_ts,
-    typescript_generate_api_ts
+    typescript_specification_setup
 ]
 
 typescript_paths_iterator_functions = [
