@@ -25,14 +25,14 @@ typeMapping = {
 def typescript_project_setup(params):
     print('typescript_project_setup')
     dikt = {}
-    default.emit_template('requirements.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'requirements.txt')
+    #default.emit_template('requirements.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'requirements.txt')
 
 
 def typescript_specification_setup(params):
     dikt = {}
-    default.emit_template('typescript_client/index.tmpl', dikt, cfg.PROJECT_OUTPUT, 'index.ts')
-    default.emit_template('typescript_client/variables.tmpl', dikt, cfg.PROJECT_OUTPUT, 'variables.ts')
-    default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.PROJECT_OUTPUT, 'configuration.ts')
+    default.emit_template('typescript_client/index.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
+    default.emit_template('typescript_client/variables.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
+    default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
 
 def typescript_api_setup(params):
     print('typescript_controllers_setup')
@@ -103,7 +103,7 @@ def typescript_api_setup(params):
         dikt['paths'].append(newPathDic)
         #print(path['properties'].operationId)
         #print(newPathDic['parameters'])
-    default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
+    default.emit_template('typescript_client/api.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 # returns the python type and if needed, adds libraries/dependencies
 def getTypeScriptType(attribute, model):
