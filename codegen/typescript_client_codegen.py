@@ -103,10 +103,101 @@ def typescript_api_setup(params):
     default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 
-def typescript_models_setup(dikt):
+# returns the python type and if needed, adds libraries/dependencies
+def getTypeScriptType(attribute, model):
+    # maps the type in OpenApi3 to the type in python
+        # types: [array, boolean, integer, null,  number, object, string]
+        # formats that matter for strings: ByteArray, Binary, date, datetime
+    typeMapping = {
+        'integer': 'number', 'long': 'number', 'float': 'number', 'double': 'number',
+        'string': 'string', 'byte': 'string', 'binary': 'string', 'boolean': 'boolean',
+        'date': 'string', 'date-time': 'string', 'password': 'string', 'object': 'any'
+    }
+
+    python_type = ""
+
+    if 'ref' in attribute.__dict__:
+        python_type += attribute.ref[attribute.ref.rfind('/') + 1:]  # reference name wil lbe the name of the type
+        # if the class has not been added to the dependencies, add it
+        if makeFirstLetterLower(python_type) not in model['dependencies']:
+            model['dependencies'][makeFirstLetterLower(python_type)] = python_type
+    elif attribute.type == 'array':
+        tempAttr = attribute.items
+        python_type += 'Array<'
+        array_num = 1  # count the number of arrays found
+
+        # untested while loop
+        while hasattr(tempAttr, 'type'):
+            if tempAttr.type == 'array':
+                python_type += 'Array<'
+                tempAttr = tempAttr.items
+                array_num += 1
+            else:
+                break
+
+        if 'ref' in tempAttr.__dict__:
+            python_type += tempAttr.ref[tempAttr.ref.rfind('/') + 1:]
+
+            # if the class has not been added to the dependencies, add it
+            if makeFirstLetterLower(tempAttr.ref[tempAttr.ref.rfind('/') + 1:]) not in model['dependencies']:
+                model['dependencies'][makeFirstLetterLower(tempAttr.ref[tempAttr.ref.rfind('/') + 1:])] = \
+                    tempAttr.ref[tempAttr.ref.rfind('/') + 1:]
+        elif tempAttr.type == 'string':
+            if tempAttr.format:
+                python_type += typeMapping[tempAttr.format]
+            else:
+                python_type += typeMapping[tempAttr.type]
+        elif tempAttr.type in typeMapping:
+            python_type += typeMapping[tempAttr.type]
+
+        for _ in range(array_num):
+            python_type += '>'
+
+            # untested while loop:
+            # while attribute.items.type
+            # attribute_type = '[]' # this will need to be fixed
+    elif attribute.type == 'string':
+        if attribute.format:
+            python_type += typeMapping[attribute.format]
+        else:
+            python_type += typeMapping[attribute.type]
+    elif attribute.type in typeMapping:
+        python_type += typeMapping[attribute.type]
+
+    return python_type
+
+def typescript_models_setup(schema):
     # model files
-    # dikt contains 'schemas'
     print('typescript_models_setup')
+
+    model = {
+        'name': schema['name'],
+        'properties': {},  # key is property name, value is property type
+        'dependencies': {}  # key is filename, value is class that is being imported
+
+    }
+
+    class_name = makeFirstLetterLower(model['name'])
+
+    # if properties does not exist, print an empty class
+    if not schema['object'].properties:
+        default.emit_template('model.tmpl', model, cfg.PROJECT_OUTPUT +
+                              os.path.sep + 'models', class_name + '.py')
+    else:
+        # run through each item within the properties
+        for attribute_name, attribute in schema['object'].properties.items():
+
+            # find the property, and insert dependencies into the model if needed
+            attribute_type = getTypeScriptType(attribute, model)
+
+            # if attribute type is null or empty do not include it into the dictionary
+            if attribute_type != "" and attribute_type != 'null':
+                model['properties'][attribute_name] = attribute_type
+
+        default.emit_template('typescript_client/model.tmpl', model, cfg.PROJECT_OUTPUT +
+                              os.path.sep + 'models', class_name + '.ts')
+
+
     pass
     # for schema_name, schema_info in dikt['schemas'].items():
     #     dikt['schemas']['schema_name']
@@ -158,12 +249,14 @@ def makeFirstLetterLower(s):
 
 def typescript_generate_models_ts(params):
     # params contains 'tags', 'models
+    print("typescript_generate_models_ts")
     dikt = params
     dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
     default.emit_template('typescript_client/models.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'models', 'models.ts')
 
 def typescript_generate_api_ts(params):
     # params contains 'tags', 'models
+    print("typescript_generate_api_ts")
     dikt = params
     default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
 
