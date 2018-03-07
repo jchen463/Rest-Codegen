@@ -180,6 +180,8 @@ def getTypeScriptType(attribute, model, attribute_name):
         else:  # is enum so you have to print something different
             typescript_type += model['name'].capitalize() + "." + attribute_name.capitalize() + "Enum"
             model['enums'][attribute_name] = model['properties'][attribute_name]['enum']
+    else: # attribute.type == integer 
+        typescript_type = typeMapping[attribute.type]
 
     return typescript_type
 
@@ -208,10 +210,8 @@ def typescript_models_setup(schema):
         # run through each item within the properties
         for attribute_name, attribute in schema['object'].properties.items():
             model['properties'][attribute_name] = attribute.__dict__
-
             # find the property, and insert dependencies into the model if needed
             attribute_type = getTypeScriptType(attribute, model, attribute_name)
-
             # if attribute type is null or empty do not include it into the dictionary
             if attribute_type != "" and attribute_type != 'null':
                 model['properties'][attribute_name]['type'] = attribute_type
