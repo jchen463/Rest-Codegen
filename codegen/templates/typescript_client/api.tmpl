@@ -3,11 +3,11 @@
 
 @Injectable() 
 export class {{ tag|capitalize }}Api {
-	private basePath = '{{basePath}}'
-	public defaultHeaders: Headers = new Headers();
-	public configuration: Configuration = new Configuration();
+    private basePath = '{{basePath}}'
+    public defaultHeaders: Headers = new Headers();
+    public configuration: Configuration = new Configuration();
 
-	 constructor(protected http: Http, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+     constructor(protected http: Http, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (basePath) {
             this.basePath = basePath;
         }
@@ -16,8 +16,8 @@ export class {{ tag|capitalize }}Api {
         }
     }
 {% for path in paths %} 
-	public {{path['properties'].operationId}}( {{path.parameters}}  , extraHttpRequestParams?: any): Observable<{}> {
-        return this.{{path['properties'].operationId}}WithHttpInfo(body, extraHttpRequestParams)
+    public {{path['properties'].operationId}}( {% for param in path.parameters %}{{param}}, {% endfor %} extraHttpRequestParams?: any): Observable<{{path.response_200}}> {
+        return this.{{path['properties'].operationId}}WithHttpInfo({% for param in path.parameters %}{{param}}, {% endfor %} extraHttpRequestParams)
             .map((response: Response) => {
                 if (response.status === 204) {
                     return undefined;
@@ -28,21 +28,52 @@ export class {{ tag|capitalize }}Api {
     }
 {% endfor %}
 
+
 {% for path in paths %}
-	public {{path['properties'].operationId}}WithHttpInfo( {{path.parameters}}, extraHttpRequestParams?: any): Observable<Response> {
+    public {{path['properties'].operationId}}WithHttpInfo({% for param in path.parameters %}{{param}}, {% endfor %} extraHttpRequestParams?: any): Observable<Response> {
         const path = this.basePath + {{path['url']}}
 
         let queryParameters = new URLSearchParams();
         let headers = new Headers(this.defaultHeaders.toJSON());
         
-        if ({{path.parameters}} === null || {{path.parameters}} === undefined) {
-            throw new Error('Required parameter {{path.parameters}} was null or undefined when calling path['properties'].operationId.');
+        {% for param in path.parameters %}
+        {% if 'apiKey' in param %}
+        if (apiKey !== undefined && apiKey !== null) {
+            headers.set('api_key', String(apiKey));
+        }
+        {% elif '?' not in param %} {# not required #}
+        {% set var = param.split(':') %}  
+        if ({{var[0]}} === null || {{var[0]}} === undefined) {
+            throw new Error('Required parameter {{param}} was null or undefined when calling {{path['properties'].operationId}}.');
         }
         
-        let consumes: string[] = [
-        ];
+        {% if 'Array' in param %} {# check for array #}
+        if ({{var[0]}}) {
+            {{var[0]}}.forEach((element) => {
+                queryParameters.append('{{var[0]}}', <any>element);
+            })
+        }    
+        {% endif %}
+        {% else %} {# required parameters #} 
+        {% set var = param.split('?:') %}
+        if ({{var[0]}} !== undefined) {
+            formParams.set('{{var[0]}}', <any>{{var[0]}});
+        }
+        {% endif %}
+        {% endfor %}
+            
+        if (this.configuration.accessToken) {
+            let accessToken = typeof this.configuration.accessToken === 'function'
+                ? this.configuration.accessToken()
+                : this.configuration.accessToken;
+            headers.set('Authorization', 'Bearer ' + accessToken);
+        }
 
-        
+        headers.set('Content-Type', 'application/x-www-form-urlencoded');
+
+        let consumes: string[] = [
+            ];
+
         let produces: string[] = [
             'application/json',
             'application/xml'
@@ -56,6 +87,8 @@ export class {{ tag|capitalize }}Api {
         let requestOptions: RequestOptionsArgs = new RequestOptions({
             method: RequestMethod.{{path['method']|capitalize}},
             headers: headers,
+            {% for param in path.parameters %}{% if 'body' in param %}
+            body: body == null ? '' : JSON.stringify(body), {% endif %}{% endfor %}
             search: queryParameters,
             withCredentials:this.configuration.withCredentials
         });

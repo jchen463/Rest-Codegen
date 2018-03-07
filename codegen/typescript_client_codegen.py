@@ -34,7 +34,8 @@ def typescript_api_setup(params):
 
     # get the arguments
     for path in params:
-        newPathDic = { 'url': path['url'], 'parameters' : [] , 'properties': path['properties'], 'method': path['method']}
+        newPathDic = { 'url': path['url'], 'parameters' : [], 'properties': path['properties'], 'method': path['method']}
+        # GET THE ARGUMENTS 
         if newPathDic['properties'].parameters is not None:
             # print(path['properties'].parameters)
             if path['properties'].parameters is not None:
@@ -51,7 +52,6 @@ def typescript_api_setup(params):
                             newArg += "?"
                         newArg += ": " + type_map[param.schema.type]
                     newPathDic['parameters'].append(newArg)
-            dikt['paths'].append(newPathDic)
         if path['properties'].requestBody is not None:
             if 'ref' in path['properties'].requestBody.__dict__:
                 refPath = path['properties'].requestBody.ref
@@ -77,9 +77,29 @@ def typescript_api_setup(params):
                     newPathDic['parameters'].append(newArg)
                     newArg = "file?: any"
                     newPathDic['parameters'].append(newArg)
+        # GET THE OBSERVABLE PARAM
+            if '200' in path['properties'].responses:
+                if 'content' in path['properties'].responses['200'].__dict__:
+                    #print(path['properties'].responses['200'].content)
+                    if 'application/json' in path['properties'].responses['200'].content:
+                        if 'schema' in path['properties'].responses['200'].content['application/json'].__dict__:
+                            for key, value in path['properties'].responses['200'].content['application/json'].__dict__.items():
+                                if key == 'schema':
+                                    if 'ref' in value.__dict__:
+                                        refPath = value.ref
+                                        splitPath = refPath.split('/')
+                                        response_200 = "models." + splitPath[len(splitPath) - 1]
+                                    elif 'type' in value.__dict__:
+                                        if value.type == 'array':
+                                            if 'ref' in value.items:
+                                                refPath = value.ref
+                                                splitPath = refPath.split('/')
+                                                response_200 = "<Array<models." + splitPath[len(splitPath) - 1] + ">"
+                                    newPathDic.update({ 'response_200': response_200})
+                                    #print(newPathDic['response_200'])
+        dikt['paths'].append(newPathDic)
         print(path['properties'].operationId)
         print(newPathDic['parameters'])
-
     default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 
