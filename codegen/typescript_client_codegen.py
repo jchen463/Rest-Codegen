@@ -182,9 +182,11 @@ def typescript_models_setup(schema):
     model = {
         'name': schema['name'],
         'properties': {},  # key is property name, value is property type
-        'dependencies': {}  # key is filename, value is class that is being imported
+        'dependencies': {},  # key is filename, value is class that is being imported
+        'required': schema['object'].required
 
     }
+    print(model['required'])
 
     class_name = makeFirstLetterLower(model['name'])
 
