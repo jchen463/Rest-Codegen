@@ -196,7 +196,6 @@ def typescript_models_setup(schema):
         'enums': {}, #Is this needed??1
         'isString': False # is this needed??
     }
-    print(model['required'])
 
     class_name = makeFirstLetterLower(model['name'])
 
@@ -208,7 +207,6 @@ def typescript_models_setup(schema):
     else:
         # run through each item within the properties
         for attribute_name, attribute in schema['object'].properties.items():
-            print(attribute)
             model['properties'][attribute_name] = attribute.__dict__
 
             # find the property, and insert dependencies into the model if needed
