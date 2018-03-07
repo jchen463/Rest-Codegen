@@ -12,8 +12,6 @@ except ImportError as err:  # when packaged, only above imports work
 These are essentially wrappers for templates
 Responsible for certain files
 """
-
-<<<<<<< HEAD
 # maps the type in OpenApi3 to the type in python
         # types: [array, boolean, integer, null,  number, object, string]
         # formats that matter for strings: ByteArray, Binary, date, datetime
@@ -23,7 +21,6 @@ typeMapping = {
         'string': 'string', 'byte': 'string', 'binary': 'string', 'boolean': 'boolean',
         'date': 'string', 'date-time': 'string', 'password': 'string', 'object': 'any'
     }
-=======
 
 def typescript_project_setup(params):
     print('typescript_project_setup')
@@ -33,11 +30,9 @@ def typescript_project_setup(params):
 
 def typescript_specification_setup(params):
     dikt = {}
-<<<<<<< HEAD
     default.emit_template('typescript_client/index.tmpl', dikt, cfg.PROJECT_OUTPUT, 'index.ts')
     default.emit_template('typescript_client/variables.tmpl', dikt, cfg.PROJECT_OUTPUT, 'variables.ts')
     default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.PROJECT_OUTPUT, 'configuration.ts')
-=======
 
 def typescript_api_setup(params):
     print('typescript_controllers_setup')
@@ -46,7 +41,6 @@ def typescript_api_setup(params):
 
     # get the arguments
     for path in params:
-<<<<<<< HEAD
         newPathDic = { 'url': path['url'], 'parameters' : [], 'properties': path['properties'], 'method': path['method']}
         # GET THE ARGUMENTS 
         if path['properties'].parameters is not None:
@@ -61,7 +55,6 @@ def typescript_api_setup(params):
                         newArg += "?"
                     newArg += ": " + typeMapping[param.schema.type]
                 newPathDic['parameters'].append(newArg)
-=======
         if path['properties'].requestBody is not None:
             if 'ref' in path['properties'].requestBody.__dict__:
                 refPath = path['properties'].requestBody.ref
@@ -73,11 +66,9 @@ def typescript_api_setup(params):
                     for key, value in path['properties'].requestBody.content['application/x-www-form-urlencoded'].schema.properties.items():
                         newArg = key + "?: "
                         if value.type == 'array':
-<<<<<<< HEAD
                             newArg += "Array<" + typeMapping[value.schema.items.type] + ">"
                         else: 
                             newArg += typeMapping[value.type]
-=======
                         newPathDic['parameters'].append(newArg)
                 elif 'application/json' in path['properties'].requestBody.content:
                     refPath = path['properties'].requestBody.content['application/json'].schema.ref
@@ -110,11 +101,9 @@ def typescript_api_setup(params):
                                     newPathDic.update({'response_200': response_200})
                                     # print(newPathDic['response_200'])
         dikt['paths'].append(newPathDic)
-<<<<<<< HEAD
         #print(path['properties'].operationId)
         #print(newPathDic['parameters'])
     default.emit_template('typescript_client/api.tmpl', dikt, cfg.PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
-=======
 
 # returns the python type and if needed, adds libraries/dependencies
 def getTypeScriptType(attribute, model):
