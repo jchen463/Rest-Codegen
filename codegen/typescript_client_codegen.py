@@ -133,6 +133,19 @@ def typescript_models_setup(dikt):
     #     renders = [FileRender('templates/client_models.tmpl', file_name, [models])]
     #     do_renders(renders, 'templates/', 'generated/client/models')
 
+def makeFirstLetterLower(s):
+    return s[:1].lower() + s[1:] if s else ''
+
+def typescript_generate_models_ts(params):
+    # params contains 'tags', 'models
+    dikt = params
+    dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
+    default.emit_template('typescript_client/models.tmpl', dikt, cfg.SERVER_OUTPUT + os.path.sep + 'models', 'models.ts')
+
+def typescript_generate_api_ts(params):
+    # params contains 'tags', 'models
+    dikt = params
+    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.SERVER_OUTPUT + os.path.sep + 'api', 'api.ts')
 
 typescript_invocation_iterator_functions = [
     typescript_project_setup,
@@ -140,6 +153,8 @@ typescript_invocation_iterator_functions = [
 
 typescript_specification_iterator_functions = [
     typescript_specification_setup,
+    typescript_generate_models_ts,
+    typescript_generate_api_ts
 ]
 
 typescript_paths_iterator_functions = [

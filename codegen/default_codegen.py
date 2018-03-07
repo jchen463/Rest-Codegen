@@ -67,7 +67,8 @@ def invocation_iterator(spec, invocation_iterator_functions):
 
 def specification_iterator(spec, specification_iterator_functions):
     paths_by_tag = get_paths_by_tag(spec.paths.dikt)
-    tags = {'tags': paths_by_tag.keys()}
+    schemas = spec.components.schemas  # array of schemas
+    dikt = {'tags': paths_by_tag.keys(), 'models': schemas.keys()}
     """
     right now we're only using one spec though
     for specification in specifications:
@@ -76,7 +77,7 @@ def specification_iterator(spec, specification_iterator_functions):
     seems like we only need tags and port
     """
     for f in specification_iterator_functions:
-        f(tags)
+        f(dikt)
 
 
 def schemas_iterator(spec, schemas_iterator_functions):
