@@ -111,8 +111,8 @@ def getPythonType(attribute, model, attribute_name):
                     python_type += typeMapping[tempAttr.format]
                 else:
                     python_type += typeMapping[tempAttr.type]
-            else: # is enum so you have to print something different
-                #python_type += model['name'].capitalize() +"." + attribute_name.capitalize() + "Enum"
+            else:  # is enum so you have to print something different
+                # python_type += model['name'].capitalize() +"." + attribute_name.capitalize() + "Enum"
                 if tempAttr.format:
                     python_type += typeMapping[tempAttr.format]
                 else:
@@ -136,7 +136,7 @@ def getPythonType(attribute, model, attribute_name):
             else:
                 python_type += typeMapping[attribute.type]
         else:  # is enum so you have to print something different
-            #python_type += model['name'].capitalize() + "." + attribute_name.capitalize() + "Enum"
+            # python_type += model['name'].capitalize() + "." + attribute_name.capitalize() + "Enum"
             if attribute.format:
                 python_type += typeMapping[attribute.format]
             else:
@@ -158,10 +158,9 @@ def flask_generate_model(schema):
         'properties': {},  # key is property name, value is property type
         'dependencies': {},  # key is filename, value is class that is being imported
         'required': schema['object'].required,
-        'enums': {}, #Is this needed??1
-        'isString': False # is this needed??
+        'enums': {},  # Is this needed??1
+        'isString': False  # is this needed??
     }
-
 
     class_name = makeFirstLetterLower(model['name'])
 

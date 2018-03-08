@@ -93,11 +93,11 @@ def typescript_api_setup(params):
             for param in path['properties'].parameters:
                 newArg = param.name
                 if param.schema.type == 'array':
-                    if param.required == False:
+                    if not param.required:
                         newArg += "?"
                     newArg += ": Array<" + typeMapping[param.schema.items.type] + ">"
                 else:
-                    if param.required == False:
+                    if not param.required:
                         newArg += "?"
                     newArg += ": " + typeMapping[param.schema.type]
                 newPathDic['parameters'].append(newArg)
@@ -193,8 +193,8 @@ def getTypeScriptType(attribute, model, attribute_name):
                     typescript_type += typeMapping[tempAttr.format]
                 else:
                     typescript_type += typeMapping[tempAttr.type]
-            else: # is enum so you have to print something different
-                typescript_type += model['name'].capitalize() +"." + attribute_name.capitalize() + "Enum"
+            else:  # is enum so you have to print something different
+                typescript_type += model['name'].capitalize() + "." + attribute_name.capitalize() + "Enum"
                 model['enums'][attribute_name] = tempAttr.enum
 
         elif tempAttr.type in typeMapping:
@@ -216,7 +216,7 @@ def getTypeScriptType(attribute, model, attribute_name):
         else:  # is enum so you have to print something different
             typescript_type += model['name'].capitalize() + "." + attribute_name.capitalize() + "Enum"
             model['enums'][attribute_name] = model['properties'][attribute_name]['enum']
-    else: # attribute.type == integer 
+    else:  # attribute.type == integer
         typescript_type = typeMapping[attribute.type]
 
     return typescript_type
@@ -231,8 +231,8 @@ def typescript_models_setup(schema):
         'properties': {},  # key is property name, value is property type
         'dependencies': {},  # key is filename, value is class that is being imported
         'required': schema['object'].required,
-        'enums': {}, #Is this needed??1
-        'isString': False # is this needed??
+        'enums': {},  # Is this needed??1
+        'isString': False  # is this needed??
     }
 
     class_name = makeFirstLetterLower(model['name'])
