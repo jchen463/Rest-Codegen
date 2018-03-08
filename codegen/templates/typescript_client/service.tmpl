@@ -51,13 +51,16 @@ export class {{ schema_name|capitalize }}Service {
         {% endif %}
         {% endfor %}
 
+        {% if in == 'query'%}
         let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
         {% for param in params %}
+        {% if param.in == 'query'%}
         if ({{param}}) {
             {{param}}.forEach((element) => {
                 queryParameters = queryParameters.append('status', <{{type}}>element);
             })
         }
+        {% endif %}
         {% endfor %}
 
         let headers = this.defaultHeaders;
@@ -87,12 +90,33 @@ export class {{ schema_name|capitalize }}Service {
             '{{ responseBody }}'{% if not loop.last %},{% endif %}
             {% endfor %}
         ];
-        {%%}
+        {% if method == 'post' or method == 'put' %}
         let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
-        {%%}
+        {% endif %}
+
+        const canConsumeForm = this.canConsumeForm(consumes);
+
+        {% if CONDITION%}
+        let formParams: { append(param: string, value: any): void; };
+        let useForm = false;
+        let convertFormParamsToString = false;
+        {% if CONDITION %}
+        useForm = canConsumeForm;
+        {% endif %}
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
+        }
+        {% for param in params %}
+        if ({{param}} !== undefined) {
+            formParams = formParams.append('{{param}}', <any>{{param}}) || formParams;
+        }
+        {% endfor %}
+        {% endif %}
 
 
         return this.httpClient.delete<any>(`${this.basePath}/pet/${encodeURIComponent(String(petId))}`,
