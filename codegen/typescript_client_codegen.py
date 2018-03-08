@@ -157,58 +157,69 @@ def typescript_api_setup(params):
 # returns the python type and if needed, adds libraries/dependencies
 
 
-def getTypeScriptType(attribute, model):
-    python_type = ""
+def getTypeScriptType(attribute, model, attribute_name):
+    typescript_type = ""
 
     if 'ref' in attribute.__dict__:
-        python_type += attribute.ref[attribute.ref.rfind('/') + 1:]  # reference name wil lbe the name of the type
+        typescript_type += attribute.ref[attribute.ref.rfind('/') + 1:]  # reference name wil lbe the name of the type
         # if the class has not been added to the dependencies, add it
-        if makeFirstLetterLower(python_type) not in model['dependencies']:
-            model['dependencies'][makeFirstLetterLower(python_type)] = python_type
+        if makeFirstLetterLower(typescript_type) not in model['dependencies']:
+            model['dependencies'][makeFirstLetterLower(typescript_type)] = typescript_type
     elif attribute.type == 'array':
         tempAttr = attribute.items
-        python_type += 'Array<'
+        typescript_type += 'Array<'
         array_num = 1  # count the number of arrays found
 
         # untested while loop
         while hasattr(tempAttr, 'type'):
             if tempAttr.type == 'array':
-                python_type += 'Array<'
+                typescript_type += 'Array<'
                 tempAttr = tempAttr.items
                 array_num += 1
             else:
                 break
 
         if 'ref' in tempAttr.__dict__:
-            python_type += tempAttr.ref[tempAttr.ref.rfind('/') + 1:]
+            typescript_type += tempAttr.ref[tempAttr.ref.rfind('/') + 1:]
 
             # if the class has not been added to the dependencies, add it
             if makeFirstLetterLower(tempAttr.ref[tempAttr.ref.rfind('/') + 1:]) not in model['dependencies']:
                 model['dependencies'][makeFirstLetterLower(tempAttr.ref[tempAttr.ref.rfind('/') + 1:])] = \
                     tempAttr.ref[tempAttr.ref.rfind('/') + 1:]
         elif tempAttr.type == 'string':
-            if tempAttr.format:
-                python_type += typeMapping[tempAttr.format]
-            else:
-                python_type += typeMapping[tempAttr.type]
+            model['properties'][attribute_name]['isString'] = True
+            if not tempAttr.enum:
+                if tempAttr.format:
+                    typescript_type += typeMapping[tempAttr.format]
+                else:
+                    typescript_type += typeMapping[tempAttr.type]
+            else: # is enum so you have to print something different
+                typescript_type += model['name'].capitalize() +"." + attribute_name.capitalize() + "Enum"
+                model['enums'][attribute_name] = tempAttr.enum
+
         elif tempAttr.type in typeMapping:
-            python_type += typeMapping[tempAttr.type]
+            typescript_type += typeMapping[tempAttr.type]
 
         for _ in range(array_num):
-            python_type += '>'
+            typescript_type += '>'
 
             # untested while loop:
             # while attribute.items.type
             # attribute_type = '[]' # this will need to be fixed
     elif attribute.type == 'string':
-        if attribute.format:
-            python_type += typeMapping[attribute.format]
-        else:
-            python_type += typeMapping[attribute.type]
-    elif attribute.type in typeMapping:
-        python_type += typeMapping[attribute.type]
+        model['properties'][attribute_name]['isString'] = True
+        if not model['properties'][attribute_name]['enum']:
+            if attribute.format:
+                typescript_type += typeMapping[attribute.format]
+            else:
+                typescript_type += typeMapping[attribute.type]
+        else:  # is enum so you have to print something different
+            typescript_type += model['name'].capitalize() + "." + attribute_name.capitalize() + "Enum"
+            model['enums'][attribute_name] = model['properties'][attribute_name]['enum']
+    else: # attribute.type == integer 
+        typescript_type = typeMapping[attribute.type]
 
-    return python_type
+    return typescript_type
 
 
 def typescript_models_setup(schema):
@@ -219,27 +230,27 @@ def typescript_models_setup(schema):
         'name': schema['name'],
         'properties': {},  # key is property name, value is property type
         'dependencies': {},  # key is filename, value is class that is being imported
-        'required': schema['object'].required
-
+        'required': schema['object'].required,
+        'enums': {}, #Is this needed??1
+        'isString': False # is this needed??
     }
-    print(model['required'])
 
     class_name = makeFirstLetterLower(model['name'])
 
-    # if properties does not exist, print an empty class
+    # if properties does not exist, print an empty class, this may not ever even run since classes are always
+    # initialized to empty arrays
     if not schema['object'].properties:
         default.emit_template('model.tmpl', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
                               os.path.sep + 'models', class_name + '.py')
     else:
         # run through each item within the properties
         for attribute_name, attribute in schema['object'].properties.items():
-
+            model['properties'][attribute_name] = attribute.__dict__
             # find the property, and insert dependencies into the model if needed
-            attribute_type = getTypeScriptType(attribute, model)
-
+            attribute_type = getTypeScriptType(attribute, model, attribute_name)
             # if attribute type is null or empty do not include it into the dictionary
             if attribute_type != "" and attribute_type != 'null':
-                model['properties'][attribute_name] = attribute_type
+                model['properties'][attribute_name]['type'] = attribute_type
 
         default.emit_template('typescript_client/model.tmpl', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
                               os.path.sep + 'models', class_name + '.ts')
