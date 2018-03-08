@@ -44,6 +44,42 @@ def typescript_specification_setup(params):
     default.emit_template('typescript_client/api_module.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'api.module.ts')
 
 
+def typescript_generate_service(params):  # params is an array of dictionaries
+    # CHECK notes/servicetemplatesnodes.ts for TODO
+    # almost done
+    """
+    [
+        {
+            'url': ,
+            'method': ,
+            'tag': ,
+            'properties': OperationObject,
+            'basePath': ,
+            'in': ,
+        },
+        {
+
+        },
+    ]
+    """
+    dependencies = []
+    base_path = ''
+    for path in params:
+        path['in'] = ''
+        if path['properties'].parameters is not None:
+            path['in'] = path['properties'].parameters[0]._in
+        if something not in dependencies:  # TODO: how to collect dependencies
+            dependencies.append(something)
+
+    dikt = {
+        'paths_list': params,
+        'base_path': base_path,
+        'dependencies': dependencies,
+    }
+
+    default.emit_template('typescript_client/service.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'] + '.service.ts')
+
+
 def typescript_api_setup(params):
     print('typescript_controllers_setup')
     basePath = params[0]['basePath']
@@ -51,16 +87,16 @@ def typescript_api_setup(params):
 
     # get the arguments
     for path in params:
-        newPathDic = { 'url': path['url'], 'parameters' : [], 'properties': path['properties'], 'method': path['method'], 'response_200': None}
-        # GET THE ARGUMENTS 
+        newPathDic = {'url': path['url'], 'parameters': [], 'properties': path['properties'], 'method': path['method'], 'response_200': None}
+        # GET THE ARGUMENTS
         if path['properties'].parameters is not None:
-            for param in path['properties'].parameters: 
+            for param in path['properties'].parameters:
                 newArg = param.name
                 if param.schema.type == 'array':
                     if param.required == False:
                         newArg += "?"
                     newArg += ": Array<" + typeMapping[param.schema.items.type] + ">"
-                else: 
+                else:
                     if param.required == False:
                         newArg += "?"
                     newArg += ": " + typeMapping[param.schema.type]
@@ -77,7 +113,7 @@ def typescript_api_setup(params):
                         newArg = key + "?: "
                         if value.type == 'array':
                             newArg += "Array<" + typeMapping[value.schema.items.type] + ">"
-                        else: 
+                        else:
                             newArg += typeMapping[value.type]
                         newPathDic['parameters'].append(newArg)
                 elif 'application/json' in path['properties'].requestBody.content:
@@ -103,19 +139,19 @@ def typescript_api_setup(params):
                                     splitPath = refPath.split('/')
                                     response_200 = "models." + splitPath[len(splitPath) - 1]
                                     newPathDic.update({'response_200': response_200})
-                                    #print(newPathDic['response_200'])
+                                    # print(newPathDic['response_200'])
                                 elif 'type' in value.__dict__:
                                     if value.type == 'array':
-                                        #print(value)
+                                        # print(value)
                                         if 'ref' in value.items.__dict__:
                                             refPath = value.items.ref
                                             splitPath = refPath.split('/')
                                             response_200 = "<Array<models." + splitPath[len(splitPath) - 1] + ">"
                                             newPathDic.update({'response_200': response_200})
-                                            #print(newPathDic['response_200'])
+                                            # print(newPathDic['response_200'])
         dikt['paths'].append(newPathDic)
-        #print(path['properties'].operationId)
-        #print(newPathDic['parameters'])
+        # print(path['properties'].operationId)
+        # print(newPathDic['parameters'])
     default.emit_template('typescript_client/api.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 # returns the python type and if needed, adds libraries/dependencies
@@ -268,7 +304,8 @@ typescript_specification_iterator_functions = [
 ]
 
 typescript_paths_iterator_functions = [
-    typescript_api_setup,
+    # typescript_api_setup,
+    typescript_generate_service,
 ]
 
 typescript_schemas_iterator_functions = [

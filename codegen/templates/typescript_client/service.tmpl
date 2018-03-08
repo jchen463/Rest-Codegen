@@ -8,17 +8,18 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { Configuration } from '../configuration';
 import { CustomHttpUrlEncodingCodec } from '../encoder';
 
-NEED LIST OF MODELS THEY DEPEND ON
+{% for dependency in dependencies %}
+import { {{dependency}} } from '../model/{{dependency??}}'; 
 import { ApiResponse } from '../model/apiResponse';
 import { Pet } from '../model/pet';
+{% endfor %}
 
 @Injectable()
 export class {{ schema_name|capitalize }}Service {
 
-    protected basePath = ;
+    protected basePath = '{{base_path}}' ;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
-
 
     constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (basePath) {
@@ -55,11 +56,18 @@ export class {{ schema_name|capitalize }}Service {
         let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
         {% for param in params %}
         {% if param.in == 'query'%}
+        {% if param.type == Array %}
         if ({{param}}) {
             {{param}}.forEach((element) => {
                 queryParameters = queryParameters.append('status', <{{type}}>element);
             })
         }
+        {% endif %}
+        {% if not param.type == Array %}
+        if ({{param}} !== undefined) {
+            queryParameters = queryParameters.set('{{param}}, <any>{{param}});
+        }
+        {% endif %}
         {% endif %}
         {% endfor %}
 
@@ -90,7 +98,7 @@ export class {{ schema_name|capitalize }}Service {
             '{{ responseBody }}'{% if not loop.last %},{% endif %}
             {% endfor %}
         ];
-        {% if method == 'post' or method == 'put' %}
+        {% if path.method == 'post' or path.method == 'put' %}
         let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
@@ -126,9 +134,14 @@ export class {{ schema_name|capitalize }}Service {
             }
         );
 
-        return this.httpClient.{{method}}<{{type}}>(`${this.basePath}/{{}}/${encodeURIComponent(String({{param}}))}/{{}}`, 
+        return this.httpClient.{{path.method}}<any>(`${this.basePath}/{{SOME PATH THING?}}`,
+            {% if %}
             convertFormParamsToString ? formParams.toString() : formParams, 
+            {% endif %}
             {
+                {% if in == 'query' %}
+                params: queryParameters,
+                {% endif %},
                 headers: headers,
                 withCredentials: this.configuration.withCredentials,
             }

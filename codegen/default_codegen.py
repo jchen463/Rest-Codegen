@@ -96,8 +96,9 @@ def paths_iterator(spec, paths_iterator_functions):
             {
                 'url': ,
                 'method': ,
-                'tags': ,
-                'info': ,
+                'tag': ,
+                'properties': ,
+                'basePath': ,
             },
             {
 
@@ -113,9 +114,6 @@ def paths_iterator(spec, paths_iterator_functions):
         ]
     }
     """
-
-    # tags = {'tags': paths_by_tag.keys()}
-    # emit_template('main.tmpl', tags, cfg.PROJECT_OUTPUT, '__main__.py')
 
     for tag, path_dicts in paths_by_tag.items():
         for f in paths_iterator_functions:
@@ -152,10 +150,10 @@ def collect_paths(paths, operation_object, path_url, method):
             paths['default'].append(get_path_dict(path_url, method, tags, operation_object))
 
 
-def get_path_dict(path_url, method, tags, info):
+def get_path_dict(path_url, method, tags, properties):
     return {
         'url': path_url,
         'method': method,
         'tag': tags[0],
-        'properties': info,  # Operation Object
+        'properties': properties,  # Operation Object
     }
