@@ -57,7 +57,9 @@ def typescript_generate_service(params):  # params is an array of dictionaries
             'basePath': ,
             'in': ,
             'contents': ,
+            'responseBodies': ,
             'param_to_type': ,
+            'param_to_short_type': ,
             'observable: ,
         },
         {
@@ -67,15 +69,20 @@ def typescript_generate_service(params):  # params is an array of dictionaries
     """
     dependencies = []
     base_path = ''
+    base_path = params[0]['basePath']
     name = ''
     for path in params:
         param_to_type = {}
+        param_to_short_type = {}
         observable = '{}'
         path['in'] = ''
         if path['properties'].parameters is not None:
             path['in'] = path['properties'].parameters[0]._in
             for parameter in path['properties'].parameters:
                 param_to_type[parameter.name] = get_parameter_type(parameter)
+                param_to_short_type[parameter.name] = get_parameter_short_type(parameter)
+        path['param_to_type'] = param_to_type
+        path['param_to_short_type'] = param_to_short_type
         path['contents'] = ['application/json', 'application/xml']
         path['observable'] = get_observable(path['properties'].responses)
         for status_code, response in path['properties'].responses:
@@ -121,9 +128,31 @@ def get_observable(responses_dict):
         return observable_str
     for content_type, content_obj in responses_dict['200'].content:
         if content_obj.schema is not None and content_obj.schema.type is not None:
-            observable_str = get_type_string(content_obj.schema, 0)
+            observable_str = get_observable_type_string(content_obj.schema, 0)
         break
     return observable_str
+
+
+def get_observable_type_string(schema_obj, depth):
+    ref = getattr(schema_obj, 'ref', None)
+    if ref is not None:
+        s = ref.split('/')[3]
+        for x in range(depth):
+            s += '>'
+        return s
+    if schema_obj.type == 'array':
+        return 'Array<' + get_observable_type_string(schema_obj.items, depth + 1)
+    s = typeMapping[schema_obj.type]
+    for x in range(depth):
+        s += '>'
+    return s
+
+
+def get_parameter_short_type(parameter_obj):
+    type_str = 'any'
+    if parameter_obj.schema is not None and parameter_obj.schema.type is not None:
+        type_str = parameter_obj.schema.type
+    return type_str
 
 
 def get_parameter_type(parameter_obj):
