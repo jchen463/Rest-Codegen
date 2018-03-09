@@ -42,36 +42,36 @@ export class {{ schema_name|capitalize }}Service {
 
 
     {% for path in paths_list %}
-    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{param_type}}{% if not loop.last %},{% endif %}{% endfor %}): Observable<{{}}> {
-        {% for param in params %}
+    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{param_to_type[param.name]}}{% if not loop.last %},{% endif %}{% endfor %}): Observable<{{observable}}> {
+        {% for param in path['properties'].parameters %}
         {% if param.required %}
-        if ({{param}} === null || {{param}} === undefined) {
-            throw new Error('Required parameter {{param}} was null or undefined when calling {{operationId}})
+        if ({{param.name}} === null || {{param.name}} === undefined) {
+            throw new Error('Required parameter {{param.name}} was null or undefined when calling {{path['properties'].operationId}})
         }
         {% endif %}
         {% endfor %}
 
         {% if in == 'query'%}
         let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
-        {% for param in params %}
-        {% if param.in == 'query'%}
+        {% for param in path['properties'].parameters %}
+        {% if param._in == 'query'%}
         {% if param.type == Array %}
-        if ({{param}}) {
-            {{param}}.forEach((element) => {
+        if ({{param.name}}) {
+            {{param.name}}.forEach((element) => {
                 queryParameters = queryParameters.append('status', <{{type}}>element);
             })
         }
         {% endif %}
         {% if not param.type == Array %}
-        if ({{param}} !== undefined) {
-            queryParameters = queryParameters.set('{{param}}, <any>{{param}});
+        if ({{param.name}} !== undefined) {
+            queryParameters = queryParameters.set('{{param.name}}, <any>{{param.name}});
         }
         {% endif %}
         {% endif %}
         {% endfor %}
 
         let headers = this.defaultHeaders;
-        {% for param in params %}
+        {% for param in path['properties'].parameters %}
         {% if param.in == 'header' %}
         if ({{param}} !== undefined && {{param}} !== null) {
             headers = headers.set('{{param}}', String({{param}}));
@@ -150,7 +150,7 @@ export class {{ schema_name|capitalize }}Service {
 }
 
 
-    public {{operationId}}({% for param in params %}{{param}}{% if not param.required %}?{% endif %}: {{param_type}}{% if not loop.last %},{% endif %}{% endfor %}): Observable<{{}}> {
+    public {{.}}({% for param in params %}{{param}}{% if not param.required %}?{% endif %}: {{param_type}}{% if not loop.last %},{% endif %}{% endfor %}): Observable<{{}}> {
         {% for param in params %}
         {% if param.required %}
         if ({{param}} === null || {{param}} === undefined) {

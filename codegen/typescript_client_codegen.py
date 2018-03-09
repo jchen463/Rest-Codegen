@@ -57,6 +57,8 @@ def typescript_generate_service(params):  # params is an array of dictionaries
             'basePath': ,
             'in': ,
             'contents': ,
+            'param_to_type': ,
+            'observable: ,
         },
         {
 
@@ -67,10 +69,15 @@ def typescript_generate_service(params):  # params is an array of dictionaries
     base_path = ''
     name = ''
     for path in params:
+        param_to_type = {}
+        observable = '{}'
         path['in'] = ''
         if path['properties'].parameters is not None:
             path['in'] = path['properties'].parameters[0]._in
+            for parameter in path['properties'].parameters:
+                param_to_type[parameter.name] = get_parameter_type(parameter)
         path['contents'] = ['application/json', 'application/xml']
+        path['observable'] = get_observable(path['properties'].responses)
         for status_code, response in path['properties'].responses:
             if response.content is not None:
                 path['contents'] = []
@@ -104,6 +111,38 @@ def typescript_generate_service(params):  # params is an array of dictionaries
     }
 
     default.emit_template('typescript_client/service.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'] + '.service.ts')
+
+
+def get_observable(responses_dict):
+    observable_str = '{}'
+    if '200' not in responses_dict:
+        return observable_str
+    if responses_dict['200'].content is None:
+        return observable_str
+    for content_type, content_obj in responses_dict['200'].content:
+        if content_obj.schema is not None and content_obj.schema.type is not None:
+            observable_str = get_type_string(content_obj.schema, 0)
+        break
+    return observable_str
+
+
+def get_parameter_type(parameter_obj):
+    type_str = 'any'
+
+    if parameter_obj.schema is not None and parameter_obj.schema.type is not None:
+        type_str = get_type_string(parameter_obj.schema, 0)
+
+    return type_str
+
+
+def get_type_string(schema_obj, depth):
+    if schema_obj.type == 'array':
+        return 'Array<' + get_type_string(schema_obj.items, depth + 1)
+    else:
+        s = typeMapping[schema_obj.type]
+        for x in range(depth):
+            s += '>'
+        return s
 
 
 def typescript_api_setup(params):
