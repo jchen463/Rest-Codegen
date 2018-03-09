@@ -56,6 +56,7 @@ def typescript_generate_service(params):  # params is an array of dictionaries
             'properties': OperationObject,
             'basePath': ,
             'in': ,
+            'contents': ,
         },
         {
 
@@ -64,12 +65,37 @@ def typescript_generate_service(params):  # params is an array of dictionaries
     """
     dependencies = []
     base_path = ''
+    name = ''
     for path in params:
         path['in'] = ''
         if path['properties'].parameters is not None:
             path['in'] = path['properties'].parameters[0]._in
-        if something not in dependencies:  # TODO: how to collect dependencies
-            dependencies.append(something)
+        path['contents'] = ['application/json', 'application/xml']
+        for status_code, response in path['properties'].responses:
+            if response.content is not None:
+                path['contents'] = []
+                for content_name, mediatype_obj in response.content:
+                    if content_name not in path['contents']:
+                        path['contents'].append(content_name)
+
+                    """
+                    Not sure if there's a better way to fetch dependencies
+                    They're stored under each response. 
+                    """
+
+                    if mediatype_obj.schema is not None:
+                        if mediatype_obj.schema.ref is not None:
+                            name = mediatype_obj.schema.ref.split('/')[3]
+                            if name not in dependencies:
+                                dependencies.append(name)
+                        if mediatype_obj.schema.type == 'array':
+                            if mediatype_obj.schema.items.ref is not None:
+                                name = mediatype_obj.schema.items.ref.split('/')[3]
+                                if name not in dependencies:
+                                    dependencies.append(name)
+
+    for item in dependencies:
+        item = (item, makeFirstLetterLower(item))
 
     dikt = {
         'paths_list': params,
