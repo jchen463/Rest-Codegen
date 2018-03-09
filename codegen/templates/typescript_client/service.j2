@@ -1,0 +1,134 @@
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+
+import { Observable } from 'rxjs/Observable';
+import '../rxjs-operators';
+
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { Configuration } from '../configuration';
+import { CustomHttpUrlEncodingCodec } from '../encoder';
+
+{% for dependency in dependencies %}
+import { {{dependency[0]}} } from '../model/{{dependency[1]}}';
+{% endfor %}
+
+@Injectable()
+export class {{ paths_list[0]['tag']|capitalize }}Service {
+
+    protected basePath = '{{base_path}}' ;
+    public defaultHeaders = new HttpHeaders();
+    public configuration = new Configuration();
+
+    constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+        if (basePath) {
+            this.basePath = basePath;
+        }
+        if (configuration) {
+            this.configuration = configuration;
+            this.basePath = basePath || configuration.basePath || this.basePath;
+        }
+    }
+
+
+    private canConsumeForm(consumes: string[]): boolean {
+        const form = 'multipart/form-data';
+        for (let consume of consumes) {
+            if (form === consume) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    {% for path in paths_list %}
+    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{path['param_to_type'][param.name]}}{% if not loop.last %}, {% endif %}{% endfor %}{% if path['method'] == 'post' or path['method'] == 'put' %}{% if path['properties'].parameters|length > 0 %},{% endif %}body: {{path['request_body_type']}}{% endif %}): Observable<{{path['observable']}}> {
+        {% for param in path['properties'].parameters %}
+        {% if param.required %}
+        if ({{param.name}} === null || {{param.name}} === undefined) {
+            throw new Error('Required parameter {{param.name}} was null or undefined when calling {{path['properties'].operationId}}.');
+        }
+        {% endif %}
+        {% endfor %}
+        {% if path['method'] == 'post' or path['method'] == 'put' %}
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling {{path['operationId']}}.');
+        }
+        {% endif %}
+
+        {% if 'query' in path['in'] %}
+        let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
+        {% for param in path['properties'].parameters %}
+        {% if param._in == 'query'%}
+        {% if 'Array' in path['param_to_type'][param.name] %}
+        if ({{param.name}}) {
+            {{param.name}}.forEach((element) => {
+                queryParameters = queryParameters.append('status', <any>element);
+            })
+        }
+        {% endif %}
+        {% if 'Array' not in path['param_to_type'][param.name] %}
+        if ({{param.name}} !== undefined) {
+            queryParameters = queryParameters.set('{{param.name}}, <any>{{param.name}});
+        }
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        let headers = this.defaultHeaders;
+        {% for param in path['properties'].parameters %}
+        {% if param._in == 'header' %}
+        if ({{param.name}} !== undefined && {{param.name}} !== null) {
+            headers = headers.set('{{param.name}}', String({{param.name}}));
+        }
+        {% endif %}
+        {% endfor %}
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            {% for content in path['contents'] %}
+            '{{ content }}'{% if not loop.last %},{% endif %}
+            {% if not loop.last %}
+
+            {% endif %}
+            {% endfor %}
+
+        ];
+        let httpHeaderAcceptSelected: string = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set("Accept", httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        let consumes: string[] = [
+            {% for request_body in request_bodies %}
+            '{{ request_body }}'{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+        {% if path['method'] == 'post' or path['method'] == 'put' %}
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set("Content-Type", httpContentTypeSelected);
+        }
+        {% endif %}
+
+        return this.httpClient.{{path['method']}}<any>(`${this.basePath}{{path['url']}}`,
+            {% if path['method'] == 'post' or path['method'] == 'put' %}
+            body,
+            {% endif %}
+            {
+                {% if 'query' in path['in'] %}
+                params: queryParameters,
+                {% endif %}
+                headers: headers,
+                withCredentials: this.configuration.withCredentials,
+            }
+        );
+    }
+    {% if not loop.last %}
+
+
+    {% endif %}
+    {% endfor %}
+}

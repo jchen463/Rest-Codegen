@@ -255,8 +255,12 @@ class Parameter(Rep):
         mappings = ['content', 'examples']
         objects = ['schema']
 
-        if dikt['in'] == 'path':
-            required.append('required')
+        try:
+            if dikt['in'] == 'path':
+                required.append('required')
+        except KeyError as err:
+            print(err)
+            print("required field 'in' missing")
 
         # Default values
         # self.explode = False
@@ -269,6 +273,8 @@ class Parameter(Rep):
 
         self.__dict__ = parse_dict(dikt=dikt, allowed=allowed, required=required,
                                    objects=objects, mappings=mappings, booleans=booleans)
+
+        self._in = dikt['in']
 
         if 'example' in dikt:
             self.example = dikt['example']
