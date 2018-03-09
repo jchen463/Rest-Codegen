@@ -13,13 +13,13 @@ import { {{dependency[0]}} } from '../model/{{dependency[1]}}';
 {% endfor %}
 
 @Injectable()
-export class {{ schema_name|capitalize }}Service {
+export class {{ paths_list[0]['tag']|capitalize }}Service {
 
     protected basePath = '{{base_path}}' ;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (basePath) {
             this.basePath = basePath;
         }
@@ -42,11 +42,11 @@ export class {{ schema_name|capitalize }}Service {
 
 
     {% for path in paths_list %}
-    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{param_to_type[param.name]}}{% if not loop.last %},{% endif %}{% endfor %}{% if path['method'] == 'post' or path['method'] == 'put' %}{% if len(path['properties'].parameters) > 0 %},{% endif %}body: {{path['request_body_type']}}{% endif %}): Observable<{{observable}}> {
+    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{path['param_to_type'][param.name]}}{% if not loop.last %}, {% endif %}{% endfor %}{% if path['method'] == 'post' or path['method'] == 'put' %}{% if path['properties'].parameters|length > 0 %},{% endif %}body: {{path['request_body_type']}}{% endif %}): Observable<{{path['observable']}}> {
         {% for param in path['properties'].parameters %}
         {% if param.required %}
         if ({{param.name}} === null || {{param.name}} === undefined) {
-            throw new Error('Required parameter {{param.name}} was null or undefined when calling {{path['properties'].operationId}})
+            throw new Error('Required parameter {{param.name}} was null or undefined when calling {{path['properties'].operationId}}.');
         }
         {% endif %}
         {% endfor %}
@@ -60,20 +60,21 @@ export class {{ schema_name|capitalize }}Service {
         let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
         {% for param in path['properties'].parameters %}
         {% if param._in == 'query'%}
-        {% if 'Array' in param_to_type[param.name] %}
+        {% if 'Array' in path['param_to_type'][param.name] %}
         if ({{param.name}}) {
             {{param.name}}.forEach((element) => {
                 queryParameters = queryParameters.append('status', <any>element);
             })
         }
         {% endif %}
-        {% if 'Array' in param_to_type[param.name] %}
+        {% if 'Array' not in path['param_to_type'][param.name] %}
         if ({{param.name}} !== undefined) {
             queryParameters = queryParameters.set('{{param.name}}, <any>{{param.name}});
         }
         {% endif %}
         {% endif %}
         {% endfor %}
+        {% endif %}
 
         let headers = this.defaultHeaders;
         {% for param in path['properties'].parameters %}
@@ -84,12 +85,15 @@ export class {{ schema_name|capitalize }}Service {
         {% endif %}
         {% endfor %}
 
-
         // to determine the Accept header
-        let httpHeaderAccepts: string[] = 
+        let httpHeaderAccepts: string[] = [
             {% for content in path['contents'] %}
             '{{ content }}'{% if not loop.last %},{% endif %}
+            {% if not loop.last %}
+
+            {% endif %}
             {% endfor %}
+
         ];
         let httpHeaderAcceptSelected: string = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -116,11 +120,15 @@ export class {{ schema_name|capitalize }}Service {
             {
                 {% if 'query' in path['in'] %}
                 params: queryParameters,
-                {% endif %},
+                {% endif %}
                 headers: headers,
                 withCredentials: this.configuration.withCredentials,
             }
         );
     }
+    {% if not loop.last %}
+
+
+    {% endif %}
     {% endfor %}
 }

@@ -77,21 +77,20 @@ def typescript_generate_service(params):  # params is an array of dictionaries
         param_to_short_type = {}
         observable = '{}'
         path['in'] = []
+        # this breaks if parameters are references
         if path['properties'].parameters is not None:
-            path['in'] = path['properties'].parameters[0]._in
             for parameter in path['properties'].parameters:
                 param_to_type[parameter.name] = get_parameter_type(parameter)
                 if parameter._in not in path['in']:
                     path['in'].append(parameter._in)
-                # param_to_short_type[parameter.name] = get_parameter_short_type(parameter)
         path['param_to_type'] = param_to_type
-        # path['param_to_short_type'] = param_to_short_type
         path['contents'] = ['application/json', 'application/xml']
         path['observable'] = get_observable(path['properties'].responses)
-        for status_code, response in path['properties'].responses:
+        get_dependencies(dependencies, path['properties'].responses)
+        for status_code, response in path['properties'].responses.items():
             if response.content is not None:
                 path['contents'] = []
-                for content_name, mediatype_obj in response.content:
+                for content_name, mediatype_obj in response.content.items():
                     if content_name not in path['contents']:
                         path['contents'].append(content_name)
 
@@ -100,20 +99,24 @@ def typescript_generate_service(params):  # params is an array of dictionaries
                     They're stored under each response. 
                     """
 
-                    if mediatype_obj.schema is not None:
-                        if mediatype_obj.schema.ref is not None:
-                            name = mediatype_obj.schema.ref.split('/')[3]
-                            if name not in dependencies:
-                                dependencies.append(name)
-                        if mediatype_obj.schema.type == 'array':
-                            if mediatype_obj.schema.items.ref is not None:
-                                name = mediatype_obj.schema.items.ref.split('/')[3]
-                                if name not in dependencies:
-                                    dependencies.append(name)
+                    # if mediatype_obj.schema is not None:
+                    #     if mediatype_obj.schema.ref is not None:
+                    #         name = mediatype_obj.schema.ref.split('/')[3]
+                    #         if name not in dependencies:
+                    #             dependencies.append(name)
+                    #     if mediatype_obj.schema.type == 'array':
+                    #         if mediatype_obj.schema.items.ref is not None:
+                    #             name = mediatype_obj.schema.items.ref.split('/')[3]
+                    #             if name not in dependencies:
+                    #                 dependencies.append(name)
+
         if path['properties'].parameters is None:
             path['properties'].parameters = []
-    for item in dependencies:
-        item = (item, makeFirstLetterLower(item))
+
+    for i in range(len(dependencies)):
+        dependencies[i] = [dependencies[i], makeFirstLetterLower(dependencies[i])]
+
+    print(dependencies)
 
     dikt = {
         'paths_list': params,
@@ -124,14 +127,38 @@ def typescript_generate_service(params):  # params is an array of dictionaries
     default.emit_template('typescript_client/service.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'] + '.service.ts')
 
 
+def get_dependencies(dependencies, responses_dict):
+    if '200' not in responses_dict:
+        return
+    if responses_dict['200'].content is None:
+        return
+    for content_type, content_obj in responses_dict['200'].content.items():
+        if content_obj.schema is not None:
+            append_dependencies(dependencies, content_obj.schema)
+
+# DEPENDS ON SCHEMAS BEING STORED AS REFERENCES
+
+
+def append_dependencies(dependencies, schema_obj):
+    ref = getattr(schema_obj, 'ref', None)
+    if ref is not None:
+        ref = ref.split('/')[3]
+        if ref not in dependencies:
+            dependencies.append(ref)
+        return
+    if schema_obj.type == 'array':
+        append_dependencies(dependencies, schema_obj.items)
+    return
+
+
 def get_observable(responses_dict):
     observable_str = '{}'
     if '200' not in responses_dict:
         return observable_str
     if responses_dict['200'].content is None:
         return observable_str
-    for content_type, content_obj in responses_dict['200'].content:
-        if content_obj.schema is not None and content_obj.schema.type is not None:
+    for content_type, content_obj in responses_dict['200'].content.items():
+        if content_obj.schema is not None:
             observable_str = get_observable_type_string(content_obj.schema, 0)
         break
     return observable_str
@@ -155,7 +182,7 @@ def get_observable_type_string(schema_obj, depth):
 def get_parameter_type(parameter_obj):
     type_str = 'any'
 
-    if parameter_obj.schema is not None and parameter_obj.schema.type is not None:
+    if parameter_obj.schema is not None:
         type_str = get_type_string(parameter_obj.schema, 0)
 
     return type_str

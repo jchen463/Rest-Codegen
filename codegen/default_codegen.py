@@ -135,19 +135,22 @@ def get_request_body_type(request_bodies_dict, operation_obj):
     ref = getattr(operation_obj.requestBody, 'ref', None)
     if ref is not None:
         ref = ref.split('/')[3]
-        for content_name, media_type_obj in request_bodies_dict[ref].content:
-            if media_type_obj.schema is not None and media_type_obj.schema.type is not None:
+        for content_name, media_type_obj in request_bodies_dict[ref].content.items():
+            if media_type_obj.schema is not None:
                 request_body_type = get_request_body_type_string(media_type_obj.schema, 0)
-            break
+                return request_body_type
     else:
-        for content_name, media_type_obj in operation_obj.requestBody.content:
-            if media_type_obj.schema is not None and media_type_obj.schema.type is not None:
+        for content_name, media_type_obj in operation_obj.requestBody.content.items():
+            if media_type_obj.schema is not None:
                 request_body_type = get_request_body_type_string(media_type_obj.schema, 0)
+                return request_body_type
 
     return request_body_type
 
 
 def get_request_body_type_string(schema_obj, depth):
+    s = 'any'
+
     ref = getattr(schema_obj, 'ref', None)
     if ref is not None:
         s = ref.split('/')[3]
@@ -156,9 +159,9 @@ def get_request_body_type_string(schema_obj, depth):
         return s
     if schema_obj.type == 'array':
         return 'Array<' + get_request_body_type_string(schema_obj.items, depth + 1)
-    s = 'any'
     for x in range(depth):
         s += '>'
+
     return s
 
 
@@ -171,10 +174,10 @@ def get_request_bodies(request_bodies_dict, operation_obj):
     ref = getattr(operation_obj.requestBody, 'ref', None)
     if ref is not None:
         ref = ref.split('/')[3]
-        for content_name, media_type_obj in request_bodies_dict[ref].content:
+        for content_name, media_type_obj in request_bodies_dict[ref].content.items():
             request_bodies.append(content_name)
     else:
-        for content_name, media_type_obj in operation_obj.requestBody.content:
+        for content_name, media_type_obj in operation_obj.requestBody.content.items():
             request_bodies.append(content_name)
     return request_bodies
 
