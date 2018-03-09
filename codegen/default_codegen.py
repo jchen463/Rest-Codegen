@@ -99,6 +99,8 @@ def paths_iterator(spec, paths_iterator_functions):
                 'tag': ,
                 'properties': ,
                 'basePath': ,
+                'request_bodies': ,
+                'request_body_type: ,
             },
             {
 
@@ -116,9 +118,32 @@ def paths_iterator(spec, paths_iterator_functions):
     """
 
     for tag, path_dicts in paths_by_tag.items():
+        path_dicts[0].update(basePath)
+        for dikt in path_dicts:
+            dikt['request_bodies'] = get_request_bodies(spec.components.requestBodies, dikt['properties'])
+            dikt['request_body_type'] = get_request_body_type(spec.components.requestBodies, dikt['properties'])
         for f in paths_iterator_functions:
-            path_dicts[0].update(basePath)
             f(path_dicts)
+
+
+def get_request_body_type(request_bodies_dict, operation_obj):
+
+
+def get_request_bodies(request_bodies_dict, operation_obj):
+    request_bodies = []
+
+    if operation_obj.requestBody is None:
+        return request_bodies
+
+    ref = getattr(operation_obj.requestBody, 'ref', None)
+    if ref is not None:
+        ref = ref.split('/')[3]
+        for content_name, media_type_obj in request_bodies_dict[ref].content:
+            request_bodies.append(content_name)
+    else:
+        for content_name, media_type_obj in operation_obj.requestBody.content:
+            request_bodies.append(content_name)
+    return request_bodies
 
 
 def get_paths_by_tag(paths_dict):

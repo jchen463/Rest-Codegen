@@ -42,7 +42,7 @@ export class {{ schema_name|capitalize }}Service {
 
 
     {% for path in paths_list %}
-    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{param_to_type[param.name]}}{% if not loop.last %},{% endif %}{% endfor %}): Observable<{{observable}}> {
+    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{param_to_type[param.name]}}{% if not loop.last %},{% endif %}{% endfor %}{% if path['method'] == 'post' or path['method'] == 'put' %}{% if len(path['properties'].parameters) > 0 %},{% endif %}body: {{}}{% endif %}}}): Observable<{{observable}}> {
         {% for param in path['properties'].parameters %}
         {% if param.required %}
         if ({{param.name}} === null || {{param.name}} === undefined) {
@@ -50,19 +50,24 @@ export class {{ schema_name|capitalize }}Service {
         }
         {% endif %}
         {% endfor %}
+        {% if path['method'] == 'post' or path['method'] == 'put' %}
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling {{path['operationId']}}.');
+        }
+        {% endif %}
 
-        {% if in == 'query'%}
+        {% if path['in'] == 'query'%}
         let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
         {% for param in path['properties'].parameters %}
         {% if param._in == 'query'%}
-        {% if param_to_short_type[param.name] == 'array' %}
+        {% if 'Array' in param_to_type[param.name] %}
         if ({{param.name}}) {
             {{param.name}}.forEach((element) => {
                 queryParameters = queryParameters.append('status', <any>element);
             })
         }
         {% endif %}
-        {% if not param_to_short_type[param.name] == 'array' %}
+        {% if 'Array' in param_to_type[param.name] %}
         if ({{param.name}} !== undefined) {
             queryParameters = queryParameters.set('{{param.name}}, <any>{{param.name}});
         }
@@ -93,8 +98,8 @@ export class {{ schema_name|capitalize }}Service {
 
         // to determine the Content-Type header
         let consumes: string[] = [
-            {% for responseBody in path['responseBodies'] %}
-            '{{ responseBody }}'{% if not loop.last %},{% endif %}
+            {% for request_body in request_bodies %}
+            '{{ request_body }}'{% if not loop.last %},{% endif %}
             {% endfor %}
         ];
         {% if path['method'] == 'post' or path['method'] == 'put' %}
@@ -104,26 +109,8 @@ export class {{ schema_name|capitalize }}Service {
         }
         {% endif %}
 
-        const canConsumeForm = this.canConsumeForm(consumes);
 
-        {% if CONDITION%}
-        let formParams: { append(param: string, value: any): void; };
-        let useForm = false;
-        let convertFormParamsToString = false;
-        {% if CONDITION %}
-        useForm = canConsumeForm;
-        {% endif %}
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
-        }
-        {% for param in path['properties'].parameters %}
-        if ({{param.name}} !== undefined) {
-            formParams = formParams.append('{{param.name}}', <any>{{param.name}}) || formParams;
-        }
-        {% endfor %}
-        {% endif %}
+
 
 
         return this.httpClient.delete<any>(`${this.basePath}/pet/${encodeURIComponent(String(petId))}`,
@@ -134,7 +121,10 @@ export class {{ schema_name|capitalize }}Service {
         );
 
         return this.httpClient.{{path.method}}<any>(`${this.basePath}/{{SOME PATH THING?}}`,
-            {% if %}
+            {% if path['method'] == 'post' or path['method'] == 'put' %}
+            body,
+            {% endif %}
+            {% if path['in'] == 'path' %}
             convertFormParamsToString ? formParams.toString() : formParams, 
             {% endif %}
             {

@@ -57,10 +57,10 @@ def typescript_generate_service(params):  # params is an array of dictionaries
             'basePath': ,
             'in': ,
             'contents': ,
-            'responseBodies': ,
+            'request_bodies': ,
             'param_to_type': ,
-            'param_to_short_type': ,
             'observable: ,
+            'request_body_type': ,
         },
         {
 
@@ -80,9 +80,9 @@ def typescript_generate_service(params):  # params is an array of dictionaries
             path['in'] = path['properties'].parameters[0]._in
             for parameter in path['properties'].parameters:
                 param_to_type[parameter.name] = get_parameter_type(parameter)
-                param_to_short_type[parameter.name] = get_parameter_short_type(parameter)
+                # param_to_short_type[parameter.name] = get_parameter_short_type(parameter)
         path['param_to_type'] = param_to_type
-        path['param_to_short_type'] = param_to_short_type
+        # path['param_to_short_type'] = param_to_short_type
         path['contents'] = ['application/json', 'application/xml']
         path['observable'] = get_observable(path['properties'].responses)
         for status_code, response in path['properties'].responses:
@@ -107,7 +107,8 @@ def typescript_generate_service(params):  # params is an array of dictionaries
                                 name = mediatype_obj.schema.items.ref.split('/')[3]
                                 if name not in dependencies:
                                     dependencies.append(name)
-
+        if path['properties'].parameters is None:
+            path['properties'].parameters = []
     for item in dependencies:
         item = (item, makeFirstLetterLower(item))
 
@@ -148,11 +149,11 @@ def get_observable_type_string(schema_obj, depth):
     return s
 
 
-def get_parameter_short_type(parameter_obj):
-    type_str = 'any'
-    if parameter_obj.schema is not None and parameter_obj.schema.type is not None:
-        type_str = parameter_obj.schema.type
-    return type_str
+# def get_parameter_short_type(parameter_obj):
+#     type_str = 'any'
+#     if parameter_obj.schema is not None and parameter_obj.schema.type is not None:
+#         type_str = parameter_obj.schema.type
+#     return type_str
 
 
 def get_parameter_type(parameter_obj):
