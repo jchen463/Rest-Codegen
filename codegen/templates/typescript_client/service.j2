@@ -42,7 +42,7 @@ export class {{ schema_name|capitalize }}Service {
 
 
     {% for path in paths_list %}
-    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{param_to_type[param.name]}}{% if not loop.last %},{% endif %}{% endfor %}{% if path['method'] == 'post' or path['method'] == 'put' %}{% if len(path['properties'].parameters) > 0 %},{% endif %}body: {{}}{% endif %}}}): Observable<{{observable}}> {
+    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{param_to_type[param.name]}}{% if not loop.last %},{% endif %}{% endfor %}{% if path['method'] == 'post' or path['method'] == 'put' %}{% if len(path['properties'].parameters) > 0 %},{% endif %}body: {{path['request_body_type']}}{% endif %}): Observable<{{observable}}> {
         {% for param in path['properties'].parameters %}
         {% if param.required %}
         if ({{param.name}} === null || {{param.name}} === undefined) {
@@ -56,7 +56,7 @@ export class {{ schema_name|capitalize }}Service {
         }
         {% endif %}
 
-        {% if path['in'] == 'query'%}
+        {% if 'query' in path['in'] %}
         let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
         {% for param in path['properties'].parameters %}
         {% if param._in == 'query'%}
@@ -109,32 +109,18 @@ export class {{ schema_name|capitalize }}Service {
         }
         {% endif %}
 
-
-
-
-
-        return this.httpClient.delete<any>(`${this.basePath}/pet/${encodeURIComponent(String(petId))}`,
-            {
-                headers: headers,
-                withCredentials: this.configuration.withCredentials,
-            }
-        );
-
-        return this.httpClient.{{path.method}}<any>(`${this.basePath}/{{SOME PATH THING?}}`,
+        return this.httpClient.{{path['method']}}<any>(`${this.basePath}{{path['url']}}`,
             {% if path['method'] == 'post' or path['method'] == 'put' %}
             body,
             {% endif %}
-            {% if path['in'] == 'path' %}
-            convertFormParamsToString ? formParams.toString() : formParams, 
-            {% endif %}
             {
-                {% if in == 'query' %}
+                {% if 'query' in path['in'] %}
                 params: queryParameters,
                 {% endif %},
                 headers: headers,
                 withCredentials: this.configuration.withCredentials,
             }
-        ;)
+        );
     }
     {% endfor %}
 }

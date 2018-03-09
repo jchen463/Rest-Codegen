@@ -72,14 +72,17 @@ def typescript_generate_service(params):  # params is an array of dictionaries
     base_path = params[0]['basePath']
     name = ''
     for path in params:
+        path['url'] = path['url'].replace('{', '${encodeURIComponent(String(').replace('}', '))}')
         param_to_type = {}
         param_to_short_type = {}
         observable = '{}'
-        path['in'] = ''
+        path['in'] = []
         if path['properties'].parameters is not None:
             path['in'] = path['properties'].parameters[0]._in
             for parameter in path['properties'].parameters:
                 param_to_type[parameter.name] = get_parameter_type(parameter)
+                if parameter._in not in path['in']:
+                    path['in'].append(parameter._in)
                 # param_to_short_type[parameter.name] = get_parameter_short_type(parameter)
         path['param_to_type'] = param_to_type
         # path['param_to_short_type'] = param_to_short_type
@@ -118,7 +121,7 @@ def typescript_generate_service(params):  # params is an array of dictionaries
         'dependencies': dependencies,
     }
 
-    default.emit_template('typescript_client/service.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'] + '.service.ts')
+    default.emit_template('typescript_client/service.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'] + '.service.ts')
 
 
 def get_observable(responses_dict):
@@ -147,13 +150,6 @@ def get_observable_type_string(schema_obj, depth):
     for x in range(depth):
         s += '>'
     return s
-
-
-# def get_parameter_short_type(parameter_obj):
-#     type_str = 'any'
-#     if parameter_obj.schema is not None and parameter_obj.schema.type is not None:
-#         type_str = parameter_obj.schema.type
-#     return type_str
 
 
 def get_parameter_type(parameter_obj):

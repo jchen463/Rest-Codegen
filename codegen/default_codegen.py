@@ -127,6 +127,39 @@ def paths_iterator(spec, paths_iterator_functions):
 
 
 def get_request_body_type(request_bodies_dict, operation_obj):
+    request_body_type = 'any'
+
+    if operation_obj.requestBody is None:
+        return request_body_type
+
+    ref = getattr(operation_obj.requestBody, 'ref', None)
+    if ref is not None:
+        ref = ref.split('/')[3]
+        for content_name, media_type_obj in request_bodies_dict[ref].content:
+            if media_type_obj.schema is not None and media_type_obj.schema.type is not None:
+                request_body_type = get_request_body_type_string(media_type_obj.schema, 0)
+            break
+    else:
+        for content_name, media_type_obj in operation_obj.requestBody.content:
+            if media_type_obj.schema is not None and media_type_obj.schema.type is not None:
+                request_body_type = get_request_body_type_string(media_type_obj.schema, 0)
+
+    return request_body_type
+
+
+def get_request_body_type_string(schema_obj, depth):
+    ref = getattr(schema_obj, 'ref', None)
+    if ref is not None:
+        s = ref.split('/')[3]
+        for x in range(depth):
+            s += '>'
+        return s
+    if schema_obj.type == 'array':
+        return 'Array<' + get_request_body_type_string(schema_obj.items, depth + 1)
+    s = 'any'
+    for x in range(depth):
+        s += '>'
+    return s
 
 
 def get_request_bodies(request_bodies_dict, operation_obj):
