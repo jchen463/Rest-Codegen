@@ -53,12 +53,6 @@ def main():
     cfg.SPECIFICATION = Specification(cfg.SPEC_DICT)
     spec_dict2 = ast.literal_eval(str(vars(cfg.SPECIFICATION)))
 
-    # print(cfg.SPECIFICATION.paths.dikt['/pet/findByStatus'].get.responses['200'].content['application/json'].schema.items.ref)
-    # print(type(cfg.SPECIFICATION.paths.dikt['/pet/findByStatus'].get.responses['200'].content['application/json'].schema.items.ref))
-
-    # print(cfg.SPECIFICATION.paths.dikt['/pet/{petId}'].get.responses['200'].content['application/json'].schema)
-    # print(type(cfg.SPECIFICATION.paths.dikt['/pet/{petId}'].get.responses['200'].content['application/json'].schema))
-
     # with open('spec_tree.json', 'wt') as out:
     #     json.dump(spec_dict2, out, indent=4)
 

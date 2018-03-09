@@ -69,7 +69,7 @@ export class {{ paths_list[0]['tag']|capitalize }}Service {
         {% endif %}
         {% if 'Array' not in path['param_to_type'][param.name] %}
         if ({{param.name}} !== undefined) {
-            queryParameters = queryParameters.set('{{param.name}}, <any>{{param.name}});
+            queryParameters = queryParameters.set('{{param.name}}', <any>{{param.name}});
         }
         {% endif %}
         {% endif %}
