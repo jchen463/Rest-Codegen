@@ -11,33 +11,33 @@ from openapi_spec_validator import openapi_v3_spec_validator
 try:  # when just doing $ python3 main.py only below imports work
     import codegen.codegen_config as cfg
     from codegen.classes import Specification
-    from codegen.typescript_client_codegen import typescript_client_codegen as codegen
-    from codegen.typescript_client_codegen import stage_default_iterators
+    # from codegen.typescript_client_codegen import typescript_client_codegen as codegen
+    # from codegen.typescript_client_codegen import stage_default_iterators
 except ImportError as err:  # when packaged, only above imports work
     import codegen_config as cfg
     from classes import Specification
-    from typescript_client_codegen import typescript_client_codegen as codegen
-    from typescript_client_codegen import stage_default_iterators
+    # from typescript_client_codegen import typescript_client_codegen as codegen
+    # from typescript_client_codegen import stage_default_iterators
 
 
 def main():
     if len(sys.argv) > 1:
         cfg.load_build_file(sys.argv[1])
 
-    # if cfg.LANGUAGE == 'flask':
-    #     try:
-    #         from codegen.flask_server_codegen import flask_server_codegen as codegen
-    #         from codegen.flask_server_codegen import stage_default_iterators
-    #     except ImportError as err:
-    #         from flask_server_codegen import flask_server_codegen as codegen
-    #         from flask_server_codegen import stage_default_iterators
-    # if cfg.LANGUAGE == 'typescript':
-    #     try:
-    #         from codegen.typescript_client_codegen import typescript_client_codegen as codegen
-    #         from codegen.typescript_client_codegen import stage_default_iterators
-    #     except ImportError as err:
-    #         from typescript_client_codegen import typescript_client_codegen as codegen
-    #         from typescript_client_codegen import stage_default_iterators
+    if cfg.LANGUAGE == 'flask':
+        try:
+            from codegen.flask_server_codegen import flask_server_codegen as codegen
+            from codegen.flask_server_codegen import stage_default_iterators
+        except ImportError as err:
+            from flask_server_codegen import flask_server_codegen as codegen
+            from flask_server_codegen import stage_default_iterators
+    if cfg.LANGUAGE == 'typescript':
+        try:
+            from codegen.typescript_client_codegen import typescript_client_codegen as codegen
+            from codegen.typescript_client_codegen import stage_default_iterators
+        except ImportError as err:
+            from typescript_client_codegen import typescript_client_codegen as codegen
+            from typescript_client_codegen import stage_default_iterators
 
     stage_default_iterators()
 
