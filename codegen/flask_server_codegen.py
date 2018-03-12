@@ -24,6 +24,7 @@ def flask_project_setup(params):
 
 
 def flask_generate_base_model(params):
+    print('flask_base_setup')
     dikt = {}
     default.emit_template('flask_server/base_model.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', 'base_model.py')
     default.emit_template('flask_server/util.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT, 'util.py')
@@ -32,6 +33,7 @@ def flask_generate_base_model(params):
 
 def flask_generate_main(params):
     # params contains 'tags'
+    print('flask_generate_main')
     dikt = params
     default.emit_template('flask_server/init.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT, '__init__.py')
     default.emit_template('flask_server/main.tmpl', dikt, cfg.FLASK_SERVER_OUTPUT, '__main__.py')
