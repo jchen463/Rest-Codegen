@@ -1,0 +1,63 @@
+What connexion does differently on top of flask:
+- Automagically handle HTTP Request
+- Allows you to write swagger specification and maps the endpoints to your python code
+- Uses jinja2 to allow parameterization thru arguments parameter. That is how it dynamically render your specifciation 
+
+1. Figure out how jsonencoder work
+2. Figure out how the util deserialize function works
+3. Change functions so that instead of taking in data a certain way from the url, it does so with the request arguments
+
+4. the responses are automatically done if you call return in the pet controllers, not sure how it happens or what it does.
+
+
+swagger codegen generates special things for:
+byte, binary, and date are handle differently than the rest
+different models to import
+different comments to write
+
+all converts to 4 types:
+int, float, bool, str
+
+Todo:
+CHECK WHILE LOOP
+Make sure to check to not add duplicate dependencies
+ApiResponse to api_response
+
+Concerns:
+In controller function, the actual dictionary is being modified, { to < and } to >
+The api is not spread apart with the tags
+
+For controllers:
+- Make it so that each object checks if the request is a json, if so, turn it to that type of object
+- add dependencies
+- separate the controllers into different files
+- Sort controllers in order?
+- Add something that isn't just do something, put relevant code that will actually help.
+
+Dynamic rendering of specification
+
+
+
+1. should we handle arguments like
+from flask import request
+
+@app.route(...)
+def login():
+    username = request.args.get('username')
+    password = request.args.get('password')
+
+or 
+
+from flask import request
+
+@app.route(...)/<request>
+def login():
+
+2. byteArray and binary
+
+3. dealing with enums
+
+4. how to deal with cap and uncap, my function assumes defintions will be capitalized which may not be true
+
+
+CHECK IF MODIFYING DICTONARY IN FUNCTION MODIFYS IT EVERYWHERE ELSE
