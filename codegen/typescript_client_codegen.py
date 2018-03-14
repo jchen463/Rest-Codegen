@@ -35,13 +35,12 @@ def typescript_specification_setup(params):
     default.emit_template('typescript_client/index.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
     default.emit_template('typescript_client/variables.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
     default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
-    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api',
-                          'api.ts')
+    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
     dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
-    default.emit_template('typescript_client/models.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'models',
-                          'models.ts')
+    default.emit_template('typescript_client/models.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'model', 'models.ts')
     default.emit_template('typescript_client/encoder.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'encoder.ts')
     default.emit_template('typescript_client/api_module.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'api.module.ts')
+    default.emit_template('typescript_client/rxjs.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'rxjs-operators.ts')
 
 
 def typescript_generate_service(params):  # params is an array of dictionaries
@@ -198,79 +197,79 @@ def get_type_string(schema_obj, depth):
         return s
 
 
-def typescript_api_setup(params):
-    print('typescript_controllers_setup')
-    basePath = params[0]['basePath']
-    dikt = {'basePath': basePath, 'paths': [], 'tag': params[0]['tag']}
+# def typescript_api_setup(params):
+#     print('typescript_controllers_setup')
+#     basePath = params[0]['basePath']
+#     dikt = {'basePath': basePath, 'paths': [], 'tag': params[0]['tag']}
 
-    # get the arguments
-    for path in params:
-        newPathDic = {'url': path['url'], 'parameters': [], 'properties': path['properties'], 'method': path['method'], 'response_200': None}
-        # GET THE ARGUMENTS
-        if path['properties'].parameters is not None:
-            for param in path['properties'].parameters:
-                newArg = param.name
-                if param.schema.type == 'array':
-                    if not param.required:
-                        newArg += "?"
-                    newArg += ": Array<" + typeMapping[param.schema.items.type] + ">"
-                else:
-                    if not param.required:
-                        newArg += "?"
-                    newArg += ": " + typeMapping[param.schema.type]
-                newPathDic['parameters'].append(newArg)
-        if path['properties'].requestBody is not None:
-            if 'ref' in path['properties'].requestBody.__dict__:
-                refPath = path['properties'].requestBody.ref
-                splitPath = refPath.split('/')
-                newArg = "body: models." + splitPath[len(splitPath) - 1].capitalize()
-                newPathDic['parameters'].append(newArg)
-            elif 'content' in path['properties'].requestBody.__dict__:
-                if 'application/x-www-form-urlencoded' in path['properties'].requestBody.content:
-                    for key, value in path['properties'].requestBody.content['application/x-www-form-urlencoded'].schema.properties.items():
-                        newArg = key + "?: "
-                        if value.type == 'array':
-                            newArg += "Array<" + typeMapping[value.schema.items.type] + ">"
-                        else:
-                            newArg += typeMapping[value.type]
-                        newPathDic['parameters'].append(newArg)
-                elif 'application/json' in path['properties'].requestBody.content:
-                    refPath = path['properties'].requestBody.content['application/json'].schema.ref
-                    splitPath = refPath.split('/')
-                    newArg = "body: models." + splitPath[len(splitPath) - 1].capitalize()
-                    newPathDic['parameters'].append(newArg)
-                elif 'application/octet-stream' in path['properties'].requestBody.content:
-                    newArg = "additionalMetadata?: " + path['properties'].requestBody.content['application/octet-stream'].schema.type
-                    newPathDic['parameters'].append(newArg)
-                    newArg = "file?: any"
-                    newPathDic['parameters'].append(newArg)
-        # GET THE OBSERVABLE PARAM
-        if '200' in path['properties'].responses:
-            if 'content' in path['properties'].responses['200'].__dict__:
-                # print(path['properties'].responses['200'].content)
-                if 'application/json' in path['properties'].responses['200'].content:
-                    if 'schema' in path['properties'].responses['200'].content['application/json'].__dict__:
-                        for key, value in path['properties'].responses['200'].content['application/json'].__dict__.items():
-                            if key == 'schema':
-                                if 'ref' in value.__dict__:
-                                    refPath = value.ref
-                                    splitPath = refPath.split('/')
-                                    response_200 = "models." + splitPath[len(splitPath) - 1]
-                                    newPathDic.update({'response_200': response_200})
-                                    # print(newPathDic['response_200'])
-                                elif 'type' in value.__dict__:
-                                    if value.type == 'array':
-                                        # print(value)
-                                        if 'ref' in value.items.__dict__:
-                                            refPath = value.items.ref
-                                            splitPath = refPath.split('/')
-                                            response_200 = "<Array<models." + splitPath[len(splitPath) - 1] + ">"
-                                            newPathDic.update({'response_200': response_200})
-                                            # print(newPathDic['response_200'])
-        dikt['paths'].append(newPathDic)
-        # print(path['properties'].operationId)
-        # print(newPathDic['parameters'])
-    default.emit_template('typescript_client/api.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
+#     # get the arguments
+#     for path in params:
+#         newPathDic = {'url': path['url'], 'parameters': [], 'properties': path['properties'], 'method': path['method'], 'response_200': None}
+#         # GET THE ARGUMENTS
+#         if path['properties'].parameters is not None:
+#             for param in path['properties'].parameters:
+#                 newArg = param.name
+#                 if param.schema.type == 'array':
+#                     if not param.required:
+#                         newArg += "?"
+#                     newArg += ": Array<" + typeMapping[param.schema.items.type] + ">"
+#                 else:
+#                     if not param.required:
+#                         newArg += "?"
+#                     newArg += ": " + typeMapping[param.schema.type]
+#                 newPathDic['parameters'].append(newArg)
+#         if path['properties'].requestBody is not None:
+#             if 'ref' in path['properties'].requestBody.__dict__:
+#                 refPath = path['properties'].requestBody.ref
+#                 splitPath = refPath.split('/')
+#                 newArg = "body: models." + splitPath[len(splitPath) - 1].capitalize()
+#                 newPathDic['parameters'].append(newArg)
+#             elif 'content' in path['properties'].requestBody.__dict__:
+#                 if 'application/x-www-form-urlencoded' in path['properties'].requestBody.content:
+#                     for key, value in path['properties'].requestBody.content['application/x-www-form-urlencoded'].schema.properties.items():
+#                         newArg = key + "?: "
+#                         if value.type == 'array':
+#                             newArg += "Array<" + typeMapping[value.schema.items.type] + ">"
+#                         else:
+#                             newArg += typeMapping[value.type]
+#                         newPathDic['parameters'].append(newArg)
+#                 elif 'application/json' in path['properties'].requestBody.content:
+#                     refPath = path['properties'].requestBody.content['application/json'].schema.ref
+#                     splitPath = refPath.split('/')
+#                     newArg = "body: models." + splitPath[len(splitPath) - 1].capitalize()
+#                     newPathDic['parameters'].append(newArg)
+#                 elif 'application/octet-stream' in path['properties'].requestBody.content:
+#                     newArg = "additionalMetadata?: " + path['properties'].requestBody.content['application/octet-stream'].schema.type
+#                     newPathDic['parameters'].append(newArg)
+#                     newArg = "file?: any"
+#                     newPathDic['parameters'].append(newArg)
+#         # GET THE OBSERVABLE PARAM
+#         if '200' in path['properties'].responses:
+#             if 'content' in path['properties'].responses['200'].__dict__:
+#                 # print(path['properties'].responses['200'].content)
+#                 if 'application/json' in path['properties'].responses['200'].content:
+#                     if 'schema' in path['properties'].responses['200'].content['application/json'].__dict__:
+#                         for key, value in path['properties'].responses['200'].content['application/json'].__dict__.items():
+#                             if key == 'schema':
+#                                 if 'ref' in value.__dict__:
+#                                     refPath = value.ref
+#                                     splitPath = refPath.split('/')
+#                                     response_200 = "models." + splitPath[len(splitPath) - 1]
+#                                     newPathDic.update({'response_200': response_200})
+#                                     # print(newPathDic['response_200'])
+#                                 elif 'type' in value.__dict__:
+#                                     if value.type == 'array':
+#                                         # print(value)
+#                                         if 'ref' in value.items.__dict__:
+#                                             refPath = value.items.ref
+#                                             splitPath = refPath.split('/')
+#                                             response_200 = "<Array<models." + splitPath[len(splitPath) - 1] + ">"
+#                                             newPathDic.update({'response_200': response_200})
+#                                             # print(newPathDic['response_200'])
+#         dikt['paths'].append(newPathDic)
+#         # print(path['properties'].operationId)
+#         # print(newPathDic['parameters'])
+#     default.emit_template('typescript_client/api.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 # returns the python type and if needed, adds libraries/dependencies
 
@@ -371,7 +370,7 @@ def typescript_models_setup(schema):
                 model['properties'][attribute_name]['type'] = attribute_type
 
         default.emit_template('typescript_client/model.tmpl', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
-                              os.path.sep + 'models', class_name + '.ts')
+                              os.path.sep + 'model', class_name + '.ts')
 
     pass
     # for schema_name, schema_info in dikt['schemas'].items():

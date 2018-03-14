@@ -15,11 +15,15 @@ import { {{dependency[0]}} } from '../model/{{dependency[1]}}';
 @Injectable()
 export class {{ paths_list[0]['tag']|capitalize }}Service {
 
-    protected basePath = '{{base_path}}' ;
+    protected basePath = '{{base_path}}';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
-    constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(
+        protected httpClient: HttpClient, 
+        @Optional() @Inject(BASE_PATH) basePath: string,
+        @Optional() configuration: Configuration
+    ) {
         if (basePath) {
             this.basePath = basePath;
         }
@@ -32,7 +36,7 @@ export class {{ paths_list[0]['tag']|capitalize }}Service {
 
     private canConsumeForm(consumes: string[]): boolean {
         const form = 'multipart/form-data';
-        for (let consume of consumes) {
+        for (const consume of consumes) {
             if (form === consume) {
                 return true;
             }
@@ -42,7 +46,8 @@ export class {{ paths_list[0]['tag']|capitalize }}Service {
 
 
     {% for path in paths_list %}
-    public {{path['properties'].operationId}}({% for param in path['properties'].parameters %}{{param.name}}{% if not param.required %}?{% endif %}: {{path['param_to_type'][param.name]}}{% if not loop.last %}, {% endif %}{% endfor %}{% if path['method'] == 'post' or path['method'] == 'put' %}{% if path['properties'].parameters|length > 0 %},{% endif %}body: {{path['request_body_type']}}{% endif %}): Observable<{{path['observable']}}> {
+    public {{path['properties'].operationId}}({% set required_params = [] %}{% for param in path['properties'].parameters %}{% if param.required %}{% set _ = required_params.append(0) %}{{param.name}}: {{path['param_to_type'][param.name]}}{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}{% if path['method'] == 'post' or path['method'] == 'put' %}{% if path['properties'].parameters|length > 0 %}, {% endif %}body: {{path['request_body_type']}}{% endif %}{% for param in path['properties'].parameters %}{% if not param.required %}{% if required_params %}, {% endif %}{{param.name}}?: {{path['param_to_type'][param.name]}}{% endif %}{% endfor %}): Observable<{{path['observable']}}> {
+
         {% for param in path['properties'].parameters %}
         {% if param.required %}
         if ({{param.name}} === null || {{param.name}} === undefined) {
@@ -64,12 +69,12 @@ export class {{ paths_list[0]['tag']|capitalize }}Service {
         if ({{param.name}}) {
             {{param.name}}.forEach((element) => {
                 queryParameters = queryParameters.append('status', <any>element);
-            })
+            });
         }
         {% endif %}
         {% if 'Array' not in path['param_to_type'][param.name] %}
         if ({{param.name}} !== undefined) {
-            queryParameters = queryParameters.set('{{param.name}}, <any>{{param.name}});
+            queryParameters = queryParameters.set('{{param.name}}', <any>{{param.name}});
         }
         {% endif %}
         {% endif %}
@@ -86,7 +91,7 @@ export class {{ paths_list[0]['tag']|capitalize }}Service {
         {% endfor %}
 
         // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
+        const httpHeaderAccepts: string[] = [
             {% for content in path['contents'] %}
             '{{ content }}'{% if not loop.last %},{% endif %}
             {% if not loop.last %}
@@ -95,21 +100,21 @@ export class {{ paths_list[0]['tag']|capitalize }}Service {
             {% endfor %}
 
         ];
-        let httpHeaderAcceptSelected: string = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set("Accept", httpHeaderAcceptSelected);
+        const httpHeaderAcceptSelected: string = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
         }
 
         // to determine the Content-Type header
-        let consumes: string[] = [
+        const consumes: string[] = [
             {% for request_body in request_bodies %}
             '{{ request_body }}'{% if not loop.last %},{% endif %}
             {% endfor %}
         ];
         {% if path['method'] == 'post' or path['method'] == 'put' %}
-        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected != undefined) {
-            headers = headers.set("Content-Type", httpContentTypeSelected);
+        const httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
         }
         {% endif %}
 
@@ -132,3 +137,5 @@ export class {{ paths_list[0]['tag']|capitalize }}Service {
     {% endif %}
     {% endfor %}
 }
+
+{# end of file newline #}

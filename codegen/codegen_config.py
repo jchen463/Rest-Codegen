@@ -24,7 +24,7 @@ FLASK_PROJECT_OUTPUT = os.getcwd() + os.path.sep + FLASK_PROJECT_NAME
 FLASK_SERVER_NAME = 'flask_server'
 FLASK_SERVER_OUTPUT = FLASK_PROJECT_OUTPUT + os.path.sep + FLASK_SERVER_NAME
 
-TYPESCRIPT_PROJECT_NAME = 'typescript-client-generated'
+TYPESCRIPT_PROJECT_NAME = 'services'
 TYPESCRIPT_PROJECT_OUTPUT = os.getcwd() + os.path.sep + TYPESCRIPT_PROJECT_NAME
 
 
