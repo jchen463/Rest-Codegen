@@ -24,8 +24,8 @@ def function1(dikt):
     # emits file defined by template of user
     # the template specified by the first argument is the user's defined template from the location of where user calls codegen from
     # the 3rd argument is the directory they want to output it to
-    # suppresses all files that codegen genenerates with the template 'init.tmpl'
-    default.emit_template("templates/flask_server/init.tmpl", dikt, cfg.FLASK_PROJECT_NAME + "/flask_server", "my_init.py")
+    # suppresses all files that codegen genenerates with the template 'init.j2'
+    default.emit_template("templates/flask_server/init.j2", dikt, cfg.FLASK_PROJECT_NAME + "/flask_server", "my_init.py")
 
 # def my_controllers_function(params):
 #     print("starting my function using codegen's paths_iterator")
@@ -36,8 +36,8 @@ def function1(dikt):
 #     dikt = {
 #         'paths_list': params
 #     }
-#     # emits file defined by template of user and supresses all the codegen's generated files using the name "controller.tmpl"
-#     default.emit_template("templates/flask_server/controller.tmpl", dikt, cfg.FLASK_PROJECT_NAME + "/flask_server", "controllers/my_controller.py")
+#     # emits file defined by template of user and supresses all the codegen's generated files using the name "controller.j2"
+#     default.emit_template("templates/flask_server/controller.j2", dikt, cfg.FLASK_PROJECT_NAME + "/flask_server", "controllers/my_controller.py")
 
 
 def function2(dikt):

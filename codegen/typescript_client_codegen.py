@@ -26,20 +26,20 @@ typeMapping = {
 def typescript_project_setup(params):
     print('typescript_project_setup')
     dikt = {}
-    # default.emit_template('requirements.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'requirements.txt')
+    # default.emit_template('requirements.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'requirements.txt')
 
 
 def typescript_specification_setup(params):
     dikt = params
     # params contains 'tags', 'models
-    default.emit_template('typescript_client/index.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
-    default.emit_template('typescript_client/variables.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
-    default.emit_template('typescript_client/configuration.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
-    default.emit_template('typescript_client/api_ts.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
+    default.emit_template('typescript_client/index.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
+    default.emit_template('typescript_client/variables.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
+    default.emit_template('typescript_client/configuration.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
+    default.emit_template('typescript_client/api_ts.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
     dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
-    default.emit_template('typescript_client/models.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'model', 'models.ts')
-    default.emit_template('typescript_client/encoder.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'encoder.ts')
-    default.emit_template('typescript_client/api_module.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'api.module.ts')
+    default.emit_template('typescript_client/models.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'model', 'models.ts')
+    default.emit_template('typescript_client/encoder.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'encoder.ts')
+    default.emit_template('typescript_client/api_module.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'api.module.ts')
     default.emit_template('typescript_client/rxjs.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'rxjs-operators.ts')
 
 
@@ -269,7 +269,7 @@ def get_type_string(schema_obj, depth):
 #         dikt['paths'].append(newPathDic)
 #         # print(path['properties'].operationId)
 #         # print(newPathDic['parameters'])
-#     default.emit_template('typescript_client/api.tmpl', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
+#     default.emit_template('typescript_client/api.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'].capitalize() + 'Api' + '.ts')
 
 # returns the python type and if needed, adds libraries/dependencies
 
@@ -357,7 +357,7 @@ def typescript_models_setup(schema):
     # if properties does not exist, print an empty class, this may not ever even run since classes are always
     # initialized to empty arrays
     if not schema['object'].properties:
-        default.emit_template('model.tmpl', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
+        default.emit_template('model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
                               os.path.sep + 'models', class_name + '.py')
     else:
         # run through each item within the properties
@@ -369,7 +369,7 @@ def typescript_models_setup(schema):
             if attribute_type != "" and attribute_type != 'null':
                 model['properties'][attribute_name]['type'] = attribute_type
 
-        default.emit_template('typescript_client/model.tmpl', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
+        default.emit_template('typescript_client/model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
                               os.path.sep + 'model', class_name + '.ts')
 
     pass
@@ -415,7 +415,7 @@ def typescript_models_setup(schema):
 
     #     file_name = key + '.ts'
     #     model_name = {'model_name': key}
-    #     renders = [FileRender('templates/client_models.tmpl', file_name, [models])]
+    #     renders = [FileRender('templates/client_models.j2', file_name, [models])]
     #     do_renders(renders, 'templates/', 'generated/client/models')
 
 
