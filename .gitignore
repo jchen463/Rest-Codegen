@@ -10,3 +10,4 @@ ChangeLog
 rest_codegen.egg-info
 build
 .eggs
+.DS_Store
