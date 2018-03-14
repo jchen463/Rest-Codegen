@@ -20,9 +20,36 @@ except ImportError as err:  # when packaged, only above imports work
     # from typescript_client_codegen import stage_default_iterators
 
 
-def main():
-    if len(sys.argv) > 1:
-        cfg.load_build_file(sys.argv[1])
+def main():    
+
+    #parse_cmd()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-cfg", help="specify the file to be used as the configuration file")
+    parser.add_argument("-s", help="specify the specificationf file")
+    parser.add_argument("-l", help="specify the language to be generated")
+    # parser.add_argument("-t", help=="specify the template directory name of your defined templates")
+    args = parser.parse_args()
+
+    if len(sys.argv) == 0:
+        print("please specify a configuration file or a language with a specification file")
+        sys.exit()
+    if args.cfg and ( args.l or args.s ):
+        print("build file cannot be specified with arguments")
+        sys.exit()
+        
+    if args.cfg:
+        cfg.load_build_file(args.cfg)
+        print('loading build file:', args.cfg)
+    elif (not args.l) or (not args.s): 
+        if not args.l: 
+            print("please specify a language")
+        if not args.s:
+            print("please specify a specification file")
+        sys.exit()
+    else: 
+        cfg.LANGUAGE = args.l
+        cfg.SPEC = args.s
+        cfg.SPEC_FILE_PATH = os.getcwd() + os.path.sep + cfg.SPEC
 
     if cfg.LANGUAGE == 'flask':
         try:
@@ -41,11 +68,7 @@ def main():
 
     stage_default_iterators()
 
-    if len(sys.argv) > 1:
-        cfg.load_build_file(sys.argv[1])
-
-    print(sys.argv)
-    print(cfg.SPEC)
+    print(cfg.LANGUAGE)
     print(cfg.SPEC_FILE_PATH)
 
     cfg.SPEC_DICT = load_spec_file(cfg.SPEC_FILE_PATH)

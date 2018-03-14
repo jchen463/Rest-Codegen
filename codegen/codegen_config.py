@@ -51,7 +51,6 @@ def load_build_file(filename):
     global TYPESCRIPT_PROJECT_NAME
     global TYPESCRIPT_PROJECT_OUTPUT
 
-    print('loading build file:', filename)
     filepath = os.getcwd() + '/' + filename
     spec = importlib.util.spec_from_file_location(filename[:-3], filepath)
     build_script = importlib.util.module_from_spec(spec)
