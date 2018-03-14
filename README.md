@@ -1,4 +1,13 @@
-# **Codegen** (name tbd)
+# **Codegen** (name tbd)    [![Build Status](https://travis-ci.org/jchen463/Rest-Codegen.svg?branch=dev)](https://travis-ci.org/jchen463/Rest-Codegen)
+
+# Table of Contents
+* [Virtual Environment Setup](#virtual-environment-setup)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Generating a Server](#generating-a-server)
+* [Generating a Client](#generating-a-client)
+* [Specification File](#specification-file)
+* [Configuration File](#configuration-file)
 
 # Virtual Environment Setup
 ## Linux Users:
@@ -68,7 +77,7 @@ To use the Angular2/TypeScript client, some prerequisites need to be installed. 
     - installed with node.js
     - get latest version with: `[sudo] npm install npm -g`
 - **angular/cli** >= 1.4.6 
-    - `[sudo] npm install -g angular-cli`
+    - `[sudo] npm install -g @angular/cli@latest`
 
 ---
 
@@ -93,9 +102,9 @@ A build file is necessary to tell Codegen to generate TypeScript client code ins
 1. `$ cd myproject/src`
 1. `$ codegen build.py`
     - A directory named **services** should have been generated
-1. Modify **app.component.ts** and **app.module.ts** to import and use the generated files. An example of these two files modified to work with the petstore example can be found in **SAMPLE/ANGULAR2-FILE-CHANGES**
-    - Modify __providers__ in **app.module.ts** to be the same url as the server you are trying to connect to
+1. Modify **app.component.ts** and **app.module.ts** inside **myproject/src/app** url as the server you are trying to connect to
 1. `$ cd ..`
+1. `$ npm install`
 1. `$ ng serve`
     -  Go to the url that the client is being served to (ex. http://localhost:4200)
     - If you are also running a server on localhost, you will run into a CORS issue which can be resolved using a google chrome extension (https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?utm_source=chrome-app-launcher-info-dialog)
