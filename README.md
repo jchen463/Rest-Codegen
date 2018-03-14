@@ -1,5 +1,14 @@
 # **Codegen** (name tbd)    [![Build Status](https://travis-ci.org/jchen463/Rest-Codegen.svg?branch=dev)](https://travis-ci.org/jchen463/Rest-Codegen)
 
+# Table of Contents
+* [Virtual Environment Setup](#virtual-environment-setup)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Generating a Server](#generating-a-server)
+* [Generating a Client](#generating-a-client)
+* [Specification File](#specification-file)
+* [Configuration File](#configuration-file)
+
 # Virtual Environment Setup
 ## Linux Users:
 1. Install latest version of virtualenv using: `sudo pip3 install virtualenv`
