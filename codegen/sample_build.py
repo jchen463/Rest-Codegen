@@ -36,7 +36,7 @@ def function1(dikt):
 #     dikt = {
 #         'paths_list': params
 #     }
-#     # emits file defined by template of user and supresses all the codegen's generated files using the name "controller.tmpl" 
+#     # emits file defined by template of user and supresses all the codegen's generated files using the name "controller.tmpl"
 #     default.emit_template("templates/flask_server/controller.tmpl", dikt, cfg.FLASK_PROJECT_NAME + "/flask_server", "controllers/my_controller.py")
 
 

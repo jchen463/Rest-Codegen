@@ -95,7 +95,7 @@ def typescript_generate_service(params):  # params is an array of dictionaries
 
                     """
                     Not sure if there's a better way to fetch dependencies
-                    They're stored under each response. 
+                    They're stored under each response.
                     """
 
                     # if mediatype_obj.schema is not None:

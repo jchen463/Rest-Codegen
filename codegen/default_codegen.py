@@ -1,7 +1,7 @@
 import os
 
 import jinja2
-import collections # for OrderedDict
+import collections  # for OrderedDict
 
 try:  # when just doing $ python3 main.py only below imports work
     import codegen.codegen_config as cfg
@@ -22,7 +22,7 @@ def codegen_stage(x_iterator, x_iterator_functions):
 def emit_template(template_name, params, output_dir, output_name):
     # look for template in file system to use to generate
 
-    try: 
+    try:
         template_loader = jinja2.FileSystemLoader(searchpath="./")
         env = jinja2.Environment(loader=template_loader, trim_blocks=True, lstrip_blocks=True, line_comment_prefix='//*')
         output = env.get_template(template_name)
@@ -55,6 +55,7 @@ def emit_template(template_name, params, output_dir, output_name):
 
     with open(output_file, 'w') as outfile:
         outfile.write(output.render(params))
+
 
 def run_iterators():
     # run each iterator once
