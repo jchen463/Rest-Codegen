@@ -5,7 +5,7 @@ Generated files will be output to the current working directory
 """
 import codegen.default_codegen as default  # import will look like this because codegen will be a package
 
-SPEC = 'sample.yaml'
+SPEC = 'swagger.yaml'
 LANGUAGE = 'flask'  # 'typescript is also supported
 PROJECT_NAME = 'myproject'  # directory name
 # TEMPLATES_DIR = 'templates' not implemented yet

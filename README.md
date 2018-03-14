@@ -2,9 +2,6 @@
 
 # **Codegen** (name tbd)
 
-# Documentation
-`codegen` uses python3 and Jinja2 
-
 # Virtual Environment Setup
 ## Linux Users:
 1. Install latest version of virtualenv using: `sudo pip3 install virtualenv`
@@ -106,22 +103,22 @@ A build file is necessary to tell Codegen to generate TypeScript client code ins
 1. `$ cd myproject/src`
 1. `$ codegen build.py`
     - A directory named **services** should have been generated
-1. Modify **app.component.ts** and **app.module.ts** to import and use the generated files. An example of these two files modified to work with the petstore example can be found in **SAMPLE/**
+1. Modify **app.component.ts** and **app.module.ts** to import and use the generated files. An example of these two files modified to work with the petstore example can be found in **SAMPLE/ANGULAR2-FILE-CHANGES**
     - Modify __providers__ in **app.module.ts** to be the same url as the server you are trying to connect to
 1. `$ cd ..`
 1. `$ ng serve`
-    -  Go to the url that the client is being served to (ex. http://localhost:8080)
+    -  Go to the url that the client is being served to (ex. http://localhost:4200)
     - If you are also running a server on localhost, you will run into a CORS issue which can be resolved using a google chrome extension (https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?utm_source=chrome-app-launcher-info-dialog)
     - If using our modified angular2 component files, open console (f12) and you should see **getPetById(0)**, meaning that the client is using the generated files. The server will also receive the requests.   
 
-# Specification File:
+# Specification File
 Specification file follows the OpenAPI 3.0 Specification guidelines in compliance with RESTful API:
 https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md
 
-# Configuration File:
+# Configuration File
 The configuration file can be used in order to specify the language that the user wants to generate, the specification file to be used, and the output directory name for the generated code. 
 
-Please refer to 'example_user_config.py' for the detailed example of uses.
+Please refer to **SAMPLE/build.py** for details.
 
 1. `SPEC`: refers to the name of the specification file
 2. `LANGUAGE`: refers to the language the user wants to generate
