@@ -1,5 +1,3 @@
-
-
 # **Codegen** (name tbd)
 
 # Virtual Environment Setup
@@ -27,23 +25,21 @@
 
 Command line options will be included soon!
 
-Default settings for Codegen:
+**Default settings for Codegen:**
 - Looks for a user-defined build file named **build.py** in the current working directory. If it exists, run it
 - If specification file is not specified in the build file, looks for a specification file named **swagger.yaml** in the current working directory
 - If a folder named **templates/** exists in current working directory, then Codegen will use templates inside that folder instead of default templates, as long as those templates are the same name as the defaults
 - Codegen will generate a Flask server directory named **flask-server-generated** in the current working directory
 
-Run Codegen using default settings with: `$ codegen`
+**Run Codegen using default settings with:** `$ codegen`
 
-Run Codegen using a build file: `$ codegen build.py`
+**Run Codegen using a build file:** `$ codegen build.py`
 
 Sample build file with available options can be found in our repository's **SAMPLE/** directory (documentation soon!)
 
 ---
 
 ## **Quick Start**
-
- 
 
 We recommend using a virtual environment when generating and testing generated code.
 
@@ -78,7 +74,6 @@ To use the Angular2/TypeScript client, some prerequisites need to be installed. 
 
 For a quick proof-of-concept, a ready to go Angular2 project **myproject** can be found in **SAMPLE/**. Without generating the Angular2 project, follow the steps in the section below, but skip step 3.
 
-
 - `$ ng new myproject`
     - Creates a new Angular2 project named **myproject/** in the current working directory
 
@@ -105,6 +100,8 @@ A build file is necessary to tell Codegen to generate TypeScript client code ins
     -  Go to the url that the client is being served to (ex. http://localhost:4200)
     - If you are also running a server on localhost, you will run into a CORS issue which can be resolved using a google chrome extension (https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?utm_source=chrome-app-launcher-info-dialog)
     - If using our modified angular2 component files, open console (f12) and you should see **getPetById(0)**, meaning that the client is using the generated files. The server will also receive the requests.   
+
+---
 
 # Specification File
 Specification file follows the OpenAPI 3.0 Specification guidelines in compliance with RESTful API:
