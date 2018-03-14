@@ -1,4 +1,4 @@
-# **Codegen** (name tbd)
+# **Codegen** (name tbd)    [![Build Status](https://travis-ci.org/jchen463/Rest-Codegen.svg?branch=dev)](https://travis-ci.org/jchen463/Rest-Codegen)
 
 # Virtual Environment Setup
 ## Linux Users:
