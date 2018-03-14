@@ -95,6 +95,7 @@ A build file is necessary to tell Codegen to generate TypeScript client code ins
     - A directory named **services** should have been generated
 1. Modify **app.component.ts** and **app.module.ts** inside **myproject/src/app** url as the server you are trying to connect to
 1. `$ cd ..`
+1. `$ npm install`
 1. `$ ng serve`
     -  Go to the url that the client is being served to (ex. http://localhost:4200)
     - If you are also running a server on localhost, you will run into a CORS issue which can be resolved using a google chrome extension (https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?utm_source=chrome-app-launcher-info-dialog)
