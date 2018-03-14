@@ -22,12 +22,7 @@
         - `pip3 install Rest-Codegen/`
 - Uninstall:
     - `pip3 uninstall rest-codegen`
-# Generating code
-Type 'codegen' from the command line in the directory of where your 'swagger.yaml' specification file is to generate python server and typescript client code.
-Please refer to the 'Specification File' section below for additional information and guidelines for the specification file.
-# Specify a configuration file
-Type 'codegen user_config.py' from the command line in the directory where your 'swagger.yaml' and 'user_config.py' file is.
-Please refer to the 'Configuration File' section below for additional information and guidelines for the use of the configuration file.
+
 # Usage
 
 Command line options will be included soon!
