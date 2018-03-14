@@ -62,8 +62,8 @@ The configuration file can be used in order to specify the language that the use
 
 Please refer to 'example_user_config.py' for the detailed example of uses.
 
-`SPEC`: refers to the name of the specification file
-`LANGUAGE`: refers to the language the user wants to generate
+1. `SPEC`: refers to the name of the specification file
+2. `LANGUAGE`: refers to the language the user wants to generate
     - only python generation is available for server as of now
     - only typescript generation is available for client as of now
-`PROJECT_NAME`: refers to the name of output directory where the code generation will live
+3. `PROJECT_NAME`: refers to the name of output directory where the code generation will live
