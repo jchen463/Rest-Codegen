@@ -19,18 +19,16 @@ def codegen_stage(x_iterator, x_iterator_functions):
 
 
 def emit_template(template_path, params, output_dir, output_name):
-    # look for template in file system to use to generate
     try:
+        # check for their custom templates
         template_name = template_path.split('/')[-1]
-        # path = '/'.join(template_path.split('/')[:-1])
-        print(template_name)
-        template_loader = jinja2.FileSystemLoader(os.getcwd() + os.path.sep + 'templates')
+        template_loader = jinja2.FileSystemLoader(os.getcwd() + os.path.sep + 'templates')  # hard coded 'templates' right now, but we need to take into consideration their directory name
         env = jinja2.Environment(loader=template_loader, trim_blocks=True, lstrip_blocks=True, line_comment_prefix='//*')
         print(template_name, template_path)
-        template = env.get_template(template_path)
+        template = env.get_template(template_name)  # template_path is something like: flask_server/model.j2, so we have to do a name comparison here
         print("outputed file \" " + output_name + " \" from user defined template")
     except jinja2.exceptions.TemplateNotFound as err:
-        # template_name = template_name.split('/')
+        # check for template in our package
         try:
             template_loader = jinja2.PackageLoader('codegen', 'templates')
             env = jinja2.Environment(loader=template_loader, trim_blocks=True, lstrip_blocks=True, line_comment_prefix='//*')
