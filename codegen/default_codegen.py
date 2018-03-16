@@ -10,7 +10,6 @@ except ImportError as err:  # when packaged, only above imports work
 
 iterators_mapping = collections.OrderedDict()
 iterator_functions_mapping = collections.OrderedDict()
-user_templates = []
 
 
 def codegen_stage(x_iterator, x_iterator_functions):
@@ -19,32 +18,25 @@ def codegen_stage(x_iterator, x_iterator_functions):
     iterator_functions_mapping[iterator_name] = x_iterator_functions
 
 
-def emit_template(template_name, params, output_dir, output_name):
+def emit_template(template_path, params, output_dir, output_name):
     # look for template in file system to use to generate
-
     try:
-        template_loader = jinja2.FileSystemLoader(searchpath="./")
+        template_name = template_path.split('/')[-1]
+        # path = '/'.join(template_path.split('/')[:-1])
+        print(template_name)
+        template_loader = jinja2.FileSystemLoader(os.getcwd() + os.path.sep + 'templates')
         env = jinja2.Environment(loader=template_loader, trim_blocks=True, lstrip_blocks=True, line_comment_prefix='//*')
-        output = env.get_template(template_name)
-        # if the template exists in the user's file system, then add it to the list so we know not to generate it
-        # the name that matches our template's name will be added to the list
-        user_template = template_name.split('/')
-        user_templates.append(user_template[-1])
+        print(template_name, template_path)
+        template = env.get_template(template_path)
         print("outputed file \" " + output_name + " \" from user defined template")
-    # generate using the template in our codegen templates directory
     except jinja2.exceptions.TemplateNotFound as err:
-        template = template_name.split('/')
-        # only generate with codegen's template if template not already defined by user
-        if template[-1] not in user_templates:
+        # template_name = template_name.split('/')
+        try:
             template_loader = jinja2.PackageLoader('codegen', 'templates')
-            # jinja2 will look for templates in the templates folder in the installed codegen package
-            env = jinja2.Environment(loader=template_loader,
-                                     trim_blocks=True,
-                                     lstrip_blocks=True,
-                                     line_comment_prefix='//*')
-            output = env.get_template(template_name)
-        else:
-            return
+            env = jinja2.Environment(loader=template_loader, trim_blocks=True, lstrip_blocks=True, line_comment_prefix='//*')
+            template = env.get_template(template_path)
+        except jinja2.exceptions.TemplateNotFound as err:
+            raise ValueError('template does not exist')
 
     env.globals['cfg'] = cfg
     output_file = output_dir + os.path.sep + output_name
@@ -54,7 +46,7 @@ def emit_template(template_name, params, output_dir, output_name):
         os.makedirs(directory)
 
     with open(output_file, 'w') as outfile:
-        outfile.write(output.render(params))
+        outfile.write(template.render(params))
 
 
 def run_iterators():
