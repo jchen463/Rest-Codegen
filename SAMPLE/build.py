@@ -1,14 +1,13 @@
 """
 Minimal structure and strictness
 user will have to import our default_codegen module to use codegen_stage()
-Generated files will be output to the current working directory
 """
 import codegen.default_codegen as default  # import will look like this because codegen will be a package
 
 SPEC = 'swagger.yaml'
-LANGUAGE = 'flask'  # 'typescript is also supported
-PROJECT_NAME = 'myproject'  # directory name
-# TEMPLATES_DIR = 'templates' not implemented yet
+LANGUAGE = 'flask'
+# PROJECT_NAME = 'myproject' not sure how to implement this yet
+TEMPLATES_DIR = 'mytemplates'
 
 
 def my_iterator(spec, my_iterator_functions):
@@ -33,7 +32,7 @@ def main():
     ]
 
     default.codegen_stage(my_iterator, my_iterator_functions)
-    # default.codegen_stage(default_codegen.invocation_iterator, []) TO MODIFY OUR DEFAULT ITERATORS
+    # default.codegen_stage(default.paths_iterator, [my_controllers_function])
 
 
 main()
