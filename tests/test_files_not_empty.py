@@ -16,12 +16,12 @@ def files_not_empty(root_dir):
     return True
 
 
-def server(serverFiles):
-    assert files_not_empty(serverFiles.root_dir) is True
+def server_test(serverFiles):
+    assert files_not_empty(serverFiles.name) is True
     del serverFiles
 
 
-def client(clientFiles):
-    assert files_not_empty(clientFiles.root_dir) is True
+def client_test(clientFiles):
+    assert files_not_empty(clientFiles.name) is True
     del clientFiles
 
