@@ -3,13 +3,13 @@ Minimal structure and strictness
 user will have to import our default_codegen module to use codegen_stage()
 """
 import codegen.default_codegen as default  # import will look like this because codegen will be a package
-# i/mport default_codegen as default   # use this if just testing within the files
-import codegen.codegen_config as cfg
+# import default_codegen as default   # use this if just testing within the files
+# import codegen.codegen_config as cfg
 
 SPEC = 'swagger.yaml'
 LANGUAGE = 'flask'
-PROJECT_NAME = 'myproject'
-# TEMPLATES_DIR = 'templates'
+# PROJECT_NAME = 'myproject' not sure how to implement this yet
+TEMPLATES_DIR = 'mytemplates'
 
 
 def my_iterator(spec, my_iterator_functions):
@@ -25,7 +25,7 @@ def function1(dikt):
     # the template specified by the first argument is the user's defined template from the location of where user calls codegen from
     # the 3rd argument is the directory they want to output it to
     # suppresses all files that codegen genenerates with the template 'init.j2'
-    default.emit_template("templates/flask_server/init.j2", dikt, cfg.FLASK_PROJECT_NAME + "/flask_server", "my_init.py")
+    # default.emit_template("templates/flask_server/init.j2", dikt, cfg.FLASK_PROJECT_NAME + "/flask_server", "my_init.py")
 
 # def my_controllers_function(params):
 #     print("starting my function using codegen's paths_iterator")

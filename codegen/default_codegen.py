@@ -22,9 +22,8 @@ def emit_template(template_path, params, output_dir, output_name):
     try:
         # check for their custom templates
         template_name = template_path.split('/')[-1]
-        template_loader = jinja2.FileSystemLoader(os.getcwd() + os.path.sep + 'templates')  # hard coded 'templates' right now, but we need to take into consideration their directory name
+        template_loader = jinja2.FileSystemLoader(os.getcwd() + os.path.sep + cfg.TEMPLATES_DIR)
         env = jinja2.Environment(loader=template_loader, trim_blocks=True, lstrip_blocks=True, line_comment_prefix='//*')
-        print(template_name, template_path)
         template = env.get_template(template_name)  # template_path is something like: flask_server/model.j2, so we have to do a name comparison here
         print("outputed file \" " + output_name + " \" from user defined template")
     except jinja2.exceptions.TemplateNotFound as err:
