@@ -17,7 +17,7 @@
 11. Code persistence
 12. More languages!
 	- java
-	- typescript server
+	- node.js server
 13. Error handling
 	- specification validation?
 14. Our own validator?
