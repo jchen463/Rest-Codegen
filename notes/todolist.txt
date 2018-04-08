@@ -21,3 +21,6 @@
 13. Error handling
 	- specification validation?
 14. Our own validator?
+
+security schemes
+alternative servers

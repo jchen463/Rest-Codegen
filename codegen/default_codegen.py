@@ -53,12 +53,6 @@ def run_iterators():
 
 
 def invocation_iterator(spec, invocation_iterator_functions):
-    """
-    pull relevant pieces of specification into dictionary
-    (may have to create intermediate representation later)
-    might need to pass in parameters here too? unsure
-    also unsure what object we're going to pass into these functions
-    """
     dikt = {}
     dikt['info'] = spec.info
     dikt['externalDocs'] = spec.externalDocs
@@ -70,13 +64,7 @@ def specification_iterator(spec, specification_iterator_functions):
     paths_by_tag = get_paths_by_tag(spec.paths.dikt)
     schemas = spec.components.schemas  # array of schemas
     dikt = {'tags': paths_by_tag.keys(), 'models': schemas.keys()}
-    """
-    right now we're only using one spec though
-    for specification in specifications:
-        for f in specification_iterator_functions:
-            f(specification)
-    seems like we only need tags and port
-    """
+
     for f in specification_iterator_functions:
         f(dikt)
 

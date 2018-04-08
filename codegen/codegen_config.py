@@ -12,6 +12,10 @@ SPEC_FILE_PATH = os.getcwd() + os.path.sep + SPEC
 SPEC_DICT = None
 SPECIFICATION = None
 
+TEMPLATE_VARIABLES = {}
+
+
+
 # user defined templates (on their file system)
 TEMPLATES_DIR = 'templates'
 
@@ -24,7 +28,6 @@ FLASK_SERVER_OUTPUT = FLASK_PROJECT_OUTPUT + os.path.sep + FLASK_SERVER_NAME
 
 TYPESCRIPT_PROJECT_NAME = 'services'
 TYPESCRIPT_PROJECT_OUTPUT = os.getcwd() + os.path.sep + TYPESCRIPT_PROJECT_NAME
-
 
 def load_build_file(filename):
     # update defaults to reflect user's build file
