@@ -10,7 +10,7 @@ SPEC = 'swagger.yaml'
 SPEC_FILE_PATH = os.getcwd() + os.path.sep + SPEC
 
 SPEC_DICT = None
-SPECIFICATION = None
+SPEC_OBJ = None
 
 TEMPLATE_VARIABLES = {}
 
