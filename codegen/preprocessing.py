@@ -1,20 +1,29 @@
-import TEMPLATE_VARIABLES from codegen_config.py
+try:  # when just doing $ python3 main.py only below imports work
+    import codegen.codegen_config as cfg
+except ImportError as err:  # when packaged, only above imports work
+    import codegen_config as cfg
 
-def models:
-    
+def models():
+
     models = []
 
-    schema = spec.components.schemas
+    print(cfg.SPEC_DICT)
+
+    schemas = cfg.SPEC_DICT['components']['schemas']
 
     for schema_name, schema in schemas.items():
-        model = 
-        {
-            'name': schema['name'],
+        print("\n")
+        print(schema)
+        model = {
+            'name': schema_name,
             'properties': {},  # key is property name, value is property type
             'dependencies': {},  # key is filename, value is class that is being imported
-            'required': schema['object'].required, # list
+            'required': schema['required'], # list
             'enums': {},  # Is this needed??
         }
+
+        if 'required' in schema:
+            model['required'] = schema['required']
     
         for attribute_name, attribute in schema['object'].properties.items():
             model['properties'][attribute_name] = attribute.__dict__
@@ -27,14 +36,15 @@ def models:
             if attribute_type != "" and attribute_type != 'null':
                 model['properties'][attribute_name]['type'] = attribute_type
 
-            enumList = getattr(attribute, 'enum', None)
+            enum = getattr(attribute, 'enum', None)
             if enum is not None:
-                model['enums'][attribute_name] = enumList
+                model['enums'][attribute_name] = enum
 
         models.append(model)
 
-        # result
-        TEMPLATE_VARIABLES['schemas'] = models
+    # result
+    print(models)
+    cfg.TEMPLATE_VARIABLES['schemas'] = models
     
 def getType(schema_obj, depth):
     ref = getattr(schema_obj, 'ref', None)
@@ -45,7 +55,7 @@ def getType(schema_obj, depth):
         return s
 
     if schema_obj.type == 'array':
-        return 'Array<' + get_observable_type_string(schema_obj.items, depth + 1)
+        return 'Array<' + getType(schema_obj.items, depth + 1)
     
     # s = typeMapping[schema_obj.type]
     type_format = getattr(schema_obj, 'format', None)
