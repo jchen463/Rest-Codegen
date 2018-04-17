@@ -49,7 +49,7 @@ def emit_template(template_path, params, output_dir, output_name):
 def run_iterators():
     # run each iterator once
     for iterator_name, iterator in iterators_mapping.items():
-        iterator(cfg.SPECIFICATION, iterator_functions_mapping[iterator_name])
+        iterator(cfg.TEMPLATE_VARIABLES , iterator_functions_mapping[iterator_name])
 
 
 def invocation_iterator(spec, invocation_iterator_functions):
@@ -70,10 +70,10 @@ def specification_iterator(spec, specification_iterator_functions):
 
 
 def schemas_iterator(spec, schemas_iterator_functions):
-    schemas = spec.components.schemas  # array of schemas
-    for schema_name, schema in schemas.items():
+
+    for _ in range(len(cfg.TEMPLATE_VARIABLES['schemas'])):
         for f in schemas_iterator_functions:
-            f({'name': schema_name, 'object': schema})
+            f(spec)
 
 
 def paths_iterator(spec, paths_iterator_functions):
