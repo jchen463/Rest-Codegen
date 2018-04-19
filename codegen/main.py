@@ -60,7 +60,7 @@ def main():
 
     models()
 
-    #codegen()
+    codegen()
 
 
 def load_spec_file(file_path):
