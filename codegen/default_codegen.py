@@ -71,7 +71,11 @@ def specification_iterator(spec, specification_iterator_functions):
 
 def schemas_iterator(spec, schemas_iterator_functions):
 
-    for _ in range(len(cfg.TEMPLATE_VARIABLES['schemas'])):
+    print("\n\n")
+    print(cfg.TEMPLATE_VARIABLES['schemas'])
+    for schema_name, schema in cfg.TEMPLATE_VARIABLES['schemas'].items():
+        spec['_current_schema'] = schema_name
+        print(schema_name)
         for f in schemas_iterator_functions:
             f(spec)
 
