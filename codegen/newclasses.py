@@ -34,54 +34,62 @@ class OpenAPI3():
         return extensions
 
     @staticmethod
-    def get_content_types(dikt):
+    def get_contents(dikt):
         if 'content' not in dikt:
             return None
 
-        types = []
-        for _, info in dikt.items():
-            if 'schema' in info:
-                types.append(get_schema_type(info['schema']))
+        content = []
+        for format, info in dikt.items():
+            contents.append(Content(format, info))
 
-        if len(types) == 0:
+        return contents
+
+    @staticmethod
+    def get_content_formats(dikt):
+        contents = get_content(dikt)
+        if contents is None:
             return None
+
+        formats = []
+        for content in contents:
+            formats.append(content.format)
+
+        return formats
+
+    @staticmethod
+    def get_content_types(dikt):
+        contents = get_content(dikt)
+        if contents is None:
+            return None
+
+        types = []
+        for content in contents:
+            types.append(content.type)
 
         return types
 
     @staticmethod
-    def get_schema_type(schema_dict, depth=0):
-        if (schema_dict.get('$ref')):
-            s = ref.split('/')[3]
+    def get_schema_type(dikt):
+        schema_dict = dikt.get('schema')
+        if schema_dict is None:
+            return None
+
+        def get_type(schema_dict, depth=0):
+            if (schema_dict.get('$ref')):
+                s = ref.split('/')[3]
+                for _ in range(depth):
+                    s += '>'
+                return s
+            if schema_dict.get('type') == 'array':
+                return 'array<' + get_type(schema_dict['items'], depth + 1)
+            # TODO OBJECTS
+            # TODO FORMAT
+            s = schema_dict['type']
             for _ in range(depth):
                 s += '>'
             return s
 
-        if schema_dict.get('type') == 'array':
-            return 'array<' + get_schema_type(schema_dict['items'], depth + 1)
-
-        # TODO OBJECTS
-        # TODO FORMAT
-
-        s = schema_dict['type']
-
-        for _ in range(depth):
-            s += '>'
-
-        return s
-
-    @staticmethod
-    def get_content_formats(dikt):
-        if 'content' not in dikt:
-            return None
-
-        formats = []
-        for format, info in dikt.items():
-            formats.append(format)
-
-        if len(formats) == 0:
-            return None
-
-        return formats
+        return get_type(schema_dict)
 
     @staticmethod
     def to_boolean(s):
@@ -101,16 +109,17 @@ class Path(OpenAPI3):
 
     def __init__(self, parent_dict, method, operation_dict):
         path_dict = merge_dicts(parent_dict, operation_dict)
+        self.url = path_dict.get('url')
         self.tag = get_tag(path_dict)
         self.method = method
         self.function_name = path_dict.get('operationId')
         # self.200_response_schema =
         self.response_formats = get_response_formats(path_dict)
-        self.request_body_format = get_request_body_format(path_dict)
-        self.dependencies =  # TODO
         self.parameters = get_parameters(path_dict)
-        self.parameters_in = get_parameters_in(path_dict)
+        self.parameters_in = get_parameters_in()
+        self.request_body = get_request_body(path_dict)
         self.responses = get_responses(path_dict)  # REQUIRED
+        self.dependencies = get_dependencies()  # TODO can be in parameters, request body, responses
 
         self.summary = path_dict.get('summary')
         self.description = path_dict.get('description')
@@ -136,12 +145,21 @@ class Path(OpenAPI3):
     def get_request_body_format(path_dict):
         pass
 
-    def get_parameters_in(self, path_dict):
+    @staticmethod
+    def get_request_body(path_dict):
+        request_body_dict = path_dict.get('requestBody')
+        if request_body_dict is None:
+            return None
+
+        return RequestBody(request_body_dict)
+
+    def get_parameters_in(self):
         if self.parameters is None:
             return set()
 
         parameters_in = set()
         for parameter in self.parameters:
+            # can add a check here
             parameters_in.add(parameter._in)
 
         return parameters_in
@@ -205,6 +223,30 @@ class Path(OpenAPI3):
         return dikt
 
 
+class Content(OpenAPI3):
+    def __init__(self, format, content_dict):
+        self.format = format
+        self.type = get_schema_type(content_dict)
+
+        self.example = content_dict.get('example')
+        self.examples = content_dict.get('examples')
+        self.encoding = content_dict.get('encoding')
+        self.extensions = get_extensions(content_dict)
+
+
+class RequestBody(OpenAPI3):
+    def __init__(self, dikt):
+        request_body_dict = get_reference(dikt)
+
+        self.formats = get_content_formats(request_body_dict)
+        self.types = get_content_types(request_body_dict)
+        self.contents = get_contents(request_body_dict)
+
+        self.required = to_boolean(request_body_dict.get('required'))
+        self.description = request_body_dict.get('description')
+        self.extensions = get_extensions(request_body_dict)
+
+
 class Response(OpenAPI3):
     """
     we don't provide any relation between format and schema. This hasn't been an issue yet
@@ -215,7 +257,8 @@ class Response(OpenAPI3):
 
         self.code = response_code
         self.formats = get_content_formats(response_dict)
-        self.schemas = get_content_types(response_dict)
+        self.types = get_content_types(response_dict)
+        self.contents = get_contents(response_dict)
 
         self.description = response_dict.get('description')  # REQUIRED
         self.headers = response_dict.get('headers')
@@ -229,7 +272,7 @@ class Parameter(OpenAPI3):
         self.name = parameter_dict.get('name')  # REQUIRED
         self._in = parameter_dict.get('in')  # REQUIRED
         self.required = to_boolean(parameter_dict.get('required'))
-        self.type = get_schema_type(parameter_dict['schema'])
+        self.type = get_schema_type(parameter_dict)
 
         self.description = parameter_dict.get('description')
         self.style = parameter_dict.get('style')
