@@ -99,18 +99,18 @@ class Path(OpenAPI3):
     highest level extensions aren't supported (i.e. paths -> ^x-)
     """
 
-    def __init__(self, parent_dict, operation_dict):
+    def __init__(self, parent_dict, method, operation_dict):
         path_dict = merge_dicts(parent_dict, operation_dict)
-        self.tag =
-        self.method =
+        self.tag = get_tag(path_dict)
+        self.method = method
         self.function_name = path_dict.get('operationId')
         # self.200_response_schema =
         self.response_formats = get_response_formats(path_dict)
         self.request_body_format = get_request_body_format(path_dict)
         self.dependencies =  # TODO
-        self.parameters_in = get_parameters_in(path_dict)
         self.parameters = get_parameters(path_dict)
-        self.responses = get_responses(path_dict)
+        self.parameters_in = get_parameters_in(path_dict)
+        self.responses = get_responses(path_dict)  # REQUIRED
 
         self.summary = path_dict.get('summary')
         self.description = path_dict.get('description')
@@ -122,6 +122,13 @@ class Path(OpenAPI3):
         self.extensions = get_extensions(path_dict)
 
     @staticmethod
+    def get_tag(path_dict):
+        tags = path_dict.get('tags')
+        if tags is None:
+            return None
+        return tags[0]
+
+    @staticmethod
     def get_response_formats(path_dict):
         pass
 
@@ -129,17 +136,37 @@ class Path(OpenAPI3):
     def get_request_body_format(path_dict):
         pass
 
-    @staticmethod
-    def get_parameters_in(path_dict):
-        pass
+    def get_parameters_in(self, path_dict):
+        if self.parameters is None:
+            return set()
+
+        parameters_in = set()
+        for parameter in self.parameters:
+            parameters_in.add(parameter._in)
+
+        return parameters_in
 
     @staticmethod
     def get_parameters(path_dict):
-        pass
+        params_list = path_dict.get('parameters')
+        if params_list is None:
+            return None
+
+        parameters = []
+        for param_dict in params_list:
+            parameters.append(Parameter(param_dict))
+
+        return parameters
 
     @staticmethod
     def get_responses(path_dict):
-        pass
+        resp_dict = path_dict.get('responses')
+
+        responses = {}
+        for code, response_dict in resp_dict.items():
+            responses[code] = Response(code, response_dict)
+
+        return responses
 
     @staticmethod
     def merge_dicts(fallback_dict, priority_dict):
@@ -173,7 +200,7 @@ class Path(OpenAPI3):
                 fallback_parameter_dict = get_reference(item)
                 key = (fallback_parameter_dict['name'], fallback_parameter_dict['in'])
                 if key not in unique_parameters:
-                    unique_parameters.add(key)
+                    dikt['parameters'].append(fallback_parameter_dict)
 
         return dikt
 
