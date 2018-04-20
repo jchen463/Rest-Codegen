@@ -12,7 +12,7 @@ SPEC_FILE_PATH = os.getcwd() + os.path.sep + SPEC
 SPEC_DICT = None
 SPEC_OBJ = None
 
-TEMPLATE_VARIABLES = {}
+TEMPLATE_CONTEXT = {}
 
 
 # user defined templates (on their file system)
