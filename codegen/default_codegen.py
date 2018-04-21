@@ -53,36 +53,36 @@ def run_iterators():
 
 
 def invocation_iterator(spec, invocation_iterator_functions):
-    dikt = {}
-    dikt['info'] = spec.info
-    dikt['externalDocs'] = spec.externalDocs
+    #dikt = {}
+    #dikt['info'] = spec.info
+    #dikt['externalDocs'] = spec.externalDocs
     for f in invocation_iterator_functions:
-        f(dikt)
+        f(spec)
 
 
 def specification_iterator(spec, specification_iterator_functions):
-    paths_by_tag = get_paths_by_tag(spec.paths.dikt)
-    schemas = spec.components.schemas  # array of schemas
-    dikt = {'tags': paths_by_tag.keys(), 'models': schemas.keys()}
+    #paths_by_tag = get_paths_by_tag(spec.paths.dikt)
+    #schemas = spec.components.schemas  # array of schemas
+    #dikt = {'tags': paths_by_tag.keys(), 'models': schemas.keys()}
 
     for f in specification_iterator_functions:
-        f(dikt)
+        f(spec)
 
 
 def schemas_iterator(spec, schemas_iterator_functions):
 
-    print("\n\n")
-    print(cfg.TEMPLATE_VARIABLES['schemas'])
     for schema_name, schema in cfg.TEMPLATE_VARIABLES['schemas'].items():
         spec['_current_schema'] = schema_name
         print(schema_name)
+        print(schema)
+        print("\n")
         for f in schemas_iterator_functions:
             f(spec)
 
 
 def paths_iterator(spec, paths_iterator_functions):
-    paths_by_tag = get_paths_by_tag(spec.paths.dikt)
-    basePath = {'basePath': spec.servers[0].url}
+    #paths_by_tag = get_paths_by_tag(spec.paths.dikt)
+    #basePath = {'basePath': spec.servers[0].url}
     """
     paths_by_tag = {
         'pet': [
@@ -110,6 +110,7 @@ def paths_iterator(spec, paths_iterator_functions):
     }
     """
 
+    """
     for tag, path_dicts in paths_by_tag.items():
         path_dicts[0].update(basePath)
         for dikt in path_dicts:
@@ -117,7 +118,7 @@ def paths_iterator(spec, paths_iterator_functions):
             dikt['request_body_type'] = get_request_body_type(spec.components.requestBodies, dikt['properties'])
         for f in paths_iterator_functions:
             f(path_dicts)
-
+    """
 
 def get_request_body_type(request_bodies_dict, operation_obj):
     request_body_type = 'any'
