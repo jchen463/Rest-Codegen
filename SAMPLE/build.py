@@ -24,14 +24,6 @@ def function1(dikt):
 def function2(dikt):
     print('function2')
 
-def invocation_iterator(spec, invocation_iterator_functions):
-    pass
-
-def specification_iterator(spec, specification_iterator_functions):
-    pass
-
-def paths_iterator(spec, paths_iterator_functions):
-    pass
 
 def main():
     my_iterator_functions = [
@@ -40,9 +32,6 @@ def main():
     ]
 
     default.codegen_stage(my_iterator, my_iterator_functions)
-    default.codegen_stage(invocation_iterator, [])
-    default.codegen_stage(specification_iterator, [])
-    default.codegen_stage(paths_iterator(), [])
     # default.codegen_stage(default.paths_iterator, [my_controllers_function])
 
 
