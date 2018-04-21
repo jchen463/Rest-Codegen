@@ -114,11 +114,11 @@ class Path(OpenAPI3):
         self.method = method
         self.function_name = path_dict.get('operationId')
         # self.200_response_schema =
-        self.response_formats = get_response_formats(path_dict)
         self.parameters = get_parameters(path_dict)
         self.parameters_in = get_parameters_in()
         self.request_body = get_request_body(path_dict)
         self.responses = get_responses(path_dict)  # REQUIRED
+        self.response_formats = get_response_formats()
         self.dependencies = get_dependencies()  # TODO can be in parameters, request body, responses
 
         self.summary = path_dict.get('summary')
@@ -137,13 +137,15 @@ class Path(OpenAPI3):
             return None
         return tags[0]
 
-    @staticmethod
-    def get_response_formats(path_dict):
-        pass
+    def get_response_formats(self):
+        # self.responses will never be None
+        response_formats = set()
 
-    @staticmethod
-    def get_request_body_format(path_dict):
-        pass
+        for response in self.responses:
+            for format in response.formats:
+                response_formats.add(format)
+
+        return response_formats
 
     @staticmethod
     def get_request_body(path_dict):
