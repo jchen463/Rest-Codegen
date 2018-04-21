@@ -152,39 +152,44 @@ def makeFirstLetterLower(s):
     return s[:1].lower() + s[1:] if s else ''
 
 
-def flask_generate_model(schema):
-    print('flask_generate_model')
+def flask_generate_model(spec):
+    #default.emit_template('flask_server/model.j2', spec, cfg.FLASK_SERVER_OUTPUT +
+    #                     os.path.sep + 'models', spec[''] + '.py')
 
-    model = {
-        'name': schema['name'],
-        'properties': {},  # key is property name, value is property type
-        'dependencies': {},  # key is filename, value is class that is being imported
-        'required': schema['object'].required,
-        'enums': {},  # Is this needed??1
-        'isString': False  # is this needed??
-    }
+    pass
 
-    class_name = makeFirstLetterLower(model['name'])
+    #print('flask_generate_model')
+
+    #model = {
+    #    'name': schema['name'],
+    #    'properties': {},  # key is property name, value is property type
+    #    'dependencies': {},  # key is filename, value is class that is being imported
+    #    'required': schema['object'].required,
+    #    'enums': {},  # Is this needed??1
+    #    'isString': False  # is this needed??
+    #}
+
+    #class_name = makeFirstLetterLower(model['name'])
 
     # if properties does not exist, print an empty class, this may not ever even run since classes are always
     # initialized to empty arrays
-    if not schema['object'].properties:
-        default.emit_template('model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
-                              os.path.sep + 'models', class_name + '.py')
-    else:
-        # run through each item within the properties
-        for attribute_name, attribute in schema['object'].properties.items():
-            model['properties'][attribute_name] = attribute.__dict__
-
+    #if not schema['object'].properties:
+    #    default.emit_template('model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
+    #                          os.path.sep + 'models', class_name + '.py')
+    #else:
+    #    # run through each item within the properties
+    #    for attribute_name, attribute in schema['object'].properties.items():
+    #        model['properties'][attribute_name] = attribute.__dict__
+    #
             # find the property, and insert dependencies into the model if needed
-            attribute_type = getPythonType(attribute, model, attribute_name)
+     #       attribute_type = getPythonType(attribute, model, attribute_name)
 
             # if attribute type is null or empty do not include it into the dictionary
-            if attribute_type != "" and attribute_type != 'null':
-                model['properties'][attribute_name]['type'] = attribute_type
+    #        if attribute_type != "" and attribute_type != 'null':
+    #            model['properties'][attribute_name]['type'] = attribute_type
 
-        default.emit_template('flask_server/model.j2', model, cfg.FLASK_SERVER_OUTPUT +
-                              os.path.sep + 'models', class_name + '.py')
+     #   default.emit_template('flask_server/model.j2', model, cfg.FLASK_SERVER_OUTPUT +
+     #                         os.path.sep + 'models', class_name + '.py')
 
 
 flask_invocation_iterator_functions = [
