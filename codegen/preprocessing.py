@@ -6,27 +6,41 @@ except ImportError as err:  # when packaged, only above imports work
 #write print functions!!!
 
 class Model:
-    def __init__(self, name):
+    def __init__(self, name, schema_obj):
         self.name = name
-        self.dependencies = {}
-        self.properties = {}
-        self.required = {}
-        self.enums = {}
-        # self.properties = getProperties(schema_obj)
-        # self.enums = getEnumList(schema_obj)
+        self.dependencies = {} # key is filename, value is class that is being imported. **NOT SURE IF THIS WILL BE KEPT**
+        self.properties = getProperties(schema_obj) # dictionary with key is property name, value is property type
+        self.enums = getEnumList(schema_obj)
+
+    def __repr__(self):
+        return self.to_str()
+
+    def to_str(self):
+        return str(self.__dict__)
+
 
 class Property:
-    def __init__(self, name):
+    def __init__(self, name, property_obj, requiredList):
         self.name = name
-        self.type = None
-        self.isRequired = None
-        # self.type = getType(property_obj,0)
-        # self.isRequired = isRequired(name,requiredList)
+        self.type = getType(property_obj, 0)
+        self.isRequired = isRequired(name,requiredList)
+
+    def __repr__(self):
+        return self.to_str()
+
+    def to_str(self):
+        return str(self.__dict__)
 
 class Enum:
-    def __init__(self, values):
-        #self.name = name
-        self.values = values
+    def __init__(self, name, attributes):
+        self.name = name
+        self.attributes = attributes
+
+    def __repr__(self):
+        return self.to_str()
+
+    def to_str(self):
+        return str(self.__dict__)
 
 def models():
 
@@ -36,51 +50,9 @@ def models():
 
     #iterate through each schema
     for schema_name, schema in schemas.items():
-
-        #create a model dictionary for each schema
-        #model = {
-        #    'name': schema_name,
-        #    'properties': {},  # key is property name, value is property type
-        #    'dependencies': {},  # key is filename, value is class that is being imported. **NOT SURE IF THIS WILL BE KEPT**
-        #    'required': [], # list of the required variables in each schema
-        #    'enums': {},  # Is this needed??
-        #}
-        model = Model(schema_name)
-
-
-
-        # get the required list of items
-        #if 'required' in schema:
-        #    model['required'] = schema['required']
-        model.required = schema.get('required')
-
-
-        for attribute_name, attribute in schema['properties'].items():
-
-            #model['properties'][attribute_name] = {}
-            model.properties[attribute_name] = Property(attribute_name)
-
-            # find the property, and insert dependencies into the model if needed
-            attribute_type = getType(attribute, 0)
-
-            if attribute_type != "" and attribute_type != 'null':
-                #print(model)
-                #print(attribute_name)
-                #print(attribute_type)
-                #model['properties'][attribute_name]['type'] = attribute_type
-                model.properties[attribute_name].type = attribute_type
-
-            #if 'enum' in attribute:
-            #    model['enums'][attribute_name] = attribute['enum']
-
-            if 'enum' in attribute:
-                model.enums[attribute_name] = Enum(attribute.get('enum'))
-
+        model = Model(schema_name, schema)
         models[model.name] = model
 
-    # result
-    for model1 in models:
-        print(model1)
     cfg.TEMPLATE_VARIABLES['schemas'] = models
 
 def getType(schema_obj, depth):
@@ -105,28 +77,31 @@ def getType(schema_obj, depth):
         s += '>'
     return s
 
+
 def getEnumList(schema_obj):
-    enumList = {}
+    enumList = []
+
     for attribute_name, attribute in schema_obj['properties'].items():
         if 'enum' in attribute:
-            enumList.update({attribute_name: attribute['enum']})
+            enum = Enum(attribute_name, attribute['enum'])
+            enumList.append(enum)
 
     return enumList
 
 
-def getRequiredList(schema_obj, attribute_name):
-    if 'required' not in schema_obj:
+def isRequired(attribute_name, requiredList):
+    if requiredList is None:
         return False
-    elif attribute_name in schema_obj['required']:
+    elif attribute_name in requiredList:
         return True
     else:
         return False
 
-def getProperties(schema_obj):
-    properties = {}
 
-    for attribute_name, attribute in schema_obj['properties'].items():
-        properties.update({attribute_name: {}})
-        properties[attribute_name].update({'type': getType(attribute, 0)})
-        properties[attribute_name].update({'isRequired': isRequired(schema_obj, attribute_name)})
+def getProperties(schema_obj):
+    properties = []
+    for attribute_name, attribute_dikt in schema_obj['properties'].items():
+        property = Property(attribute_name, attribute_dikt, schema_obj.get('required'))
+        properties.append(property)
+
     return properties
