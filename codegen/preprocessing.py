@@ -8,7 +8,8 @@ except ImportError as err:  # when packaged, only above imports work
 class Model:
     def __init__(self, name, schema_obj):
         self.name = name
-        self.dependencies = {} # key is filename, value is class that is being imported. **NOT SURE IF THIS WILL BE KEPT**
+        # key is filename, value is class that is being imported. **NOT SURE IF THIS WILL BE KEPT**
+        self.dependencies = getDeps(schema_obj)
         self.properties = getProperties(schema_obj) # dictionary with key is property name, value is property type
 
     def __repr__(self):
@@ -17,13 +18,26 @@ class Model:
     def to_str(self):
         return str(self.__dict__)
 
+def getDeps(schema_obj):
+    deps = []
+
+    for attribute_name, attribute_dikt in schema_obj['properties'].items():
+        ref = attribute_dikt.get('$ref')
+        if ref is not None:
+            ref = ref[ref.rfind('/') + 1:]
+            deps.append(ref)
+
+    print(deps)
+    return deps
+
 
 class Property:
     def __init__(self, name, property_obj, requiredList):
         self.name = name
         self.type = getType(property_obj, 0)
         self.isRequired = isRequired(name, requiredList)
-        self.enums = getEnumList(property_obj)
+        # returns None if no enums associated with property, otherwise return a list 
+        self.enums = getEnums(property_obj)
 
     def __repr__(self):
         return self.to_str()
@@ -78,7 +92,7 @@ def getType(schema_obj, depth):
     return s
 
 
-def getEnumList(attributes):
+def getEnums(attributes):
 
     enumList = attributes.get('enum')
 
