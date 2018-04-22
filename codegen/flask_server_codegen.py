@@ -153,8 +153,8 @@ def makeFirstLetterLower(s):
 
 
 def flask_generate_model(spec):
-    #default.emit_template('flask_server/model.j2', spec, cfg.FLASK_SERVER_OUTPUT +
-    #                     os.path.sep + 'models', spec[''] + '.py')
+    default.emit_template('flask_server/model.j2', spec, cfg.FLASK_SERVER_OUTPUT +
+                            os.path.sep + 'models', spec['_current_schema'] + '.py')
 
     pass
 

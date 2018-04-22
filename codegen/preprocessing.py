@@ -10,7 +10,6 @@ class Model:
         self.name = name
         self.dependencies = {} # key is filename, value is class that is being imported. **NOT SURE IF THIS WILL BE KEPT**
         self.properties = getProperties(schema_obj) # dictionary with key is property name, value is property type
-        self.enums = getEnumList(schema_obj)
 
     def __repr__(self):
         return self.to_str()
@@ -23,7 +22,8 @@ class Property:
     def __init__(self, name, property_obj, requiredList):
         self.name = name
         self.type = getType(property_obj, 0)
-        self.isRequired = isRequired(name,requiredList)
+        self.isRequired = isRequired(name, requiredList)
+        self.enums = getEnumList(property_obj)
 
     def __repr__(self):
         return self.to_str()
@@ -32,8 +32,7 @@ class Property:
         return str(self.__dict__)
 
 class Enum:
-    def __init__(self, name, attributes):
-        self.name = name
+    def __init__(self, attributes):
         self.attributes = attributes
 
     def __repr__(self):
@@ -51,6 +50,7 @@ def models():
     #iterate through each schema
     for schema_name, schema in schemas.items():
         model = Model(schema_name, schema)
+        # print(model)
         models[model.name] = model
 
     cfg.TEMPLATE_VARIABLES['schemas'] = models
@@ -78,13 +78,9 @@ def getType(schema_obj, depth):
     return s
 
 
-def getEnumList(schema_obj):
-    enumList = []
+def getEnumList(attributes):
 
-    for attribute_name, attribute in schema_obj['properties'].items():
-        if 'enum' in attribute:
-            enum = Enum(attribute_name, attribute['enum'])
-            enumList.append(enum)
+    enumList = attributes.get('enum')
 
     return enumList
 
