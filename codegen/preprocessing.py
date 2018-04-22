@@ -19,16 +19,28 @@ class Model:
         return str(self.__dict__)
 
 def getDeps(schema_obj):
+    
     deps = []
 
     for attribute_name, attribute_dikt in schema_obj['properties'].items():
-        ref = attribute_dikt.get('$ref')
-        if ref is not None:
-            ref = ref[ref.rfind('/') + 1:]
-            deps.append(ref)
+        attr_deps = getDepByAttr(attribute_dikt)
+        deps = deps + attr_deps
 
     print(deps)
     return deps
+
+def getDepByAttr(attribute_dikt):
+    depsByAttr = []
+
+    ref = attribute_dikt.get('$ref')
+    if ref is not None:
+        ref = ref[ref.rfind('/') + 1:]
+        depsByAttr.append(ref)
+
+    elif attribute_dikt['type'] == 'array':
+        depsByAttr = depsByAttr + getDepByAttr(attribute_dikt['items'])
+
+    return depsByAttr
 
 
 class Property:
