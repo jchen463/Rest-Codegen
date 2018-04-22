@@ -23,12 +23,12 @@ def flask_project_setup(params):
     # default.emit_template('flask_server/setup.j2', params, cfg.FLASK_PROJECT_OUTPUT, 'setup.py')
 
 
-def flask_generate_base_model(params):
+def flask_generate_base_model(spec):
     print('flask_base_setup')
-    dikt = {}
-    default.emit_template('flask_server/base_model.j2', dikt, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', 'base_model.py')
-    default.emit_template('flask_server/util.j2', dikt, cfg.FLASK_SERVER_OUTPUT, 'util.py')
-    default.emit_template('flask_server/encoder.j2', dikt, cfg.FLASK_SERVER_OUTPUT, 'encoder.py')
+    # dikt = {}
+    default.emit_template('flask_server/base_model.j2', spec, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', 'base_model.py')
+    default.emit_template('flask_server/util.j2', spec, cfg.FLASK_SERVER_OUTPUT, 'util.py')
+    default.emit_template('flask_server/encoder.j2', spec, cfg.FLASK_SERVER_OUTPUT, 'encoder.py')
 
 
 def flask_generate_main(params):

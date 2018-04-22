@@ -23,24 +23,25 @@ typeMapping = {
 }
 
 
-def typescript_project_setup(params):
+def typescript_project_setup(spec):
     print('typescript_project_setup')
-    dikt = {}
+    # dikt = {}
     # default.emit_template('requirements.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'requirements.txt')
 
 
-def typescript_specification_setup(params):
-    dikt = params
+def typescript_specification_setup(spec):
+    # dikt = params
     # params contains 'tags', 'models
-    default.emit_template('typescript_client/index.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
-    default.emit_template('typescript_client/variables.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
-    default.emit_template('typescript_client/configuration.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
-    default.emit_template('typescript_client/api_ts.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
-    dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
-    default.emit_template('typescript_client/models.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'model', 'models.ts')
-    default.emit_template('typescript_client/encoder.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'encoder.ts')
-    default.emit_template('typescript_client/api_module.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'api.module.ts')
-    default.emit_template('typescript_client/rxjs.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'rxjs-operators.ts')
+    print('typescript_specfication_setup')
+    default.emit_template('typescript_client/index.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'index.ts')
+    default.emit_template('typescript_client/variables.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'variables.ts')
+    default.emit_template('typescript_client/configuration.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'configuration.ts')
+    default.emit_template('typescript_client/api_ts.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', 'api.ts')
+    # dikt['models'] = [makeFirstLetterLower(s) for s in dikt['models']]
+    default.emit_template('typescript_client/models.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'model', 'models.ts')
+    default.emit_template('typescript_client/encoder.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'encoder.ts')
+    default.emit_template('typescript_client/api_module.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'api.module.ts')
+    default.emit_template('typescript_client/rxjs.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT, 'rxjs-operators.ts')
 
 
 def typescript_generate_service(params):  # params is an array of dictionaries
@@ -115,7 +116,7 @@ def typescript_generate_service(params):  # params is an array of dictionaries
     for i in range(len(dependencies)):
         dependencies[i] = [dependencies[i], makeFirstLetterLower(dependencies[i])]
 
-    print(dependencies)
+    # print(dependencies)
 
     dikt = {
         'paths_list': params,
