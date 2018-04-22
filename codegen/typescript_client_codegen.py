@@ -339,38 +339,38 @@ def getTypeScriptType(attribute, model, attribute_name):
     return typescript_type
 
 
-def typescript_models_setup(schema):
+def typescript_models_setup(spec):
     # model files
     print('typescript_models_setup')
 
-    model = {
-        'name': schema['name'],
-        'properties': {},  # key is property name, value is property type
-        'dependencies': {},  # key is filename, value is class that is being imported
-        'required': schema['object'].required,
-        'enums': {},  # Is this needed??1
-        'isString': False  # is this needed??
-    }
+    # model = {
+    #     'name': schema['name'],
+    #     'properties': {},  # key is property name, value is property type
+    #     'dependencies': {},  # key is filename, value is class that is being imported
+    #     'required': schema['object'].required,
+    #     'enums': {},  # Is this needed??1
+    #     'isString': False  # is this needed??
+    # }
 
-    class_name = makeFirstLetterLower(model['name'])
+    # class_name = makeFirstLetterLower(model['name'])
 
-    # if properties does not exist, print an empty class, this may not ever even run since classes are always
-    # initialized to empty arrays
-    if not schema['object'].properties:
-        default.emit_template('model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
-                              os.path.sep + 'models', class_name + '.py')
-    else:
-        # run through each item within the properties
-        for attribute_name, attribute in schema['object'].properties.items():
-            model['properties'][attribute_name] = attribute.__dict__
-            # find the property, and insert dependencies into the model if needed
-            attribute_type = getTypeScriptType(attribute, model, attribute_name)
-            # if attribute type is null or empty do not include it into the dictionary
-            if attribute_type != "" and attribute_type != 'null':
-                model['properties'][attribute_name]['type'] = attribute_type
+    # # if properties does not exist, print an empty class, this may not ever even run since classes are always
+    # # initialized to empty arrays
+    # if not schema['object'].properties:
+    #     default.emit_template('model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
+    #                           os.path.sep + 'models', class_name + '.py')
+    # else:
+    #     # run through each item within the properties
+    #     for attribute_name, attribute in schema['object'].properties.items():
+    #         model['properties'][attribute_name] = attribute.__dict__
+    #         # find the property, and insert dependencies into the model if needed
+    #         attribute_type = getTypeScriptType(attribute, model, attribute_name)
+    #         # if attribute type is null or empty do not include it into the dictionary
+    #         if attribute_type != "" and attribute_type != 'null':
+    #             model['properties'][attribute_name]['type'] = attribute_type
 
-        default.emit_template('typescript_client/model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
-                              os.path.sep + 'model', class_name + '.ts')
+    default.emit_template('typescript_client/model.j2', spec, cfg.TYPESCRIPT_PROJECT_OUTPUT +
+                            os.path.sep + 'model', makeFirstLetterLower(spec['_current_schema']) + '.ts')
 
     pass
     # for schema_name, schema_info in dikt['schemas'].items():

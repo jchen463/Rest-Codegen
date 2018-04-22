@@ -11,12 +11,21 @@ class Model:
         # key is filename, value is class that is being imported. **NOT SURE IF THIS WILL BE KEPT**
         self.dependencies = getDeps(schema_obj)
         self.properties = getProperties(schema_obj) # dictionary with key is property name, value is property type
+        self.hasEnums = hasEnums(schema_obj)
 
     def __repr__(self):
         return self.to_str()
 
     def to_str(self):
         return str(self.__dict__)
+
+def hasEnums(schema_obj):
+    for attribute_name, attribute_dikt in schema_obj['properties'].items():
+        hasEnums = attribute_dikt.get('enum')
+        if hasEnums is not None:
+            return True
+    
+    return False
 
 def getDeps(schema_obj):
     
@@ -26,7 +35,6 @@ def getDeps(schema_obj):
         attr_deps = getDepByAttr(attribute_dikt)
         deps = deps + attr_deps
 
-    print(deps)
     return deps
 
 def getDepByAttr(attribute_dikt):
