@@ -29,10 +29,10 @@ def get_paths_by_tag():
     for path_url, path_dict in cfg.SPEC_DICT['paths'].items():
         parent_dict = {
             'url': path_url,
-            'summary': paths_dict.get('summary'),
-            'description': paths_dict.get('description'),
-            'servers': paths_dict.get('servers'),
-            'parameters': paths_dict.get('parameters')
+            'summary': path_dict.get('summary'),
+            'description': path_dict.get('description'),
+            'servers': path_dict.get('servers'),
+            'parameters': path_dict.get('parameters')
         }
         for key, value in path_dict.items():
             if key.match(cfg.EXT_REGEX):
