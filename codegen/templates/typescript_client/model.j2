@@ -1,6 +1,6 @@
 {# dependencies #}
 {% for file_name in schemas[_current_schema].dependencies %}
-import {{ "{" }} {{ file_name | capitalize}} {{ "}" }} from './{{file_name}}';
+import { {{ file_name | capitalize}} } from './{{file_name}}';
 {% endfor %}
 
 export interface {{_current_schema}} {
