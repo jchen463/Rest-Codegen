@@ -132,11 +132,6 @@ class Path(OpenAPI3):
 
     @staticmethod
     def get_dependencies(path_dict):
-        """
-        need 'Pet', 'User', 'Store' from the 'types fields', but we don't want
-        'array<>' or 'string'
-        look in requestBody and responses
-        """
 
         def get_dependency(dikt):
             schema_dict = dikt.get('schema')
@@ -316,8 +311,9 @@ class Parameter(OpenAPI3):
         self.required = to_boolean(parameter_dict.get('required'))
         self.type = get_schema_type(parameter_dict)
 
+        # TODO
         self.description = parameter_dict.get('description')
-        self.style = parameter_dict.get('style')  # TODO
+        self.style = parameter_dict.get('style')
         self.example = parameter_dict.get('example')
         self.examples = parameter_dict.get('examples')
         self.deprecated = to_boolean(parameter_dict.get('deprecated'))
