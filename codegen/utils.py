@@ -3,10 +3,11 @@ import os
 import jinja2
 import collections  # for OrderedDict
 
-try:  # when just doing $ python3 main.py only below imports work
-    import codegen.codegen_config as cfg
-except ImportError as err:  # when packaged, only above imports work
-    import codegen_config as cfg
+import codegen.configurations as cfg
+
+"""
+entrypoints into our code generation, for us and users
+"""
 
 iterators_mapping = collections.OrderedDict()
 iterator_functions_mapping = collections.OrderedDict()
@@ -18,7 +19,7 @@ def codegen_stage(x_iterator, x_iterator_functions):
     iterator_functions_mapping[iterator_name] = x_iterator_functions
 
 
-def emit_template(template_path, params, output_dir, output_name):
+def emit_template(template_path, output_dir, output_name):
     try:
         # check for their custom templates
         template_name = template_path.split('/')[-1]
@@ -43,43 +44,34 @@ def emit_template(template_path, params, output_dir, output_name):
         os.makedirs(directory)
 
     with open(output_file, 'w') as outfile:
-        outfile.write(template.render(params))
+        outfile.write(template.render(cfg.TEMPLATE_CONTEXT))
 
 
 def run_iterators():
     # run each iterator once
     for iterator_name, iterator in iterators_mapping.items():
-        iterator(cfg.TEMPLATE_VARIABLES , iterator_functions_mapping[iterator_name])
+        iterator(iterator_functions_mapping[iterator_name])
 
 
-def invocation_iterator(spec, invocation_iterator_functions):
-    #dikt = {}
-    #dikt['info'] = spec.info
-    #dikt['externalDocs'] = spec.externalDocs
+def invocation_iterator(invocation_iterator_functions):
     for f in invocation_iterator_functions:
         f()
 
 
-def specification_iterator(spec, specification_iterator_functions):
-    #paths_by_tag = get_paths_by_tag(spec.paths.dikt)
-    #schemas = spec.components.schemas  # array of schemas
-    #dikt = {'tags': paths_by_tag.keys(), 'models': schemas.keys()}
-
+def specification_iterator(specification_iterator_functions):
     for f in specification_iterator_functions:
         f()
 
 
-def schemas_iterator(spec, schemas_iterator_functions):
-
-    for schema_name, schema in cfg.TEMPLATE_VARIABLES['schemas'].items():
-        spec['_current_schema'] = schema_name
-        print(schema_name)
-        print(schema)
-        print("\n")
+def schemas_iterator(schemas_iterator_functions):
+    for schema_name, schema in cfg.TEMPLATE_CONTEXT['schemas'].items():
+        cfg.TEMPLATE_CONTEXT['_current_schema'] = schema_name
         for f in schemas_iterator_functions:
             f()
 
 
-def paths_iterator(spec, paths_iterator_functions):
-    pass
-
+def paths_iterator(paths_iterator_functions):
+    for tag, paths in cfg.TEMPLATE_CONTEXT['paths'].items():
+        cfg.TEMPLATE_CONTEXT['_current_tag'] = tag
+        for f in paths_iterator_functions:
+            f()
