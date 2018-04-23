@@ -39,8 +39,8 @@ class OpenAPI3():
             return None
 
         content = []
-        for format, info in dikt.items():
-            contents.append(Content(format, info))
+        for _format, info in dikt.items():
+            contents.append(Content(_format, info))
 
         return contents
 
@@ -118,8 +118,8 @@ class Path(OpenAPI3):
         self.parameters_in = get_parameters_in()  # set<string>
         self.request_body = get_request_body(path_dict)
         self.responses = get_responses(path_dict)  # REQUIRED {<string>, Response}
-        self.response_formats = get_response_formats()  # array<string>
-        self.dependencies = get_dependencies()  # array<string> TODO can be in parameters, request body, responses
+        self.response_formats = get_response_formats()  # set<string>
+        self.dependencies = get_dependencies(path_dict)  # set<string> TODO can be in parameters, request body, responses
 
         self.summary = path_dict.get('summary')
         self.description = path_dict.get('description')
@@ -129,6 +129,51 @@ class Path(OpenAPI3):
         self.servers = path_dict.get('servers')  # TODO
         self.deprecated = to_boolean(path_dict.get('deprecated'))
         self.extensions = get_extensions(path_dict)
+
+    @staticmethod
+    def get_dependencies(path_dict):
+        """
+        need 'Pet', 'User', 'Store' from the 'types fields', but we don't want
+        'array<>' or 'string'
+        look in requestBody and responses
+        """
+
+        def get_dependency(dikt):
+            schema_dict = dikt.get('schema')
+            if schema_dict is None:
+                schema_dict = dikt.get('items')
+                if schema_dict is None:
+                    return None
+
+            ref = schema_dict.get('$ref')
+            if ref is not None:
+                return ref.split('/')[3]
+
+            if schema_dict.get('type') == 'array':
+                return get_dependency(schema_dict)
+
+            return None
+
+        dependencies = set()
+
+        responses_dict = path_dict.get('responses')
+        if responses_dict is not None:
+            for code, dikt in responses:
+                response = get_reference(dikt)
+                if 'content' in response:
+                    for _format, content in response['content']:
+                        dependencies.add(get_dependency(content))
+
+        request_body_dict = path_dict.get('requestBody')
+        if request_body_dict is not None:
+            request_body_dict = get_reference(dikt)
+            for _format, content in request_body_dict['content']:
+                dependencies.add(get_dependency(content))
+
+        if None in dependencies:
+            dependencies.remove(None)
+
+        return dependencies
 
     @staticmethod
     def get_tag(path_dict):
@@ -142,8 +187,8 @@ class Path(OpenAPI3):
         response_formats = set()
 
         for response in self.responses:
-            for format in response.formats:
-                response_formats.add(format)
+            for _format in response.formats:
+                response_formats.add(_format)
 
         return response_formats
 
@@ -225,8 +270,8 @@ class Path(OpenAPI3):
 
 
 class Content(OpenAPI3):
-    def __init__(self, format, content_dict):
-        self.format = format
+    def __init__(self, _format, content_dict):
+        self.format = _format
         self.type = get_schema_type(content_dict)
 
         self.example = content_dict.get('example')
@@ -249,10 +294,6 @@ class RequestBody(OpenAPI3):
 
 
 class Response(OpenAPI3):
-    """
-    we don't provide any relation between format and schema. This hasn't been an issue yet
-    """
-
     def __init__(self, response_code, dikt):
         response_dict = get_reference(dikt)
 
