@@ -1,11 +1,7 @@
-import re
-
 import codegen.codegen_config as cfg
 
 
 class OpenAPI3():
-    ext_regex = re.compile('x-.*')
-
     @staticmethod
     def get_reference(dikt):
         if '$ref' not in dikt:
@@ -19,16 +15,10 @@ class OpenAPI3():
 
     @staticmethod
     def get_extensions(dikt):
-        extensions = None
+        extensions = {}
 
         for key, value in dikt.items():
-            if ext_regex.match(key):
-                extensions = {}
-                break
-            return None
-
-        for key, value in dikt.items():
-            if ext_regex.match(key):
+            if cfg.EXT_REGEX.match(key):
                 extensions[key] = value
 
         return extensions
@@ -36,9 +26,9 @@ class OpenAPI3():
     @staticmethod
     def get_contents(dikt):
         if 'content' not in dikt:
-            return None
+            return []
 
-        content = []
+        contents = []
         for _format, info in dikt.items():
             contents.append(Content(_format, info))
 
@@ -48,7 +38,7 @@ class OpenAPI3():
     def get_content_formats(dikt):
         contents = get_content(dikt)
         if contents is None:
-            return None
+            return []
 
         formats = []
         for content in contents:
@@ -60,7 +50,7 @@ class OpenAPI3():
     def get_content_types(dikt):
         contents = get_content(dikt)
         if contents is None:
-            return None
+            return []
 
         types = []
         for content in contents:
@@ -107,11 +97,11 @@ class Path(OpenAPI3):
     highest level extensions aren't supported (i.e. paths -> ^x-)
     """
 
-    def __init__(self, parent_dict, method, operation_dict):
+    def __init__(self, parent_dict, operation_dict):
         path_dict = merge_dicts(parent_dict, operation_dict)
-        self.url = path_dict.get('url')
+        self.url = path_dict['url']
         self.tag = get_tag(path_dict)
-        self.method = method
+        self.method = path_dict['method']
         self.function_name = path_dict.get('operationId')
         # self.200_response_schema =
         self.parameters = get_parameters(path_dict)  # array<Parameter>
@@ -178,7 +168,7 @@ class Path(OpenAPI3):
             return None
         return tags[0]
 
-    def get_response_formats(self):
+    def get_response_formats():
         # self.responses will never be None
         response_formats = set()
 
@@ -210,7 +200,7 @@ class Path(OpenAPI3):
     def get_parameters(path_dict):
         params_list = path_dict.get('parameters')
         if params_list is None:
-            return None
+            return []
 
         parameters = []
         for param_dict in params_list:
@@ -233,7 +223,7 @@ class Path(OpenAPI3):
         dikt = {}
 
         for key, value in fallback_dict.items():
-            if key.match(ext_regex):
+            if key.match(cfg.EXT_REGEX):
                 dikt[key] = value
 
         for key, value in priority_dict.items():
@@ -281,9 +271,9 @@ class RequestBody(OpenAPI3):
     def __init__(self, dikt):
         request_body_dict = get_reference(dikt)
 
-        self.formats = get_content_formats(request_body_dict)
-        self.types = get_content_types(request_body_dict)
-        self.contents = get_contents(request_body_dict)
+        self.formats = get_content_formats(request_body_dict)  # array<string>
+        self.types = get_content_types(request_body_dict)  # array<string>
+        self.contents = get_contents(request_body_dict)  # array<Content>
 
         # TODO
         self.required = to_boolean(request_body_dict.get('required'))
@@ -296,9 +286,9 @@ class Response(OpenAPI3):
         response_dict = get_reference(dikt)
 
         self.code = response_code
-        self.formats = get_content_formats(response_dict)
-        self.types = get_content_types(response_dict)
-        self.contents = get_contents(response_dict)
+        self.formats = get_content_formats(response_dict)  # array<string>
+        self.types = get_content_types(response_dict)  # array<string>
+        self.contents = get_contents(response_dict)  # array<Content>
 
         # TODO
         self.description = response_dict.get('description')  # REQUIRED

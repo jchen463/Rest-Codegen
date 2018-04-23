@@ -1,6 +1,9 @@
 import sys
 import os
+import re
 import importlib.util
+
+EXT_REGEX = re.compile('x-.*')
 
 # DEFAULT VALUES
 BUILD = None

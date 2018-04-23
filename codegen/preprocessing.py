@@ -8,48 +8,39 @@ def init_template_context():
     models()
     cfg.TEMPLATE_CONTEXT['paths'] = get_paths_by_tag()
 
+
 def get_paths_by_tag():
-    paths = {}
+    paths_by_tag = {}
+    methods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
+    for path_url, path_dict in cfg.SPEC_DICT['paths'].items():
+        parent_dict = {
+            'url': path_url,
+            'summary': paths_dict.get('summary')
+            'description': paths_dict.get('description')
+            'servers': paths_dict.get('servers')
+            'parameters': paths_dict.get('parameters')
+        }
+        for key, value in path_dict.items():
+            if key.match(cfg.EXT_REGEX):
+                parent_dict[key] = value
+        for method in methods:
+            operation_dict = path_dict.get(method)
+            if operation_dict is not None:
+                parent_dict['method'] = method
+                add_to_paths(paths_by_tag, parent_dict, operation_dict)
 
-    for path_url, path_object in cfg.SPEC_OBJ.paths.dikt.items():
-        collect_paths(paths, path_object.get, path_url, 'get')
-        collect_paths(paths, path_object.put, path_url, 'put')
-        collect_paths(paths, path_object.post, path_url, 'post')
-        collect_paths(paths, path_object.delete, path_url, 'delete')
-        collect_paths(paths, path_object.options, path_url, 'options')
-        collect_paths(paths, path_object.head, path_url, 'head')
-        collect_paths(paths, path_object.patch, path_url, 'patch')
-        collect_paths(paths, path_object.trace, path_url, 'trace')
-
-    return paths
-
-
-def collect_paths(paths_dict, operation_object, path_url, method):
-    if operation_object is not None:
-        tags = operation_object.tags
-        if tags != []:
-            if tags[0] not in paths_dict:
-                paths_dict[tags[0]] = []
-            paths_dict[tags[0]].append(get_path_dict(path_url, method, tags, operation_object))
-        else:
-            if 'default' not in paths_dict:
-                paths_dict['default'] = []
-            paths_dict['default'].append(get_path_dict(path_url, method, ['default'], operation_object))
+    return paths_by_tag
 
 
-def get_path_dict(path_url, method, tags, properties):
-    return {
-        'url': path_url,
-        'method': method,
-        'tag': tags[0],
-        'operationId': properties.operationId,
-        'parameters': get_parameters(),
-        'requestBody': get_request_body(),
-        'responses': get_responses(),
-        'callbacks': properties.callbacks,
-        'security': properties.security,
-        'servers': properties.servers,
-    }
+def add_to_paths(paths_by_tag, parent_dict, operation_dict):
+    path = Path(parent_dict, operation_dict)
+    tag = path.tag
+    if tag is None:
+        tag = 'default'
+    if tag not in paths_by_tag:
+        paths_by_tag[tag] = [path]
+    else:
+        paths_by_tag[tag].append(path)
 
 
 def models():
