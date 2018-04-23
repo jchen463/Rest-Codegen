@@ -36,7 +36,7 @@ class OpenAPI3():
 
     @staticmethod
     def get_content_formats(dikt):
-        contents = get_content(dikt)
+        contents = self.get_contents(dikt)
         if contents is None:
             return []
 
@@ -48,7 +48,7 @@ class OpenAPI3():
 
     @staticmethod
     def get_content_types(dikt):
-        contents = get_content(dikt)
+        contents = self.get_contents(dikt)
         if contents is None:
             return []
 
@@ -65,7 +65,8 @@ class OpenAPI3():
             return None
 
         def get_type(schema_dict, depth=0):
-            if (schema_dict.get('$ref')):
+            ref = schema_dict.get('$ref')
+            if ref is not None:
                 s = ref.split('/')[3]
                 for _ in range(depth):
                     s += '>'
@@ -100,15 +101,15 @@ class Path(OpenAPI3):
     def __init__(self, parent_dict, operation_dict):
         path_dict = merge_dicts(parent_dict, operation_dict)
         self.url = path_dict['url']
-        self.tag = get_tag(path_dict)
+        self.tag = self.get_tag(path_dict)
         self.method = path_dict['method']
         self.function_name = path_dict.get('operationId')
-        self.parameters = get_parameters(path_dict)  # array<Parameter>
-        self.parameters_in = get_parameters_in()  # set<string>
-        self.request_body = get_request_body(path_dict)
-        self.responses = get_responses(path_dict)  # REQUIRED {<string>, Response}
-        self.response_formats = get_response_formats()  # set<string>
-        self.dependencies = get_dependencies(path_dict)  # set<string>
+        self.parameters = self.get_parameters(path_dict)  # array<Parameter>
+        self.parameters_in = self.get_parameters_in()  # set<string>
+        self.request_body = self.get_request_body(path_dict)
+        self.responses = self.get_responses(path_dict)  # REQUIRED {<string>, Response}
+        self.response_formats = self.get_response_formats()  # set<string>
+        self.dependencies = self.get_dependencies(path_dict)  # set<string>
 
         # TODO
         self.summary = path_dict.get('summary')
@@ -117,8 +118,8 @@ class Path(OpenAPI3):
         self.callbacks = path_dict.get('callbacks')
         self.security = path_dict.get('security')
         self.servers = path_dict.get('servers')
-        self.deprecated = to_boolean(path_dict.get('deprecated'))
-        self.extensions = get_extensions(path_dict)
+        self.deprecated = self.to_boolean(path_dict.get('deprecated'))
+        self.extensions = self.get_extensions(path_dict)
 
     @staticmethod
     def get_dependencies(path_dict):
@@ -144,14 +145,14 @@ class Path(OpenAPI3):
         responses_dict = path_dict.get('responses')
         if responses_dict is not None:
             for code, dikt in responses:
-                response = get_reference(dikt)
+                response = self.get_reference(dikt)
                 if 'content' in response:
                     for _format, content in response['content']:
                         dependencies.add(get_dependency(content))
 
         request_body_dict = path_dict.get('requestBody')
         if request_body_dict is not None:
-            request_body_dict = get_reference(dikt)
+            request_body_dict = self.get_reference(dikt)
             for _format, content in request_body_dict['content']:
                 dependencies.add(get_dependency(content))
 
@@ -242,11 +243,11 @@ class Path(OpenAPI3):
         if priority_parameters is not None and fallback_parameters is not None:
             unique_parameters = set()
             for item in priority_parameters:
-                priority_parameter_dict = get_reference(item)
+                priority_parameter_dict = self.get_reference(item)
                 unique_parameters.add((priority_parameter_dict['name'], priority_parameter_dict['in']))
 
             for item in fallback_parameters:
-                fallback_parameter_dict = get_reference(item)
+                fallback_parameter_dict = self.get_reference(item)
                 key = (fallback_parameter_dict['name'], fallback_parameter_dict['in'])
                 if key not in unique_parameters:
                     dikt['parameters'].append(fallback_parameter_dict)
@@ -257,63 +258,63 @@ class Path(OpenAPI3):
 class Content(OpenAPI3):
     def __init__(self, _format, content_dict):
         self.format = _format
-        self.type = get_schema_type(content_dict)
+        self.type = self.get_schema_type(content_dict)
 
         # TODO
         self.example = content_dict.get('example')
         self.examples = content_dict.get('examples')
         self.encoding = content_dict.get('encoding')
-        self.extensions = get_extensions(content_dict)
+        self.extensions = self.get_extensions(content_dict)
 
 
 class RequestBody(OpenAPI3):
     def __init__(self, dikt):
-        request_body_dict = get_reference(dikt)
+        request_body_dict = self.self.get_reference(dikt)
 
-        self.formats = get_content_formats(request_body_dict)  # array<string>
-        self.types = get_content_types(request_body_dict)  # array<string>
-        self.contents = get_contents(request_body_dict)  # array<Content>
+        self.formats = self.get_content_formats(request_body_dict)  # array<string>
+        self.types = self.get_content_types(request_body_dict)  # array<string>
+        self.contents = self.get_contents(request_body_dict)  # array<Content>
 
         # TODO
-        self.required = to_boolean(request_body_dict.get('required'))
+        self.required = self.to_boolean(request_body_dict.get('required'))
         self.description = request_body_dict.get('description')
-        self.extensions = get_extensions(request_body_dict)
+        self.extensions = self.get_extensions(request_body_dict)
 
 
 class Response(OpenAPI3):
     def __init__(self, response_code, dikt):
-        response_dict = get_reference(dikt)
+        response_dict = self.self.get_reference(dikt)
 
         self.code = response_code
-        self.formats = get_content_formats(response_dict)  # array<string>
-        self.types = get_content_types(response_dict)  # array<string>
-        self.contents = get_contents(response_dict)  # array<Content>
+        self.formats = self.get_content_formats(response_dict)  # array<string>
+        self.types = self.get_content_types(response_dict)  # array<string>
+        self.contents = self.get_contents(response_dict)  # array<Content>
 
         # TODO
         self.description = response_dict.get('description')  # REQUIRED
         self.headers = response_dict.get('headers')
-        self.extensions = get_extensions(response_dict)
+        self.extensions = self.get_extensions(response_dict)
 
 
 class Parameter(OpenAPI3):
     def __init__(self, dikt):
-        parameter_dict = get_reference(dikt)
+        parameter_dict = self.self.get_reference(dikt)
 
         self.name = parameter_dict.get('name')  # REQUIRED
         self._in = parameter_dict.get('in')  # REQUIRED
-        self.required = to_boolean(parameter_dict.get('required'))
-        self.type = get_schema_type(parameter_dict)
+        self.required = self.to_boolean(parameter_dict.get('required'))
+        self.type = self.get_schema_type(parameter_dict)
 
         # TODO
         self.description = parameter_dict.get('description')
         self.style = parameter_dict.get('style')
         self.example = parameter_dict.get('example')
         self.examples = parameter_dict.get('examples')
-        self.deprecated = to_boolean(parameter_dict.get('deprecated'))
-        self.allowEmptyValue = to_boolean(parameter_dict.get('allowEmptyValue'))
-        self.explode = to_boolean(parameter_dict.get('explode'))
-        self.allowReserved = to_boolean(parameter_dict.get('allowReserved'))
-        self.extensions = get_extensions(parameter_dict)
+        self.deprecated = self.to_boolean(parameter_dict.get('deprecated'))
+        self.allowEmptyValue = self.to_boolean(parameter_dict.get('allowEmptyValue'))
+        self.explode = self.to_boolean(parameter_dict.get('explode'))
+        self.allowReserved = self.to_boolean(parameter_dict.get('allowReserved'))
+        self.extensions = self.get_extensions(parameter_dict)
 
 
 class Model:
