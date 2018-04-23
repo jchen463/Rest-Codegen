@@ -46,7 +46,7 @@ export class {{ _current_tag|capitalize }}Service {
 
 
     {% for path in paths[_current_tag] %}
-    public {{path.function_name}}({% set required_params = [] %}{% for param in path.parameters %}{% if param.required %}{% set _ = required_params.append(0) %}{{param.name}}: {{param.type}}{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}{% if path.method == 'post' or path.method == 'put' %}{% if path.parameters|length > 0 %}, {% endif %}body: {{path['request_body_type']}}{% endif %}{% for param in path.parameters %}{% if not param.required %}{% if required_params %}, {% endif %}{{param.name}}?: {{param.type}}{% endif %}{% endfor %}): Observable<{% if 200 not in paths.responses and paths.responses[200].types|length == 0 %}{}{% else %}{{ paths.responses[200].types[0] }}{%endif%}> {
+    public {{path.function_name}}({% set required_params = [] %}{% for param in path.parameters %}{% if param.required %}{% set _ = required_params.append(0) %}{{param.name}}: {{param.type}}{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}{% if path.method == 'post' or path.method == 'put' %}{% if path.parameters|length > 0 %}, {% endif %}body: {{path['request_body_type']}}{% endif %}{% for param in path.parameters %}{% if not param.required %}{% if required_params %}, {% endif %}{{param.name}}?: {{param.type}}{% endif %}{% endfor %}): Observable<{% if 200 in path.responses %} {% if path.responses[200].types|length == 0 %}{}{% else %}{{ paths.responses[200].types[0] }}{% endif %}{% else %}{}{% endif %}> {
 
         {% for param in path.parameters %}
         {% if param.required %}

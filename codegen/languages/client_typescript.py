@@ -47,13 +47,13 @@ def typescript_specification_setup():
 def typescript_generate_service():
     # CHECK notes/servicetemplatesnodes.ts for TODO
     # almost done
-    utils.emit_template('typescript_client/service.j2', dikt, cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', params[0]['tag'] + '.service.ts')
+    utils.emit_template('typescript_client/service.j2', cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'api', cfg.TEMPLATE_CONTEXT['_current_tag'] + '.service.ts')
 
 
 def typescript_models_setup():
     # model files
     print('typescript_models_setup')
-    utils.emit_template('typescript_client/model.j2', cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'model', makeFirstLetterLower(cfg.TEMPLATE_VARIABLES['_current_schema']) + '.ts')
+    utils.emit_template('typescript_client/model.j2', cfg.TYPESCRIPT_PROJECT_OUTPUT + os.path.sep + 'model', makeFirstLetterLower(cfg.TEMPLATE_CONTEXT['_current_schema']) + '.ts')
 
 
 def makeFirstLetterLower(s):

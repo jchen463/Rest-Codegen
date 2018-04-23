@@ -8,8 +8,7 @@ class OpenAPI3():
     def __init__(self):
         pass
 
-    @staticmethod
-    def get_reference(dikt):
+    def get_reference(self, dikt):
         if '$ref' not in dikt:
             return dikt
 
@@ -19,8 +18,7 @@ class OpenAPI3():
         ref = cfg.SPEC_DICT[ref_path[1]][ref_path[2]][ref_path[3]]
         return ref
 
-    @staticmethod
-    def get_extensions(dikt):
+    def get_extensions(self, dikt):
         extensions = {}
 
         for key, value in dikt.items():
@@ -29,19 +27,18 @@ class OpenAPI3():
 
         return extensions
 
-    @staticmethod
-    def get_contents(dikt):
-        if 'content' not in dikt:
+    def get_contents(self, dikt):
+        content_dict = dikt.get('content')
+        if content_dict is None:
             return []
 
         contents = []
-        for _format, info in dikt.items():
+        for _format, info in content_dict.items():
             contents.append(Content(_format, info))
 
         return contents
 
-    @staticmethod
-    def get_content_formats(dikt):
+    def get_content_formats(self, dikt):
         contents = self.get_contents(dikt)
         if contents is None:
             return []
@@ -52,8 +49,7 @@ class OpenAPI3():
 
         return formats
 
-    @staticmethod
-    def get_content_types(dikt):
+    def get_content_types(self, dikt):
         contents = self.get_contents(dikt)
         if contents is None:
             return []
@@ -64,8 +60,7 @@ class OpenAPI3():
 
         return types
 
-    @staticmethod
-    def get_schema_type(dikt):
+    def get_schema_type(self, dikt):
         schema_dict = dikt.get('schema')
         if schema_dict is None:
             return None
@@ -88,8 +83,7 @@ class OpenAPI3():
 
         return get_type(schema_dict)
 
-    @staticmethod
-    def to_boolean(s):
+    def to_boolean(self, s):
         if s is None:
             return False  # or should we return None?
         if type(s) is bool:
@@ -108,7 +102,6 @@ class Path(OpenAPI3):
 
     def __init__(self, parent_dict, operation_dict):
         path_dict = self.merge_dicts(parent_dict, operation_dict)
-        pprint(path_dict)
         self.url = path_dict['url']
         self.tag = self.get_tag(path_dict)
         self.method = path_dict['method']
@@ -130,8 +123,7 @@ class Path(OpenAPI3):
         self.deprecated = self.to_boolean(path_dict.get('deprecated'))
         self.extensions = self.get_extensions(path_dict)
 
-    @staticmethod
-    def get_dependencies(path_dict):
+    def get_dependencies(self, path_dict):
 
         def get_dependency(dikt):
             schema_dict = dikt.get('schema')
@@ -145,7 +137,7 @@ class Path(OpenAPI3):
                 return ref.split('/')[3]
 
             if schema_dict.get('type') == 'array':
-                return self.get_dependency(schema_dict)
+                return get_dependency(schema_dict)
 
             return None
 
@@ -153,42 +145,40 @@ class Path(OpenAPI3):
 
         responses_dict = path_dict.get('responses')
         if responses_dict is not None:
-            for code, dikt in responses:
+            for code, dikt in responses_dict.items():
                 response = self.get_reference(dikt)
                 if 'content' in response:
-                    for _format, content in response['content']:
-                        dependencies.add(self.get_dependency(content))
+                    for _format, content in response['content'].items():
+                        dependencies.add(get_dependency(content))
 
         request_body_dict = path_dict.get('requestBody')
         if request_body_dict is not None:
-            request_body_dict = self.get_reference(dikt)
-            for _format, content in request_body_dict['content']:
-                dependencies.add(self.get_dependency(content))
+            request_body = self.get_reference(request_body_dict)
+            for _format, content in request_body['content'].items():
+                dependencies.add(get_dependency(content))
 
         if None in dependencies:
             dependencies.remove(None)
 
         return dependencies
 
-    @staticmethod
-    def get_tag(path_dict):
+    def get_tag(self, path_dict):
         tags = path_dict.get('tags')
         if tags is None:
             return None
         return tags[0]
 
-    def get_response_formats():
+    def get_response_formats(self):
         # self.responses will never be None
         response_formats = set()
-
-        for response in self.responses:
+        
+        for code, response in self.responses.items():
             for _format in response.formats:
                 response_formats.add(_format)
 
         return response_formats
 
-    @staticmethod
-    def get_request_body(path_dict):
+    def get_request_body(self, path_dict):
         request_body_dict = path_dict.get('requestBody')
         if request_body_dict is None:
             return None
@@ -205,8 +195,7 @@ class Path(OpenAPI3):
 
         return parameters_in
 
-    @staticmethod
-    def get_parameters(path_dict):
+    def get_parameters(self, path_dict):
         params_list = path_dict.get('parameters')
         if params_list is None:
             return []
@@ -217,8 +206,7 @@ class Path(OpenAPI3):
 
         return parameters
 
-    @staticmethod
-    def get_responses(path_dict):
+    def get_responses(self, path_dict):
         resp_dict = path_dict.get('responses')
 
         responses = {}
@@ -227,8 +215,7 @@ class Path(OpenAPI3):
 
         return responses
 
-    @staticmethod
-    def merge_dicts(fallback_dict, priority_dict):
+    def merge_dicts(self, fallback_dict, priority_dict):
         dikt = {}
 
         for key, value in fallback_dict.items():
