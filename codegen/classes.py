@@ -223,7 +223,7 @@ class Path(OpenAPI3):
         dikt = {}
 
         for key, value in fallback_dict.items():
-            if match(cfg.EXT_REGEX, key):
+            if re.match(cfg.EXT_REGEX, key):
                 dikt[key] = value
 
         for key, value in priority_dict.items():
