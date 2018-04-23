@@ -1,6 +1,7 @@
 import re
 
 import codegen.configurations as cfg
+from pprint import pprint
 
 
 class OpenAPI3():
@@ -102,6 +103,7 @@ class Path(OpenAPI3):
 
     def __init__(self, parent_dict, operation_dict):
         path_dict = self.merge_dicts(parent_dict, operation_dict)
+        pprint(path_dict)
         self.url = path_dict['url']
         self.tag = self.get_tag(path_dict)
         self.method = path_dict['method']
@@ -231,7 +233,7 @@ class Path(OpenAPI3):
         for key, value in priority_dict.items():
             dikt[key] = value
 
-        fallback_keys = ['summary', 'description', 'servers']
+        fallback_keys = ['summary', 'description', 'servers', 'method', 'url']
         for key in fallback_keys:
             if key not in dikt:
                 dikt[key] = fallback_dict.get(key)
