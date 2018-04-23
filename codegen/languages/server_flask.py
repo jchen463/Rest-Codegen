@@ -73,7 +73,3 @@ def stage_default_iterators():
     utils.codegen_stage(utils.specification_iterator, flask_specification_iterator_functions)
     utils.codegen_stage(utils.schemas_iterator, flask_schemas_iterator_functions)
     utils.codegen_stage(utils.paths_iterator, flask_paths_iterator_functions)
-
-
-def flask_server_generate():
-    utils.run_iterators()

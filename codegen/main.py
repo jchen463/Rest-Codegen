@@ -9,6 +9,7 @@ import argparse
 from openapi_spec_validator import openapi_v3_spec_validator
 
 import codegen.configurations as cfg
+import codegen.utils as utils
 from codegen.template_context import init_template_context
 
 
@@ -17,11 +18,9 @@ def main():
         cfg.load_build_file(sys.argv[1])
 
     if cfg.LANGUAGE == 'typescript':
-        from codegen.typescript_client_codegen import typescript_client_codegen as codegen
-        from codegen.typescript_client_codegen import stage_default_iterators
+        from codegen.languages.client_typescript import stage_default_iterators
     else:
-        from codegen.flask_server_codegen import flask_server_codegen as codegen
-        from codegen.flask_server_codegen import stage_default_iterators
+        from codegen.languages.server_flask import stage_default_iterators
 
     stage_default_iterators()
 
@@ -36,6 +35,10 @@ def main():
     validate_specification(cfg.SPEC_DICT)
 
     init_template_context()
+
+    # TRANSLATE TEMPLATE CONTEXT
+
+    utils.run_iterators()
 
 
 def load_spec_file(file_path):

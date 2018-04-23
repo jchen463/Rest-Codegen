@@ -12,9 +12,18 @@ wrappers for emitting templates
 # formats that matter for strings: ByteArray, Binary, date, datetime
 
 typeMapping = {
-    'integer': 'number', 'long': 'number', 'float': 'number', 'double': 'number',
-    'string': 'string', 'byte': 'string', 'binary': 'string', 'boolean': 'boolean',
-    'date': 'string', 'date-time': 'string', 'password': 'string', 'object': 'any'
+    'integer': 'number',
+    'long': 'number',
+    'float': 'number',
+    'double': 'number',
+    'string': 'string',
+    'byte': 'string',
+    'binary': 'string',
+    'boolean': 'boolean',
+    'date': 'string',
+    'date-time': 'Date',
+    'password': 'string',
+    'object': 'any'
 }
 
 
@@ -73,7 +82,3 @@ def stage_default_iterators():
     utils.codegen_stage(utils.specification_iterator, typescript_specification_iterator_functions)
     utils.codegen_stage(utils.schemas_iterator, typescript_schemas_iterator_functions)
     utils.codegen_stage(utils.paths_iterator, typescript_paths_iterator_functions)
-
-
-def typescript_client_generate():
-    utils.run_iterators()
