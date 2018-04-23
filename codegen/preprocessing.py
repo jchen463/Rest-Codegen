@@ -4,6 +4,7 @@ except ImportError as err:  # when packaged, only above imports work
     import codegen_config as cfg
 
 
+
 def init_template_context():
     models()
     cfg.TEMPLATE_CONTEXT['paths'] = get_paths_by_tag()
@@ -43,68 +44,138 @@ def add_to_paths(paths_by_tag, parent_dict, operation_dict):
         paths_by_tag[tag].append(path)
 
 
+
+#write print functions!!!
+
+class Model:
+    def __init__(self, name, schema_obj):
+        self.name = name
+        # key is filename, value is class that is being imported. **NOT SURE IF THIS WILL BE KEPT**
+        self.dependencies = getDeps(schema_obj)
+        self.properties = getProperties(schema_obj) # dictionary with key is property name, value is property type
+        self.hasEnums = hasEnums(schema_obj)
+
+    def __repr__(self):
+        return self.to_str()
+
+    def to_str(self):
+        return str(self.__dict__)
+
+def hasEnums(schema_obj):
+    for attribute_name, attribute_dikt in schema_obj['properties'].items():
+        hasEnums = attribute_dikt.get('enum')
+        if hasEnums is not None:
+            return True
+    
+    return False
+
+def getDeps(schema_obj):
+    
+    deps = []
+
+    for attribute_name, attribute_dikt in schema_obj['properties'].items():
+        attr_deps = getDepByAttr(attribute_dikt)
+        deps = deps + attr_deps
+
+    return deps
+
+def getDepByAttr(attribute_dikt):
+    depsByAttr = []
+
+    ref = attribute_dikt.get('$ref')
+    if ref is not None:
+        ref = ref[ref.rfind('/') + 1:]
+        depsByAttr.append(ref)
+
+    elif attribute_dikt['type'] == 'array':
+        depsByAttr = depsByAttr + getDepByAttr(attribute_dikt['items'])
+
+    return depsByAttr
+
+
+class Property:
+    def __init__(self, name, property_obj, requiredList):
+        self.name = name
+        self.type = getType(property_obj, 0)
+        self.isRequired = isRequired(name, requiredList)
+        # returns None if no enums associated with property, otherwise return a list 
+        self.enums = getEnums(property_obj)
+
+    def __repr__(self):
+        return self.to_str()
+
+    def to_str(self):
+        return str(self.__dict__)
+
+class Enum:
+    def __init__(self, attributes):
+        self.attributes = attributes
+
+    def __repr__(self):
+        return self.to_str()
+
+    def to_str(self):
+        return str(self.__dict__)
+
 def models():
 
-    models = []
-
-    print(cfg.SPEC_DICT)
-
+    #initialize array to hold model and scheamas for use below
+    models = {}
     schemas = cfg.SPEC_DICT['components']['schemas']
 
+    #iterate through each schema
     for schema_name, schema in schemas.items():
-        print("\n")
-        print(schema)
-        model = {
-            'name': schema_name,
-            'properties': {},  # key is property name, value is property type
-            'dependencies': {},  # key is filename, value is class that is being imported
-            'required': schema['required'],  # list
-            'enums': {},  # Is this needed??
-        }
+        model = Model(schema_name, schema)
+        # print(model)
+        models[model.name] = model
 
-        if 'required' in schema:
-            model['required'] = schema['required']
-
-        for attribute_name, attribute in schema['object'].properties.items():
-            model['properties'][attribute_name] = attribute.__dict__
-            # find the property, and insert dependencies into the model if needed
-            attribute_type = getType(attribute, 0)
-            # if attribute type is null or empty do not include it into the dictionary
-            # resolve issues like if a user uses a class named datetime and datetime is not a class
-            # in the language they're using, how do we know the difference of whether its type is ref
-            # or if it's a library and should be imported ???
-            if attribute_type != "" and attribute_type != 'null':
-                model['properties'][attribute_name]['type'] = attribute_type
-
-            enum = getattr(attribute, 'enum', None)
-            if enum is not None:
-                model['enums'][attribute_name] = enum
-
-        models.append(model)
-
-    # result
-    print(models)
-    cfg.TEMPLATE_CONTEXT['schemas'] = models
+    cfg.TEMPLATE_VARIABLES['schemas'] = models
 
 
 def getType(schema_obj, depth):
-    ref = getattr(schema_obj, 'ref', None)
-    if ref is not None:
-        s = ref.split('/')[3]
+
+    if '$ref' in schema_obj:
+        s = schema_obj['$ref'].split('/')[3]
         for x in range(depth):
             s += '>'
         return s
 
-    if schema_obj.type == 'array':
-        return 'Array<' + getType(schema_obj.items, depth + 1)
+    if schema_obj['type'] == 'array':
+        return 'Array<' + getType(schema_obj['items'], depth + 1)
+
 
     # s = typeMapping[schema_obj.type]
     type_format = getattr(schema_obj, 'format', None)
     if type_format is not None:
         s = type_format
     else:
-        s = schema_obj.type
+        s = schema_obj['type']
 
     for x in range(depth):
         s += '>'
     return s
+
+
+def getEnums(attributes):
+
+    enumList = attributes.get('enum')
+
+    return enumList
+
+
+def isRequired(attribute_name, requiredList):
+    if requiredList is None:
+        return False
+    elif attribute_name in requiredList:
+        return True
+    else:
+        return False
+
+
+def getProperties(schema_obj):
+    properties = []
+    for attribute_name, attribute_dikt in schema_obj['properties'].items():
+        property = Property(attribute_name, attribute_dikt, schema_obj.get('required'))
+        properties.append(property)
+
+    return properties

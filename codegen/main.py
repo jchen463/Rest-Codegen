@@ -60,7 +60,6 @@ def main():
     #     json.dump(spec_dict2, out, indent=4)
 
     models()
-
     # codegen()
 
 

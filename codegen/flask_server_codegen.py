@@ -13,30 +13,27 @@ These are essentially wrappers for templates
 Responsible for certain files
 """
 
-
-def flask_project_setup(params):
+def flask_project_setup():
     # outer codegen folder: setup.py, requirements.txt. Dockerfile
     # params contains 'info', 'externalDocs'
-    dikt = params
     print('flask_project_setup')
-    default.emit_template('flask_server/requirements.j2', dikt, cfg.FLASK_PROJECT_OUTPUT, 'requirements.txt')
+    default.emit_template('flask_server/requirements.j2', cfg.TEMPLATE_VARIABLES, cfg.FLASK_PROJECT_OUTPUT, 'requirements.txt')
     # default.emit_template('flask_server/setup.j2', params, cfg.FLASK_PROJECT_OUTPUT, 'setup.py')
 
 
-def flask_generate_base_model(params):
+def flask_generate_base_model():
     print('flask_base_setup')
-    dikt = {}
-    default.emit_template('flask_server/base_model.j2', dikt, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', 'base_model.py')
-    default.emit_template('flask_server/util.j2', dikt, cfg.FLASK_SERVER_OUTPUT, 'util.py')
-    default.emit_template('flask_server/encoder.j2', dikt, cfg.FLASK_SERVER_OUTPUT, 'encoder.py')
+    # dikt = {}
+    default.emit_template('flask_server/base_model.j2', cfg.TEMPLATE_VARIABLES, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'models', 'base_model.py')
+    default.emit_template('flask_server/util.j2', cfg.TEMPLATE_VARIABLES, cfg.FLASK_SERVER_OUTPUT, 'util.py')
+    default.emit_template('flask_server/encoder.j2', cfg.TEMPLATE_VARIABLES, cfg.FLASK_SERVER_OUTPUT, 'encoder.py')
 
 
-def flask_generate_main(params):
+def flask_generate_main():
     # params contains 'tags'
     print('flask_generate_main')
-    dikt = params
-    default.emit_template('flask_server/init.j2', dikt, cfg.FLASK_SERVER_OUTPUT, '__init__.py')
-    default.emit_template('flask_server/main.j2', dikt, cfg.FLASK_SERVER_OUTPUT, '__main__.py')
+    default.emit_template('flask_server/init.j2', cfg.TEMPLATE_VARIABLES, cfg.FLASK_SERVER_OUTPUT, '__init__.py')
+    default.emit_template('flask_server/main.j2', cfg.TEMPLATE_VARIABLES, cfg.FLASK_SERVER_OUTPUT, '__main__.py')
 
 
 def flask_generate_controller(params):
@@ -56,15 +53,7 @@ def flask_generate_controller(params):
     ]
     """
     print('flask_controllers_setup')
-
-    for path in params:
-        path['url'] = path['url'].replace('{', '<').replace('}', '>')
-
-    dikt = {
-        'paths_list': params
-    }
-
-    default.emit_template('flask_server/controller.j2', dikt, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'controllers', params[0]['tag'] + '_controller' + '.py')
+    default.emit_template('flask_server/controller.j2', cfg.TEMPLATE_VARIABLES, cfg.FLASK_SERVER_OUTPUT + os.path.sep + 'controllers', params[0]['tag'] + '_controller' + '.py')
 
 
 # returns the python type and if needed, adds libraries/dependencies
@@ -152,39 +141,44 @@ def makeFirstLetterLower(s):
     return s[:1].lower() + s[1:] if s else ''
 
 
-def flask_generate_model(schema):
-    print('flask_generate_model')
+def flask_generate_model():
+    default.emit_template('flask_server/model.j2', cfg.TEMPLATE_VARIABLES, cfg.FLASK_SERVER_OUTPUT +
+                            os.path.sep + 'models', makeFirstLetterLower(cfg.TEMPLATE_VARIABLES['_current_schema']) + '.py')
 
-    model = {
-        'name': schema['name'],
-        'properties': {},  # key is property name, value is property type
-        'dependencies': {},  # key is filename, value is class that is being imported
-        'required': schema['object'].required,
-        'enums': {},  # Is this needed??1
-        'isString': False  # is this needed??
-    }
+    pass
 
-    class_name = makeFirstLetterLower(model['name'])
+    #print('flask_generate_model')
+
+    #model = {
+    #    'name': schema['name'],
+    #    'properties': {},  # key is property name, value is property type
+    #    'dependencies': {},  # key is filename, value is class that is being imported
+    #    'required': schema['object'].required,
+    #    'enums': {},  # Is this needed??1
+    #    'isString': False  # is this needed??
+    #}
+
+    #class_name = makeFirstLetterLower(model['name'])
 
     # if properties does not exist, print an empty class, this may not ever even run since classes are always
     # initialized to empty arrays
-    if not schema['object'].properties:
-        default.emit_template('model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
-                              os.path.sep + 'models', class_name + '.py')
-    else:
-        # run through each item within the properties
-        for attribute_name, attribute in schema['object'].properties.items():
-            model['properties'][attribute_name] = attribute.__dict__
-
+    #if not schema['object'].properties:
+    #    default.emit_template('model.j2', model, cfg.TYPESCRIPT_PROJECT_OUTPUT +
+    #                          os.path.sep + 'models', class_name + '.py')
+    #else:
+    #    # run through each item within the properties
+    #    for attribute_name, attribute in schema['object'].properties.items():
+    #        model['properties'][attribute_name] = attribute.__dict__
+    #
             # find the property, and insert dependencies into the model if needed
-            attribute_type = getPythonType(attribute, model, attribute_name)
+     #       attribute_type = getPythonType(attribute, model, attribute_name)
 
             # if attribute type is null or empty do not include it into the dictionary
-            if attribute_type != "" and attribute_type != 'null':
-                model['properties'][attribute_name]['type'] = attribute_type
+    #        if attribute_type != "" and attribute_type != 'null':
+    #            model['properties'][attribute_name]['type'] = attribute_type
 
-        default.emit_template('flask_server/model.j2', model, cfg.FLASK_SERVER_OUTPUT +
-                              os.path.sep + 'models', class_name + '.py')
+     #   default.emit_template('flask_server/model.j2', model, cfg.FLASK_SERVER_OUTPUT +
+     #                         os.path.sep + 'models', class_name + '.py')
 
 
 flask_invocation_iterator_functions = [
