@@ -119,14 +119,15 @@ class Path(OpenAPI3):
         self.request_body = get_request_body(path_dict)
         self.responses = get_responses(path_dict)  # REQUIRED {<string>, Response}
         self.response_formats = get_response_formats()  # set<string>
-        self.dependencies = get_dependencies(path_dict)  # set<string> TODO can be in parameters, request body, responses
+        self.dependencies = get_dependencies(path_dict)  # set<string>
 
+        # TODO        
         self.summary = path_dict.get('summary')
         self.description = path_dict.get('description')
-        self.externalDocs = path_dict.get('externalDocs')  # TODO
-        self.callbacks = path_dict.get('callbacks')  # TODO
-        self.security = path_dict.get('security')  # TODO
-        self.servers = path_dict.get('servers')  # TODO
+        self.externalDocs = path_dict.get('externalDocs')
+        self.callbacks = path_dict.get('callbacks')
+        self.security = path_dict.get('security')
+        self.servers = path_dict.get('servers')
         self.deprecated = to_boolean(path_dict.get('deprecated'))
         self.extensions = get_extensions(path_dict)
 
@@ -269,9 +270,10 @@ class Content(OpenAPI3):
         self.format = _format
         self.type = get_schema_type(content_dict)
 
+        # TODO
         self.example = content_dict.get('example')
         self.examples = content_dict.get('examples')
-        self.encoding = content_dict.get('encoding')  # TODO
+        self.encoding = content_dict.get('encoding')
         self.extensions = get_extensions(content_dict)
 
 
@@ -283,6 +285,7 @@ class RequestBody(OpenAPI3):
         self.types = get_content_types(request_body_dict)
         self.contents = get_contents(request_body_dict)
 
+        # TODO
         self.required = to_boolean(request_body_dict.get('required'))
         self.description = request_body_dict.get('description')
         self.extensions = get_extensions(request_body_dict)
@@ -297,8 +300,9 @@ class Response(OpenAPI3):
         self.types = get_content_types(response_dict)
         self.contents = get_contents(response_dict)
 
+        # TODO
         self.description = response_dict.get('description')  # REQUIRED
-        self.headers = response_dict.get('headers')  # TODO
+        self.headers = response_dict.get('headers')
         self.extensions = get_extensions(response_dict)
 
 
