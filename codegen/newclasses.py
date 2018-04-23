@@ -114,12 +114,12 @@ class Path(OpenAPI3):
         self.method = method
         self.function_name = path_dict.get('operationId')
         # self.200_response_schema =
-        self.parameters = get_parameters(path_dict)
-        self.parameters_in = get_parameters_in()
+        self.parameters = get_parameters(path_dict)  # array<Parameter>
+        self.parameters_in = get_parameters_in()  # set<string>
         self.request_body = get_request_body(path_dict)
-        self.responses = get_responses(path_dict)  # REQUIRED
-        self.response_formats = get_response_formats()
-        self.dependencies = get_dependencies()  # TODO can be in parameters, request body, responses
+        self.responses = get_responses(path_dict)  # REQUIRED {<string>, Response}
+        self.response_formats = get_response_formats()  # array<string>
+        self.dependencies = get_dependencies()  # array<string> TODO can be in parameters, request body, responses
 
         self.summary = path_dict.get('summary')
         self.description = path_dict.get('description')
@@ -161,7 +161,6 @@ class Path(OpenAPI3):
 
         parameters_in = set()
         for parameter in self.parameters:
-            # can add a check here
             parameters_in.add(parameter._in)
 
         return parameters_in
@@ -232,7 +231,7 @@ class Content(OpenAPI3):
 
         self.example = content_dict.get('example')
         self.examples = content_dict.get('examples')
-        self.encoding = content_dict.get('encoding')
+        self.encoding = content_dict.get('encoding')  # TODO
         self.extensions = get_extensions(content_dict)
 
 
@@ -263,7 +262,7 @@ class Response(OpenAPI3):
         self.contents = get_contents(response_dict)
 
         self.description = response_dict.get('description')  # REQUIRED
-        self.headers = response_dict.get('headers')
+        self.headers = response_dict.get('headers')  # TODO
         self.extensions = get_extensions(response_dict)
 
 
@@ -277,7 +276,7 @@ class Parameter(OpenAPI3):
         self.type = get_schema_type(parameter_dict)
 
         self.description = parameter_dict.get('description')
-        self.style = parameter_dict.get('style')
+        self.style = parameter_dict.get('style')  # TODO
         self.example = parameter_dict.get('example')
         self.examples = parameter_dict.get('examples')
         self.deprecated = to_boolean(parameter_dict.get('deprecated'))
