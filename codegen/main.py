@@ -12,6 +12,7 @@ try:  # when just doing $ python3 main.py only below imports work
     import codegen.codegen_config as cfg
     from codegen.classes import Specification
     from codegen.preprocessing import models
+    from codegen.preprocessing import init_template_context
     # from codegen.typescript_client_codegen import typescript_client_codegen as codegen
     # from codegen.typescript_client_codegen import stage_default_iterators
 except ImportError as err:  # when packaged, only above imports work
@@ -53,14 +54,13 @@ def main():
     cfg.SPEC_DICT = load_spec_file(cfg.SPEC_FILE_PATH)
     validate_specification(cfg.SPEC_DICT)
     cfg.SPEC_OBJ = Specification(cfg.SPEC_DICT)
-    #spec_dict2 = ast.literal_eval(str(vars(cfg.SPEC_DICT)))
+    # spec_dict2 = ast.literal_eval(str(vars(cfg.SPEC_DICT)))
 
     # with open('spec_tree.json', 'wt') as out:
     #     json.dump(spec_dict2, out, indent=4)
 
     models()
-
-    codegen()
+    # codegen()
 
 
 def load_spec_file(file_path):

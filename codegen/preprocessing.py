@@ -3,6 +3,48 @@ try:  # when just doing $ python3 main.py only below imports work
 except ImportError as err:  # when packaged, only above imports work
     import codegen_config as cfg
 
+
+
+def init_template_context():
+    models()
+    cfg.TEMPLATE_CONTEXT['paths'] = get_paths_by_tag()
+
+
+def get_paths_by_tag():
+    paths_by_tag = {}
+    methods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
+    for path_url, path_dict in cfg.SPEC_DICT['paths'].items():
+        parent_dict = {
+            'url': path_url,
+            'summary': paths_dict.get('summary')
+            'description': paths_dict.get('description')
+            'servers': paths_dict.get('servers')
+            'parameters': paths_dict.get('parameters')
+        }
+        for key, value in path_dict.items():
+            if key.match(cfg.EXT_REGEX):
+                parent_dict[key] = value
+        for method in methods:
+            operation_dict = path_dict.get(method)
+            if operation_dict is not None:
+                parent_dict['method'] = method
+                add_to_paths(paths_by_tag, parent_dict, operation_dict)
+
+    return paths_by_tag
+
+
+def add_to_paths(paths_by_tag, parent_dict, operation_dict):
+    path = Path(parent_dict, operation_dict)
+    tag = path.tag
+    if tag is None:
+        tag = 'default'
+    if tag not in paths_by_tag:
+        paths_by_tag[tag] = [path]
+    else:
+        paths_by_tag[tag].append(path)
+
+
+
 #write print functions!!!
 
 class Model:
@@ -89,6 +131,7 @@ def models():
 
     cfg.TEMPLATE_VARIABLES['schemas'] = models
 
+
 def getType(schema_obj, depth):
 
     if '$ref' in schema_obj:
@@ -99,6 +142,7 @@ def getType(schema_obj, depth):
 
     if schema_obj['type'] == 'array':
         return 'Array<' + getType(schema_obj['items'], depth + 1)
+
 
     # s = typeMapping[schema_obj.type]
     type_format = getattr(schema_obj, 'format', None)
