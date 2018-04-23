@@ -121,7 +121,7 @@ class Path(OpenAPI3):
         self.response_formats = get_response_formats()  # set<string>
         self.dependencies = get_dependencies(path_dict)  # set<string>
 
-        # TODO        
+        # TODO
         self.summary = path_dict.get('summary')
         self.description = path_dict.get('description')
         self.externalDocs = path_dict.get('externalDocs')
