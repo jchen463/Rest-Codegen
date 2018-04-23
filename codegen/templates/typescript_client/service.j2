@@ -46,7 +46,7 @@ export class {{ _current_tag|capitalize }}Service {
 
 
     {% for path in paths[_current_tag] %}
-    public {{path.function_name}}({% set required_params = [] %}{% for param in path.parameters %}{% if param.required %}{% set _ = required_params.append(0) %}{{param.name}}: {{param.type}}{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}{% if path.method == 'post' or path.method == 'put' %}{% if path.parameters|length > 0 %}, {% endif %}body: {{path['request_body_type']}}{% endif %}{% for param in path.parameters %}{% if not param.required %}{% if required_params %}, {% endif %}{{param.name}}?: {{path['param_to_type'][param.name]}}{% endif %}{% endfor %}): Observable<{{path['observable']}}> {
+    public {{path.function_name}}({% set required_params = [] %}{% for param in path.parameters %}{% if param.required %}{% set _ = required_params.append(0) %}{{param.name}}: {{param.type}}{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}{% if path.method == 'post' or path.method == 'put' %}{% if path.parameters|length > 0 %}, {% endif %}body: {{path['request_body_type']}}{% endif %}{% for param in path.parameters %}{% if not param.required %}{% if required_params %}, {% endif %}{{param.name}}?: {{param.type}}{% endif %}{% endfor %}): Observable<{% if 200 not in paths.responses and paths.responses[200].types|length == 0 %}{}{% else %}{{ paths.responses[200].types[0] }}{%endif%}> {
 
         {% for param in path.parameters %}
         {% if param.required %}
@@ -61,18 +61,18 @@ export class {{ _current_tag|capitalize }}Service {
         }
         {% endif %}
 
-        {% if 'query' in path['in'] %}
+        {% if 'query' in path.parameters_in %}
         let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
         {% for param in path.parameters %}
         {% if param._in == 'query'%}
-        {% if 'Array' in path['param_to_type'][param.name] %}
+        {% if 'array' in param.type %}
         if ({{param.name}}) {
             {{param.name}}.forEach((element) => {
                 queryParameters = queryParameters.append('status', <any>element);
             });
         }
         {% endif %}
-        {% if 'Array' not in path['param_to_type'][param.name] %}
+        {% if 'array' not in param.type %}
         if ({{param.name}} !== undefined) {
             queryParameters = queryParameters.set('{{param.name}}', <any>{{param.name}});
         }
@@ -119,7 +119,7 @@ export class {{ _current_tag|capitalize }}Service {
         }
         {% endif %}
 
-        return this.httpClient.{{path.method}}<any>(`${this.basePath}{{path.url}}`,
+        return this.httpClient.{{path.method}}<any>(`${this.basePath}{{path.url}}{% if 'path' in path.parameters_in %}{% for param in path.parameters %}{% if param._in == 'path' %}${encodeURIComponent(String({{ param.name }}))}{% endif %}{% endfor %}{% endif %}`,
             {% if path.method == 'post' or path.method == 'put' %}
             body,
             {% endif %}

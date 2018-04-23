@@ -103,7 +103,6 @@ class Path(OpenAPI3):
         self.tag = get_tag(path_dict)
         self.method = path_dict['method']
         self.function_name = path_dict.get('operationId')
-        # self.200_response_schema =
         self.parameters = get_parameters(path_dict)  # array<Parameter>
         self.parameters_in = get_parameters_in()  # set<string>
         self.request_body = get_request_body(path_dict)
