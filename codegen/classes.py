@@ -99,7 +99,7 @@ class Path(OpenAPI3):
     """
 
     def __init__(self, parent_dict, operation_dict):
-        path_dict = merge_dicts(parent_dict, operation_dict)
+        path_dict = self.merge_dicts(parent_dict, operation_dict)
         self.url = path_dict['url']
         self.tag = self.get_tag(path_dict)
         self.method = path_dict['method']
@@ -136,7 +136,7 @@ class Path(OpenAPI3):
                 return ref.split('/')[3]
 
             if schema_dict.get('type') == 'array':
-                return get_dependency(schema_dict)
+                return self.get_dependency(schema_dict)
 
             return None
 
@@ -148,13 +148,13 @@ class Path(OpenAPI3):
                 response = self.get_reference(dikt)
                 if 'content' in response:
                     for _format, content in response['content']:
-                        dependencies.add(get_dependency(content))
+                        dependencies.add(self.get_dependency(content))
 
         request_body_dict = path_dict.get('requestBody')
         if request_body_dict is not None:
             request_body_dict = self.get_reference(dikt)
             for _format, content in request_body_dict['content']:
-                dependencies.add(get_dependency(content))
+                dependencies.add(self.get_dependency(content))
 
         if None in dependencies:
             dependencies.remove(None)
@@ -269,7 +269,7 @@ class Content(OpenAPI3):
 
 class RequestBody(OpenAPI3):
     def __init__(self, dikt):
-        request_body_dict = self.self.get_reference(dikt)
+        request_body_dict = self.get_reference(dikt)
 
         self.formats = self.get_content_formats(request_body_dict)  # array<string>
         self.types = self.get_content_types(request_body_dict)  # array<string>
@@ -283,7 +283,7 @@ class RequestBody(OpenAPI3):
 
 class Response(OpenAPI3):
     def __init__(self, response_code, dikt):
-        response_dict = self.self.get_reference(dikt)
+        response_dict = self.get_reference(dikt)
 
         self.code = response_code
         self.formats = self.get_content_formats(response_dict)  # array<string>
@@ -298,7 +298,7 @@ class Response(OpenAPI3):
 
 class Parameter(OpenAPI3):
     def __init__(self, dikt):
-        parameter_dict = self.self.get_reference(dikt)
+        parameter_dict = self.get_reference(dikt)
 
         self.name = parameter_dict.get('name')  # REQUIRED
         self._in = parameter_dict.get('in')  # REQUIRED
