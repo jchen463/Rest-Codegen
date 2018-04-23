@@ -5,6 +5,9 @@ from pprint import pprint
 
 
 class OpenAPI3():
+    def __init__(self):
+        pass
+
     @staticmethod
     def get_reference(dikt):
         if '$ref' not in dikt:
