@@ -37,7 +37,7 @@ def get_paths_by_tag():
             'parameters': path_dict.get('parameters')
         }
         for key, value in path_dict.items():
-            if key.match(cfg.EXT_REGEX):
+            if re.match(cfg.EXT_REGEX):
                 parent_dict[key] = value
         for method in methods:
             operation_dict = path_dict.get(method)
