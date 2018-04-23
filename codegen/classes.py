@@ -89,6 +89,8 @@ class OpenAPI3():
     def to_boolean(s):
         if s is None:
             return False  # or should we return None?
+        if type(s) is bool:
+            return s
         if s.lower() == 'true':
             return True
         return False
