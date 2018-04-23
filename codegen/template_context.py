@@ -1,3 +1,5 @@
+import re
+
 import codegen.configurations as cfg
 from codegen.classes import Path, Model
 
